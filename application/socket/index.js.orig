@@ -1,0 +1,76 @@
+var app = require('express')();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+var users = {};
+
+http.listen(3030, function() {
+   console.log('listening on localhost:3030');
+});
+
+app.get('/', function(req, res) {
+   res.sendfile(__dirname + '/index.html');
+});
+
+users = [];
+io.on('connection', function(socket) {
+   console.log('A user connected');
+   socket.on('setUsername', function(data) {
+      console.log(data);
+   });
+	
+});
+
+
+io.sockets.on('connection', function (socket) {
+	socket.on('new user' , function (data , callBack) {
+      
+      if(data in users) {
+         // socket.emit('userExists', data + ' username is taken! Try some other username.');
+         callBack(false);
+      } else {
+      	callBack(true);
+      	socket.nickname  = data;
+      	users[socket.nickname] = socket;
+		updateNicknames();
+	  }
+		
+	});
+
+   socket.on('send msg', function(data , callBack) {
+   		var msg = data.trim();
+   		if (msg.substr(0,3) === '/w ') {
+   			msg = msg.substr(3);
+   			var ind = msg.indexOf(' ');
+   			if (ind !== -1) {
+   				var name = msg.substring(0 , ind);
+   				var msg = msg.substring(ind + 1);
+   				if (name in users) {
+                  users[name].emit('whisper', {msg: msg, nick: socket.nickname});
+<<<<<<< HEAD
+   					//socket.broadcast.emit('whisper', {msg: msg, nick: socket.nickname});
+=======
+                  // socket.broadcast.emit('whisper', {msg: msg, nick: socket.nickname});
+>>>>>>> 45cb1d4982d0f10ab410b80b786fe73eb79d2585
+   					console.log('whisper');
+                  
+   				} else {
+   					callBack('Error no user found');
+   				}
+   			} else {
+   				callBack('ENter valid massage');
+   			}
+   		} else {
+			//Send message to everyone
+			io.sockets.emit('newmsg', {msg: msg, nick: socket.nickname});
+   		}
+   });
+
+   function updateNicknames() {
+   		io.sockets.emit('username' , Object.keys(users));
+   }
+   socket.on('disconnect' , function (data) {
+   		if (!socket.nickname) return;
+   		delete users[socket.nickname];
+   		updateNicknames();
+   })
+});

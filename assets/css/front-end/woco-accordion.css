@@ -1,0 +1,78 @@
+/*.drawer
+{
+	width:100%;
+	border-top:1px solid #E0E0E0;
+	border-radius:3px;
+}*/
+.accordion-item
+{
+	/*border-bottom:1px solid #E0E0E0;*/
+}
+.accordion-item-active .accordion-header
+{
+	background:#f1f1f1;
+	transition:.25s;
+	margin-bottom:0;
+	color:#000;
+}
+.accordion-item-active .accordion-header-icon
+{
+	color:#000;
+}
+.accordion-item-active .accordion-header h1
+{
+	color:#000;
+}
+.accordion-header
+{
+	background:transparent;
+	padding:12px;
+	cursor:pointer;
+	border:1px solid #f1f1f1;
+	min-height:20px;
+	transition:.25s;
+	width:100%;
+	float: left;
+	margin-bottom:10px;
+}
+.accordion-header h1
+{
+	float:left;
+	font-size:18px;
+	font-weight: normal;
+	margin:0;
+	line-height: 1.3em;
+	color:#212121;
+}
+.accordion-content
+{
+	/*border:1px solid #f1f1f1;*/
+	display:none;
+	padding:12px 0;
+	color:#212121;
+	background:#FFF;
+	font-size:15px;
+	line-height:1.45em;
+	width:100%;
+	float: left;
+	margin-bottom:10px;
+}
+.accordion-content p
+{
+	margin:0;
+	margin-bottom: 3px;
+}
+.accordion-header-icon
+{
+	font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+	float:right;color:#888;
+	font-size: 15px;
+	vertical-align: middle;
+}
+.accordion-header-icon.accordion-header-icon-active
+{
+	-webkit-transform:rotate(180deg);
+	-ms-transform:rotate(180deg);
+	transform:rotate(180deg);
+	color:#000;
+}
