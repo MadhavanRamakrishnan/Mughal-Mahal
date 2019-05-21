@@ -1,0 +1,18 @@
+ALTER TABLE `tbl_orders` CHANGE `expected_delivery_time` `expected_delivery_time` DATETIME NOT NULL;
+
+ALTER TABLE `tbl_orders` ADD `order_confirmed_time` DATETIME NOT NULL AFTER `expected_delivery_time`, ADD `delivered_time` DATETIME NOT NULL AFTER `order_confirmed_time`;
+
+INSERT INTO `qc_pages` (`page_id`, `parent_page_id`, `page_title`, `page_description`, `page_slug`, `page_icon`, `page_url`, `page_class`, `is_menu`, `page_order`, `is_active`, `created_by`, `created_date`, `updated_by`, `updated_date`) VALUES (NULL, '0', 'Restaurant Management', 'Restaurant Management', 'owners', 'fa fa-cutlery', 'Restaurants/owners', 'Restaurants', '1', '2', '1', '0', '0000-00-00 00:00:00', '0', '0000-00-00 00:00:00');
+
+INSERT INTO `qc_role_page` (`role_id`, `page_id`) VALUES ('2', '121');
+
+DELETE  FROM `qc_role_page` WHERE `role_id` = 2 AND `page_id` = 71 ORDER BY `page_id`  DESC
+
+DELETE  FROM `qc_role_page` WHERE `role_id` = 2 AND `page_id` = 72 ORDER BY `page_id`  DESC
+
+ALTER TABLE `tbl_customer_delivery_address` ADD `customer_latitude` VARCHAR(255) NOT NULL AFTER `city`, ADD `customer_longitude` VARCHAR(255) NOT NULL AFTER `customer_latitude`;
+
+
+ALTER TABLE `tbl_orders` ADD `discard_reason` TEXT NOT NULL AFTER `order_status`;
+
+ALTER TABLE `tbl_orders` CHANGE `order_status` `order_status` TINYINT(2) NOT NULL DEFAULT '0' COMMENT '0=>Pending, 1=>Order Placed, 2=>Order Confirmed, 3=>Cooking, 4=>Driver Collected The Order, 5=>Driver On The Way, 6=>Driver Near To You, 7=>Delivered, 8=>Disputed, 9=>Resolved, 10=>Refunded';

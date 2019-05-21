@@ -1,0 +1,233 @@
+
+body.mm-show{ direction: ltr; }
+
+.header_left{ float:right; }
+.header_right{ float:left; }
+.header_right ul li.register{ margin-left:20px; margin-right:0; }
+.header_right ul li.online_order{ margin:0 0 0 5px; }
+.lang_switch{ float:left; }
+.dropdown.log_in{ margin-right:15px; }
+.header_right ul li a .badge{ right:auto; left:-10px; }
+
+.dropdown-content{ right:auto; left:0; }
+
+.dish_top .top_search{ float: right; }
+.dish_top .top_search input{ float:right; background-position:right center; background-position-y:10px; padding:0 40px 0 10px }
+.dish_top .locality{ float:left; }
+.dish_top .locality select{ float: left; padding:0 10px 0 30px; background:url(../../images/icon/caret-down-grey.png) no-repeat left 8px center; }
+
+.dishes_menu ul{ float: right; }
+
+
+.dish_im{ float: right; }
+.dish_des{ float:left; }
+.dish_des span{ left:auto; right:10px; }
+.dish_des a{ right:auto; left:10px; }
+.dish_des .favorite_icon{ right:auto; left:0; }
+.dish_des .favorite_icon a{ left:0; }
+
+.dish_top .top_search
+.search_box .serach_fild{ float:right; }
+.search_box .serach_fild input{ background-position:right 17px center; padding:0 50px 0 10px; }
+.search_box .search_btn{ float:left; }
+.search_box .search_btn input{ background-color:#00AE4A; background-image: url("../../images/icon/forward_arrow_abr_style.png"); background-repeat:no-repeat; background-position: left center; background-position-x: 10%; text-align:right; }
+.search_box .search_btn input:hover{ background-position-x:10%; }
+.popular_dishes_box_top .order_btn{ right:auto; left:30px; }
+.popular_dishes_box_top .order_btn > a i{ transform:rotate(180deg); top: -2px; }
+
+.food_left .food_txt{ padding:20% 20% 0 0; }
+.food_left .food_txt a img{ transform:rotate(180deg); }
+.food_month_slider .food_left .food_txt{ padding:20% 15% 0 0; }
+
+.first_choice{ background: url(../../images/bg_gradien_abr_layoutt.png) no-repeat; background-size:100% 100%; }
+
+.ftr_position_txt > ul{ float:right; }
+.ftr_position_txt > ul li{ margin:0 0 0 10px; }
+
+.cart_list > ul li .quantity{ float:right; }
+.cart_list > ul li .dish_name{ float:right; }
+.cart_list > ul li .dish_price{ float:right; }
+.cart_list > ul li .order_cancle{ right:auto; left:10px; }
+.order_cart > ul li .left{ float:right; }
+.order_cart > ul li .right{ float:left; }
+.cart_list > ul li .quantity select{ padding:0 25px 0 10px; }
+
+.modality-modal.mm-show{ overflow-x:hidden; }
+.popup_close{ right:auto; left:15px; }
+.product_name{ text-align:right; }
+.product_description{ text-align:right; }
+.cus_radio .top_tit span{ float:right; }
+.cus_radio .top_tit p{ float:left; }
+.cus_radio > ul li [type="radio"]:checked + label,
+.cus_radio > ul li [type="radio"]:not(:checked) + label{ padding:0 28px 0 0; }
+.cus_radio > ul li [type="radio"]:checked + label:before,
+.cus_radio > ul li [type="radio"]:not(:checked) + label:before{ left:auto; right:0; }
+.cus_radio > ul li [type="radio"]:checked + label:after,
+.cus_radio > ul li [type="radio"]:not(:checked) + label:after{ left:auto; right:0; }
+.cus_radio > ul li label p{ float:left; }
+.cus_checkbox .top_tit{ text-align:right; }
+.cus_checkbox .top_tit span{ float:right; }
+.cus_checkbox > ul li .checkbox_custom{ padding:0 35px 0 0; }
+.cus_checkbox > ul li .checkmark{ left:auto; right:0; }
+.cus_checkbox > ul li .checkbox_custom p{ float:left; }
+.add_to_bag_btn button span{ right:auto; left:20px; }
+.pr_quantity .pr_quantity_in .js-qty-down{ left:auto; right:0; }
+.pr_quantity .pr_quantity_in .js-qty-up{ right:auto; left:0; }
+
+
+.profile_page_btm .resp-tabs-list li{ float:right; }
+.profile_page_btm .resp-tabs-list li:first-child{ padding:15px 0px 15px 20px !important; }
+.general_pro ul li .pro_left{ float:right; }
+.general_pro ul li .pro_right{ float:left; margin:0 0 0 8%; }
+.general_pro ul li .pro_edit{ left:0; right:auto; }
+.pass_change ul li .pass_change_left{ float: right; padding-right:10px; }
+.pass_change ul li .pass_change_right{ float:left; padding-left:10px; }
+.change_pass_popup h2{ text-align:right; }
+.change_pass_detail_form .form_fild_deatil input{ float:right; text-align:right; }
+.payment_pro_top{ text-align:left; }
+.payment_pro ul li .pro_left{ float:right; padding:0 15px 0 0; }
+.payment_pro ul li .pro_mid{ float:right; }
+.payment_pro ul li .pro_right{ float:left; text-align:left; }
+.add_new_card_popup{ text-align:right; }
+.detail_form .form_fild_deatil input{ text-align:right; }
+.detail_form .form_fild_deatil.last .card_month{ float:right; margin:0 0 0 20px; }
+.detail_form .form_fild_deatil.last .card_year{ float:right; margin:0 0 0 20px; }
+.detail_form .form_fild_deatil.last select{ padding:0 20px; }
+
+#progressbar li{ float:right; }
+#progressbar li::after { left:auto; right:-50%;  }
+.order_list_left{ border-left:1px solid #E9E9E9; border-right:none; }
+.order_list_left table tr th:first-child{ text-align:right; }
+.order_list_left table tr td:first-child{ text-align:right; }
+.order_list_left table tr th:last-child{ text-align:left; }
+.order_list_left table tr td:last-child{ text-align:left; }
+.order_list_right .order_sammary ul li span{ float:left; }
+
+
+.order_top .order_top_left{ float: right; }
+.order_top_left > h3{ float: right; }
+.order_top_left > ul li span{ margin:0 0 0 5px; }
+.order_top .order_top_right{ float:left; text-align:left; }
+
+.order_left table tr th:first-child{ text-align:right; }
+.order_left table tr td:first-child{ text-align:right; }
+.order_left table tr th.t_prise, .order_left table tr td.t_prise{ text-align:left; }
+.order_address ul li [type="radio"]:checked + label,
+.order_address ul li [type="radio"]:not(:checked) + label{ padding:0 35px 0 0; }
+.order_address ul li [type="radio"]:checked + label:before,
+.order_address ul li [type="radio"]:not(:checked) + label:before{ left:auto; right:0; }
+.order_address ul li [type="radio"]:checked + label:after,
+.order_address ul li [type="radio"]:not(:checked) + label:after{ left:auto; right:0; }
+.order_address ul li .edit_address{ right:auto; left:0; }
+
+.paymeny_summary .order_delivery_option > ul li [type="radio"]:checked + label,
+.paymeny_summary .order_delivery_option > ul li [type="radio"]:not(:checked) + label{ padding-right:28px; }
+.paymeny_summary .order_delivery_option > ul li [type="radio"]:checked + label:before,
+.paymeny_summary .order_delivery_option > ul li [type="radio"]:not(:checked) + label:before{ left:auto; right:0; }
+.paymeny_summary .order_sammary ul li span{ float:left; }
+.paymeny_summary .order_sammary .btn_order{ text-align:left; }
+
+
+.checkout_popup h2{ text-align:right; }
+.ckeckout_form_top p{ text-align:right; }
+.checkout_form_btm p{ text-align:right; }
+
+/* ========================= Start media screen 767px =========================  */
+@media screen and (max-width:767px) {
+	.dish_box.mobi_layout .dish_im{ float:right; }
+	.dish_box.mobi_layout .dish_des{ padding:10px 10px 10px 0; }
+	.dish_box.mobi_layout .dish_des .dish_des_left{ float: right; text-align:right; }
+	.dish_box.mobi_layout .dish_des .dish_des_right{ float:left; text-align:right; }
+	/*.dish_box.mobi_layout .dish_des a{ right:0; }*/
+
+	.accordion-header h1{ float:right; }
+	.accordion-header-icon{ float: left; }
+
+	.resp-arrow{ float:left; }
+	h2.resp-accordion{ margin-bottom:15px; border-top:1px solid #c1c1c1; }
+	.resp-tab-content{ margin-bottom:15px; }
+	.general_pro ul li .pro_right{ margin:0 0 0 10%; }
+	.payment_pro ul li .pro_left{ padding:0; text-align:right; }
+	.payment_pro ul li .pro_mid{ text-align:right; }
+	.payment_pro ul li .pro_right{ text-align:right; }
+}
+/* ========================= Close media screen 767px =========================  */
+
+/* ========================= Start media screen 992px to 1024px =========================  */
+@media screen and (min-width:992px) and (max-width:1024px) {
+	.main_layout .dropdown-content{ right:-165px; }
+	.ftr_position_txt > ul li{ margin:0 0 0 2%; }
+} 
+/* ========================= Close media screen 992px to 1024px =========================  */
+
+/* ========================= Start media screen 768px to 991px =========================  */
+@media screen and (min-width:768px) and (max-width:991px) {
+
+	.header_right ul li.online_order{ margin:0 !important; }
+	.main_layout .dropdown-content{ right:-165px; }
+	.ftr_position_txt > ul li{ margin:0 0 0 2%; }
+} 
+/* ========================= Close media screen 768px to 991px =========================  */
+
+/* ========================= Start media screen 601px to 767px =========================  */
+@media screen and (min-width:601px) and (max-width:767px) {
+	.main_layout .dropdown-content{ right:-165px; }
+	.food_left .food_txt{ padding:0; }
+	.food_month_slider .food_left .food_txt{ padding:0; }
+	.header_right ul li.register{ margin-left:10px; }
+}
+/* ========================= Close media screen 601px to 767px =========================  */
+
+/* ========================= Start media screen 481px to 600px =========================  */
+@media screen and (min-width:481px) and (max-width:600px) {	
+	.header_right ul{ text-align:left; }
+	.main_layout .dropdown-content{ right:-165px; }
+	.food_left .food_txt{ padding:0; }
+	.food_month_slider .food_left .food_txt{ padding:0; }
+
+	.dish_top .top_search input{ float:none; }
+	.dish_top .locality select{ float:none; }
+
+	#progressbar li{ text-align:right; }
+	#progressbar li span{ right:10px; left:auto; }
+	#progressbar li::after{ width:2px; height:100%; right:10px; top:-10px; }
+
+	.order_top .order_top_right{ text-align:center; }
+
+	.header_right ul li.register{ margin-left:0; }
+}
+/* ========================= Close media screen 481px to 600px =========================  */
+
+
+/* ========================= Start media screen 480px =========================  */
+@media screen and (max-width:480px) {
+	.header_right ul{ text-align:left; }
+	.food_left .food_txt{ padding:0; }
+	.food_month_slider .food_left .food_txt{ padding:0; }
+	.ftr_position_txt > ul li{ margin:0 0 10px; }
+
+	.dish_top .top_search input{ float:none; }
+	.dish_top .locality select{ float:none; }
+
+	#myDropdown1.dropdown-content{ left:-160px; min-width:300px; right:auto; }
+	#login_after1.dropdown-content{ min-width:130px; width:70px; left:0; right:auto; }
+
+	.general_pro ul li .pro_right{ margin:0; }
+
+	#progressbar li{ text-align:right; }
+	#progressbar li span{ right:10px; left:auto; }
+	#progressbar li::after{ width:2px; height:100%; right:10px; top:-10px; }
+
+	.order_top .order_top_right{ text-align:center; }
+
+	.header_right ul li.register{ margin-left:0; }
+}
+/* ========================= Close media screen 480px =========================  */
+
+@media screen and (max-width:419px) {
+	.dropdown-content{ left:-160px; }
+}
+
+@media screen and (max-width:383px) {
+	.dropdown-content{ min-width:310px; left:-84px; }
+}

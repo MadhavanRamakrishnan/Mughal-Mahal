@@ -1,0 +1,11 @@
+.dish_des .favorite_icon {
+    left: 0;
+    right: 88%;
+}
+.order_rating .restaurant_details {
+    text-align: right;
+}
+.hotel_info_btm {
+    float: right;
+}
+.order_address ul li [type="radio"]:checked, .order_address ul li [type="radio"]:not(:checked) {right:  0px;}

@@ -1,0 +1,70 @@
+/*
+ *
+ * Main stylesheet for Switchery.
+ * https://abpetkov.github.io/switchery/
+ *
+ */
+
+$switchery-height: 30px;
+$switchery-large-height: 46px;
+$switchery-small-height: 20px;
+
+.switchery {
+  background-color: #fff;
+  border: 1px solid #dfdfdf;
+  border-radius: round(2/3*$switchery-height);
+  cursor: pointer;
+  display: inline-block;
+  height: $switchery-height;
+  position: relative;
+  vertical-align: middle;
+  width: round(5/3*$switchery-height);
+
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+
+  -webkit-background-clip: content-box;
+  background-clip: content-box;
+}
+
+.switchery > small {
+  background: #fff;
+  border-radius: 100%;
+  box-shadow: 0 round($switchery-height/30) round($switchery-height/10) rgba(0, 0, 0, 0.4);
+  height: $switchery-height;
+  position: absolute;
+  top: 0;
+  width: $switchery-height;
+}
+
+
+.switchery.switchery-large {
+  border-radius: round(2/3*$switchery-large-height);
+  height: $switchery-large-height;
+  width: round(5/3*$switchery-large-height); 
+}
+
+.switchery.switchery-large > small {
+  height: $switchery-large-height;
+  width: $switchery-large-height;
+  box-shadow: 0 round($switchery-large-height/30) round($switchery-large-height/10) rgba(0, 0, 0, 0.4);   
+}
+
+.switchery.switchery-small {
+  border-radius: round(2/3*$switchery-small-height);
+  height: $switchery-small-height;
+  width: round(5/3*$switchery-small-height);
+}
+
+.switchery.switchery-small > small {
+  height: $switchery-small-height;
+  width: $switchery-small-height;
+  box-shadow: 0 round($switchery-small-height/30) round($switchery-small-height/10) rgba(0, 0, 0, 0.4);   
+}

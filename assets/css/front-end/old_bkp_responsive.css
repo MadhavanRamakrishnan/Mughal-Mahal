@@ -1,0 +1,368 @@
+/* ========================= Start media screen 767px =========================  */
+@media screen and (max-width:767px) {
+	
+}
+/* ========================= Close media screen 767px =========================  */
+
+/* ========================= Start media screen 1025px to 1199px =========================  */
+@media screen and (min-width:1025px) and (max-width:1199px) {
+	.search_section{ width:610px; }
+	/* Start index page css */
+	.popular_dishes{ padding:60px 0; }
+	.food_month{ padding:60px 0; }
+	.food_left{ min-height:100%; }
+	.food_month_slider{ padding:50px 0 0; }
+	.food_month_slider .food_left{ min-height:100%; }
+	.brand_logo ul li{ width:16%; }
+	/* Close index page css */
+
+	/* Start dishes page css */
+
+	/* Close dishes page css */
+}
+/* ========================= Close media screen 1025px to 1199px =========================  */
+
+/* ========================= Start media screen 992px to 1024px =========================  */
+@media screen and (min-width:992px) and (max-width:1024px) {
+	/* Start index page css */
+	.search_section{ width:65%; }
+	.popular_dishes{ padding:60px 0; }
+	.food_month{ padding:60px 0; }
+	.food_left{ min-height:100%; }
+	.food_month_slider .food_left{ min-height:100%; }
+	.brand_logo ul li{ width:16%; }
+	.first_choice_right img{ width:100%; }
+	.food_month_slider{ padding:60px 0 0; }
+	/* Close index page css */
+}
+/* ========================= Close media screen 992px to 1024px =========================  */
+
+/* ========================= Start media screen 768px to 991px =========================  */
+@media screen and (min-width:768px) and (max-width:991px) {
+	/* Start index page css */
+	/* Start header css */
+	.header_right ul li.online_order{ margin-right:0; }
+	.header_right ul li.login{ margin:0 10px; }
+	.header_right ul li.register{ margin-right:10px; }
+	/* Start header css */
+
+	.search_section{ width:500px; }
+	.search_box .search_btn input{ background-size:20px; font-size: 15px; }
+	.search_box .search_btn input:hover{ background-size:20px; }
+	.popular_dishes{ padding:60px 0; }
+	.food_month{ padding:60px 0; }
+	.food_left{ min-height:100%; }
+	.food_month_slider .food_left{ min-height:100%; }
+	.brand_logo ul li{ width:16%; }
+	.first_choice_right img{ width:100%; }
+	.food_month_slider{ padding:60px 0 0; }
+	.food_left .food_txt h3{ font-size:24px; }
+	.food_left .food_txt p span{ font-size:24px; }
+	.food_left .food_txt a{ font-size:17px; }
+	.food_left .food_txt a img{ width:30px; }
+	.food_month_slider .food_left .food_txt h3{ font-size:24px; }
+	.food_month_slider .food_left .food_txt p span{ font-size:50px; }
+
+	.first_choice_left h3{ font-size:24px; line-height:38px; margin-bottom:20px; }
+	.first_choice_left p{ font-size:17px; line-height:22px; }
+	.first_choice_left a{ line-height:40px; padding:0 20px; font-size:14px; }
+
+	.ftr_position .ftr_position_im img{ width:100%; }
+	.ftr_position_txt{ margin-top:180px; }
+	.ftr_position_txt h3{ font-size:30px; margin-bottom:20px; }
+
+	/* Start footer css */
+	.footer{ padding:50px 0; }
+	/* Close footer css */
+	/* Close index page css */
+
+	/* Start dishes page css */
+
+	/* Close dishes page css */
+} 
+/* ========================= Close media screen 768px to 991px =========================  */
+
+/* ========================= Start media screen 601px to 767px =========================  */
+@media screen and (min-width:601px) and (max-width:767px) {
+	/* Start index page css */
+	/* Start header css */
+	.header_right ul{ padding:60px 0; }
+	.header_right ul li.online_order{ margin-right:10px; }
+	.header_right ul li.login{ margin:0 10px; }
+	.header_right ul li.register{ margin-right:10px; }
+	.header_right ul li a{ font-size:14px; line-height:40px; }
+	.header_right ul li.online_order a{ padding:0 10px; }
+	.header_right ul li.login a{ padding:0 15px; }
+	.header_right ul li.register a{ padding:0 15px; }
+	/* Close header css */
+
+	.search_section{ width:480px; }
+	.search_section h3{ font-size:32px; }
+	.search_box .search_btn input{ background-size:20px; font-size: 15px; }
+	.search_box .search_btn input:hover{ background-size:20px; }
+	.popular_dishes{ padding:60px 0; }
+	.food_month{ padding:60px 0; }
+	.food_left{ min-height:100%; padding-bottom: 15%; text-align: center; }
+	.food_left .food_txt{ padding:0; }
+	.food_month_slider .food_left{ min-height:100%; padding:15% 0 0; }
+	.food_month_slider .food_left .food_txt{ padding:0; }
+	.our_brand{ padding:80px 0; }
+	.brand_logo ul li{ width:24%; }
+	.first_choice_right img{ width:100%; }
+	.food_month_slider{ padding:60px 0 0; }
+	.food_left .food_txt h3{ font-size:24px; }
+	.food_left .food_txt p span{ font-size:24px; }
+	.food_left .food_txt a{ font-size:17px; }
+	.food_left .food_txt a img{ width:30px; }
+	.food_month_slider .food_left .food_txt h3{ font-size:24px; }
+	.food_month_slider .food_left .food_txt p span{ font-size:50px; }
+	.first_choice{ padding-bottom:70px;  }
+	.first_choice_left{ padding: 0 0 5%; text-align:center; }
+	.first_choice_left h3{ font-size:34px; line-height:42px; margin-bottom:20px; }
+	.first_choice_right{ text-align:center; }
+	.first_choice_right img{ width:85%; }
+	.section_title{ padding-bottom:40px; }
+
+	.ftr_position{ margin-top:0; }
+	.ftr_position .ftr_position_im{ text-align: center; }
+	.ftr_position .ftr_position_im img{ width:50%; }
+	.ftr_position_txt{ margin-top:50px; text-align:center; }
+	.ftr_position_txt h3{ font-size:30px; margin-bottom:20px; }
+
+	/* Start footer css */
+	.footer{ padding:50px 0; }
+	.ftr_box{ text-align:center; padding-bottom:20px; }
+	.ftr_box img{ max-width:100px; }
+	.ftr_box ul li{ width:auto; float: none; display:inline-block; padding: 0 20px; }
+	.ftr_box h5{ padding-bottom:5px; }
+	.ftr_btm{ text-align: center; padding:10px 0 0; }
+	/* Close footer css */
+	/* Close index page css */
+
+	/* Start dishes page css */
+	.top_search{ padding:30px 15px; }
+	.dish_list_title h3{ padding:0 15px; }
+	.padleft0{ padding-left:15px; }
+	.padright0{ padding-right:15px; }
+	.dish_list{ padding:0; }
+	/* Close dishes page css */
+
+	/* Start Myorder page css */
+	.order_top .order_top_left{ width:70%; }
+	/* Close Myorder page css */
+}
+/* ========================= Close media screen 601px to 767px =========================  */
+
+/* ========================= Start media screen 481px to 600px =========================  */
+@media screen and (min-width:481px) and (max-width:600px) {
+	/* Start index page css */
+	/* Start header css */
+	.header{ padding:20px 0; }
+	.header_left { text-align: center; width: 100%; }
+	.header_left img { max-width: 90px; }
+	.header_right { width:100%; padding:10px 0 0; }
+	.header_right ul{ padding:10px 0; width:100%; text-align:center; }
+	.header_right ul li.online_order{ margin-right:10px; }
+	.header_right ul li.login{ margin:0 10px; }
+	.header_right ul li.register{ margin-right:10px; }
+	.header_right ul li a{ font-size:14px; line-height:40px; }
+	.header_right ul li.online_order a{ padding:0 10px; }
+	.header_right ul li.login a{ padding:0 15px; }
+	.header_right ul li.register a{ padding:0 15px; }
+	/* Close header css */
+
+	.search_section{ width:85%; }
+	.search_section h3{ font-size:24px; }
+	.search_box{ margin-top:20px; }
+	.search_box .serach_fild{ width:100%; }
+	.search_box .search_btn{ width:100%; text-align: center; padding-top:15px; }
+	.search_box .search_btn input{ width:175px; background-size:20px; font-size: 15px; float: none; }
+	.search_box .search_btn input:hover{ background-size:20px; }
+	.popular_dishes{ padding:60px 0; }
+	.food_month{ padding:60px 0; }
+	.food_left{ min-height:100%; padding-bottom: 15%; text-align: center; }
+	.food_left .food_txt{ padding:0; }
+	.food_month_slider .food_left{ min-height:100%; padding:15% 0 0; }
+	.food_month_slider .food_left .food_txt{ padding:0; }
+	.our_brand{ padding:60px 0; }
+	.brand_logo ul li{ width:24%; }
+	.first_choice_right img{ width:100%; }
+	.food_month_slider{ padding:60px 0 0; }
+	.food_left .food_txt h3{ font-size:24px; }
+	.food_left .food_txt p span{ font-size:24px; }
+	.food_left .food_txt a{ font-size:17px; }
+	.food_left .food_txt a img{ width:30px; }
+	.food_month_slider .food_left .food_txt h3{ font-size:24px; }
+	.food_month_slider .food_left .food_txt p span{ font-size:50px; }
+	.first_choice{ padding-bottom:50px; }
+	.first_choice_left{ padding: 0 0 10%; text-align:center; }
+	.first_choice_left h3{ font-size:34px; line-height:42px; margin-bottom:20px; }
+	/*.first_choice_right{ text-align:center; }
+	.first_choice_right img{ width:58%; }*/
+	.section_title{ padding-bottom:40px; }
+
+	/* Start footer css */
+	.ftr_position{ margin-top:0; }
+	.ftr_position .ftr_position_im{ text-align: center; }
+	.ftr_position .ftr_position_im img{ width:50%; }
+	.ftr_position_txt{ margin-top:50px; text-align:center; }
+	.ftr_position_txt h3{ font-size:30px; margin-bottom:20px; }
+
+	.footer{ padding:50px 0; }
+	.ftr_box{ text-align:center; padding-bottom:20px; }
+	.ftr_box img{ max-width:100px; }
+	.ftr_box ul li{ width:auto; float: none; display:inline-block; padding: 0 20px; }
+	.ftr_box h5{ padding-bottom:5px; }
+	.ftr_btm{ text-align: center; padding:10px 0 0; }
+	/* Close footer css */
+	/* Close index page css */
+
+	/* Start dishes page css */
+	.dishes_menu ul{ width:90%;}
+	.dishes_menu ul li{ padding:15px; }
+	.cat_more_btn{ width:10%; }
+	.top_search{ padding:30px 15px; }
+	.top_search input{ width:50%; }
+	.dish_list_title h3{ padding:0 15px; }
+	.padleft0{ padding-left:15px; }
+	.padright0{ padding-right:15px; }
+	.dish_list{ padding:0; }
+	/* Close dishes page css */
+
+	/* Start Myorder page css */
+	.order_top .order_top_right{ width:100%; text-align:center; margin-top:20px; }
+	/* Close Myorder page css */
+
+	/* Start popup css */
+	.product_name{ font-size:22px; }
+	.cus_radio > ul li label{ font-size:14px; }
+	.cus_checkbox > ul li .checkbox_custom{ font-size:15px; }
+	.pr_quantity .pr_quantity_in{ width:30%; }
+	/* Close popup css */
+}
+/* ========================= Close media screen 481px to 600px =========================  */
+
+/* ========================= Start media screen 480px =========================  */
+@media screen and (max-width:480px) {
+	/* Start index page css */
+	/* Start header css */
+	.header{ padding:20px 0 0; }
+	.header_left { text-align: center; width: 100%; }
+	.header_left img { max-width: 90px; }
+	.header_right { width:100%; padding:10px 0 0; }
+	.header_right ul{ padding:10px 0; width:100%; text-align:center; position:relative; }
+	.header_right ul li{ margin-bottom:10px; }
+	.header_right ul li.online_order{ margin-right:10px; }
+	.header_right ul li.login{ margin:0 10px; }
+	.header_right ul li.register{ margin-right:10px; }
+	.header_right ul li a{ font-size:14px; line-height:35px; }
+	.header_right ul li.online_order a{ padding:0 10px; }
+	.header_right ul li.login a{ padding:0 15px; }
+	.header_right ul li.register a{ padding:0 15px; }
+	.header_right ul li.dropdown{  }
+	/* Close header css */
+
+	.search_section{ width:85%; }
+	.search_section h3{ font-size:17px; }
+	.search_box{ margin-top:10px; }
+	.search_box .serach_fild{ width:100%; }
+	.search_box .serach_fild input{ height:40px; }
+	.search_box .search_btn{ width:100%; text-align: center; padding-top:15px; }
+	.search_box .search_btn input{ width:175px; background-size:20px; font-size: 15px; float: none; height:40px; }
+	.search_box .search_btn input:hover{ background-size:20px; }
+	.popular_dishes{ padding:40px 0; }
+	.food_month{ padding:40px 0; }
+	.food_left{ min-height:100%; padding-bottom: 15%; text-align: center; }
+	.food_left .food_txt{ padding:0; }
+	.food_month_slider .food_left{ min-height:100%; padding:15% 0 0; }
+	.food_month_slider .food_left .food_txt{ padding:0; }
+	.our_brand{ padding:40px 0; }
+	.brand_logo ul li{ width:49%; }
+	.first_choice_right img{ width:100%; }
+	.food_month_slider{ padding:40px 0 0; }
+	.food_left .food_txt h3{ font-size:24px; }
+	.food_left .food_txt p span{ font-size:24px; }
+	.food_left .food_txt a{ font-size:17px; }
+	.food_left .food_txt a img{ width:30px; }
+	.food_month_slider .food_left .food_txt h3{ font-size:24px; }
+	.food_month_slider .food_left .food_txt p span{ font-size:50px; }
+	.first_choice{ padding-bottom:40px; }
+	.first_choice_left{ padding: 0 0 10%; text-align:center; }
+	.first_choice_left h3{ font-size:34px; line-height:42px; margin-bottom:20px; }
+	/*.first_choice_right{ text-align:center; }
+	.first_choice_right img{ width:58%; }*/
+	.section_title{ padding-bottom:40px; }
+	.section_title h3{ font-size:24px; }
+	
+	.ftr_position{ margin-top:0; }
+	.ftr_position .ftr_position_im{ text-align: center; }
+	.ftr_position .ftr_position_im img{ width:50%; }
+	.ftr_position_txt{ margin-top:30px; text-align:center; }
+	.ftr_position_txt h3{ font-size:30px; margin-bottom:20px; }
+	/* Start footer css */
+	.footer{ padding:30px 0; }
+	.ftr_box{ text-align:center; padding-bottom:20px; }
+	.ftr_box img{ max-width:100px; }
+	.ftr_box ul li{ width:auto; float: none; display:inline-block; padding: 0 10px; }
+	.ftr_box h5{ padding-bottom:5px; }
+	.ftr_btm{ text-align: center; padding:10px 0 0; }
+	/* Close footer css */
+	/* Close index page css */
+
+	/* Start dishes page css */
+	.dishes_menu ul{ width:87%;}
+	.dishes_menu ul li{ padding:15px; }
+	.cat_more_btn{ width:13%; }
+	.top_search{ padding:30px 15px; }
+	.top_search input{ width:60%; }
+	.dish_list_title h3{ padding:0 15px; }
+	.padleft0{ padding-left:15px; }
+	.padright0{ padding-right:15px; }
+	.dish_list{ padding:0; }
+	.dish_list .dish_box{ text-align:center; }
+	.dish_im{ width:40%; float: none; display:inline-block; }
+	/*.dish_im img{ width:50%; }*/
+	.dish_des{ width:100%; min-height:100%; }
+	.dish_des p{ width:100%; display:inline-block; padding-bottom:10px; }
+	.dish_des p span{ width:100%; }
+	.dish_des span{ position: relative; bottom:-10px; float: left; }
+	.dish_des a{ position: relative; bottom:0; }
+	/* Close dishes page css */
+
+	/* Start Myorder page css */
+	.order_top .order_top_right{ width:100%; text-align:center; margin-top:20px; }
+	/* Close Myorder page css */
+
+	/* Start popup css */
+	.product_name{ font-size:18px; padding-bottom:15px; }
+	.cus_radio > ul li label{ font-size:14px; }
+	.cus_checkbox > ul li .checkbox_custom{ font-size:15px; }
+	.pr_quantity .pr_quantity_in{ width:40%; }
+	.add_to_bag_btn button{ width:96%; }
+	.add_to_bag_btn button span{ padding-right:0; right:10px; }
+	/* Close popup css */
+
+	/* Start Order Confirm popup css */
+	.order_confirm_popup h2{ font-size:24px; }
+	.order_confirm_im{ margin:30px 0; }
+	.order_confirm_im img{ width:70px; }
+	.order_confirm_txt{ margin-bottom:50px; }
+	.order_confirm_txt p{ font-size:20px; line-height:26px; }
+	/* Close Order Confirm popup css */
+}
+/* ========================= Close media screen 480px =========================  */
+
+/* ========================= Start media screen 380px =========================  */
+@media screen and (max-width:419px) {
+	.dropdown-content{
+		right:-160px;
+	}
+}
+
+@media screen and (max-width:383px) {
+	.dropdown-content {
+	  min-width: 310px;
+	  right: -84px;
+	}
+}
+/* ========================= Close media screen 380px =========================  

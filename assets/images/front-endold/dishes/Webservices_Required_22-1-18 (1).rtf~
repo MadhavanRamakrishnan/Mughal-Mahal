@@ -1,0 +1,104 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Menlo-Regular;\f2\fnil\fcharset0 Menlo-Bold;
+\f3\fnil\fcharset0 TrebuchetMS;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\csgenericrgb\c0\c0\c0;\cssrgb\c0\c0\c0;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b\fs24 \cf0 #### Websrviece required ####\
+\
+1) post details based on postId\
+
+\b0 	
+\b url ==> postDetails
+\b0 \
+	
+\b parameters :
+\b0  \{\
+					
+\f1\fs22 \cf2 \CocoaLigature0 post_id : \'9323\'94;
+\f0\fs24 \cf0 \CocoaLigature1 \
+				\}\
+
+\b response : 
+\f1\b0\fs22 \cf2 \CocoaLigature0 \{\
+\pard\tx692\pardeftab692\pardirnatural\partightenfactor0
+\cf2     
+    "category_id" = 24;\
+    "category_name" = "testing vv";\
+    "comment_gif" = "";\
+    "created_by" = 142;\
+    "created_date" = "2018-01-20 06:31:02";\
+    "created_time" = "2 days ago";\
+    description = "my first video";\
+    "group_id" = 150;\
+    "group_photo" = "0f5255748ba5a2e4b00eeb290aed5eb0.jpg";\
+    "group_title" = test2;\
+    "is_active" = 1;\
+    "language_id" = 1;\
+    "post_gif" = "http://13.59.23.229/admin/assets/uploads/videos/gif/image_1516429859_5a62e223d46cf.gif";\
+    "post_id" = 233;\
+    "post_role" = 3;\
+    "post_title" = "";\
+    "posted_profile_photo" = "http://13.59.23.229/admin/assets/uploads/customer/db13175de8da00e0975240f8f4bdf34f.jpg";\
+    reply = 21;\
+    "updated_by" = "<null>";\
+    "updated_date" = "<null>";\
+    username = Rj;\
+    "video_gif" = "image_1516429859_5a62e223d46cf.gif";\
+    "video_name" = "http://13.59.23.229/admin/assets/uploads/videos/video_1516429859_5a62e2235bfcf.mp4";\
+    "video_thumb" = "http://13.59.23.229/admin/assets/uploads/videos/thumb/image_1516429859_5a62e223d4621.jpg";\
+    views = 13;\
+\}\
+===================================================================\
+
+\f2\b 2) Insight details based on bolg_id\
+	url ==> blogDetails\
+
+\f1\b0 	
+\f2\b parameters ==>
+\f1\b0  \{\
+				"blog_id" = 15;\
+				\}\
+\
+
+\f2\b response :
+\f1\b0  \{\
+                address1 = thaltej;\
+                "blog_categories" = BIPOLAR;\
+                "blog_categories_image" = "http://13.59.23.229/admin/assets/uploads/category/1794d1fb02452b77f851b5c35e1088fb.jpg";\
+                "blog_category_ids" = 3;\
+                "blog_id" = 11;\
+                "blog_like_id" = "<null>";\
+                categories = BPD;\
+                "categories_image" = "http://13.59.23.229/admin/assets/uploads/category/1794d1fb02452b77f851b5c35e1088fb.jpg";\
+                "category_id" = 9;\
+                "created_by" = 25;\
+                "created_date" = "2017-08-19 09:00:00";\
+                description = TTT;\
+                dob = "1986-07-04";\
+                email = "tushar@itoneclick.com";\
+                "first_name" = Tushar;\
+                gender = M;\
+                image = "http://13.59.23.229/admin/assets/uploads/blog/37cb2d78327f4b376beb96c666658bac.jpg";\
+                "is_active" = 1;\
+                "is_approved" = 1;\
+                "is_like" = "<null>";\
+                languages = English;\
+                "last_name" = Patel;\
+                phone = 1234569878;\
+                "profile_photo" = "http://13.59.23.229/admin/assets/uploads/survivor/53acce8e4ce81656368abffdd1a10034.jpg";\
+                rating = "4.0000";\
+                "survivor_id" = 25;\
+                title = "TEST BLOG34";\
+                "updated_by" = 2;\
+                "updated_date" = "2017-08-19 15:00:00"\
+                username = TP;\
+            \}\
+===================================================================\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\sl259\slmult1\sa160\partightenfactor0
+
+\f3\fs28 \cf3 \expnd0\expndtw0\kerning0
+\CocoaLigature1 3) Project Semicolon should be automatically added as a member of all support groups that are created. \
+}
