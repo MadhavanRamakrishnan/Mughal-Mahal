@@ -221,3 +221,12 @@
 	$lang['sure_delete_dish']           ="هل أنت متأكد من حذف هذا الطبق؟";
 	$lang['add_item_choice']            ="إضافة خيارات البند";
 	$lang['dish_instruction']           ="اكتب تعليقك";
+
+	// address feilds
+	$lang['street_req']                 ="أدخل الشارع";
+	$lang['other_address_req'] 			="يجب ألا تكون علامة العنوان فارغة"; 
+	$lang['building_req']               ="أدخل المبنى";
+	$lang['appartment_req']             ="أدخل رقم الشقة";
+	$lang['block_req']                  ="أدخل كتلة";
+	$lang['avenue_req']                 ="أدخل الطريق";
+	$lang['floor_req']                  ="أدخل الكلمة";

@@ -23,7 +23,7 @@ a.topOrderButton.cboxElement {
         </li>
 
         <li><span>Min Order </span>
-          <div>5KD</div>
+          <div><?= $locality[0]->min_order_amount?> KD</div>
         </li>
 
 

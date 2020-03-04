@@ -12,7 +12,7 @@ class Customer_model extends CI_Model
 	 * @author Vaibhav Mehta
 	 * Created date: 23/11/2017 5:50 PM
 	*/
-	function getAllCustomers($resId,$rid,$limit=null,$offset=null,$search=null)
+	function getAllCustomers($resId,$rid,$limit=null,$offset=null,$value="",$search=null)
 	{
 		if($limit)
 		{
@@ -27,6 +27,10 @@ class Customer_model extends CI_Model
 		{
 			$this->db->where("ord.restaurant_id",$resId);
 		}
+		if($value)
+		{
+			$this->db->where("(users.first_name like '%$value%' OR users.last_name like '%$value%' OR concat(users.first_name,' ',users.last_name) like '%$value%' OR users.email like '%$value%' OR users.contact_no like '%$value%')");
+		}
 		$this->db->select("ord.order_id,users.user_id,COUNT(ord.order_id) as totalOrders,SUM(ord.total_price) as totalAmount,users.first_name,users.last_name,users.email,users.contact_no,users.profile_photo,users.dob");
 		$this->db->from("tbl_users as users");
 		$this->db->join("tbl_orders as ord","ord.user_id=users.user_id","left");
@@ -36,7 +40,7 @@ class Customer_model extends CI_Model
 		// $this->db->order_by("users.first_name","ASC");
 
 		$query=$this->db->get();
-		/*echo $this->db->last_query(); exit;*/
+		// echo $this->db->last_query(); exit;
 		return $query->result();
 	}
 
@@ -45,13 +49,20 @@ class Customer_model extends CI_Model
 	 * @author Vaibhav Mehta
 	 * Created date: 23/11/2017 04:50 PM
 	 */
-	function getAllCustomersCount($resId)
+	function getAllCustomersCount($resId,$value="")
 	{
 
 		$customerRole = $this->config->item("customer_role");
 		if($resId)
 		{
-			$this->db->where("ord.restaurant_id",$resId);
+			//$this->db->where("ord.restaurant_id",$resId); //Old code : Rajesh
+			$this->db->where("users.fk_restaurant_id",$resId);
+		}
+		if($value)
+		{
+			$this->db->where("users.first_name like '%$value%'");
+			$this->db->or_where("users.email like '%$value%'");
+			$this->db->or_where("users.contact_no like '%$value%'");
 		}
 		$this->db->select("COUNT(*) as customer_count");
 		// $this->db->select("ord.*,users.user_id,COUNT(ord.order_id) as totalOrders,SUM(ord.total_price) as totalAmount,users.first_name,users.last_name,users.email,users.contact_no,users.profile_photo,users.dob");
@@ -242,7 +253,7 @@ class Customer_model extends CI_Model
 	 * Created date: 27/02/2018 12:30 PM
 	 */
 	function orderDetails($userId,$rid=null){
-		$this->db->select("tbl_order_details.*,tbl_orders.total_price,tbl_orders.delivery_charges,tbl_orders.total_price,ods.product_en_name as dish_name");
+		$this->db->select("tbl_order_details.*,tbl_orders.total_price,tbl_orders.delivery_charges,tbl_orders.total_price,ods.product_en_name as dish_name,tbl_orders.sequence_no");
 		$this->db->join('tbl_orders ','tbl_orders.order_id = tbl_order_details.order_id ','left');
 		$this->db->join('tbl_dishes as ods','ods.product_id=tbl_order_details.product_id','left');
 		$this->db->order_by('tbl_orders.order_id','ASC');

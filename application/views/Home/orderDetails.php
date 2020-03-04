@@ -1,3 +1,6 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+ 
 <!-- <link rel="stylesheet" type="text/css" href="<?= base_url();?>assets/css/bootstrap/bootstrap.min.css"> -->
 <div class="banner bannerInner section" style="background-image: url(../../assets/images/front-end/orderBanner.jpg); ">
 	<div class="bannerBack">
@@ -14,7 +17,8 @@
 				<div class="container">
 
 					<div class="row wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.3s" style="visibility: visible; animation-duration: 2s; animation-name: fadeInUp;">
-						<p class="orderNum"><?php echo $this->lang->line('message_Order')."#".$orderDetails['order_id']; ?></p>
+						<!-- <p class="orderNum"><?php echo $this->lang->line('message_Order')."#".$orderDetails['order_id']; ?></p> -->
+						<p class="orderNum"><?php echo $this->lang->line('message_Order')."#".$orderDetails['sequence_no']; ?></p>						
 						<p class="del_time">
 							<?php if($orderDetails['order_status']>=7)
 							{
@@ -34,6 +38,13 @@
 								?>
 								<span><?php echo $this->lang->line('message_EstDeliveryTime'); ?></span>
 							<?php }?>
+							<?php
+								if($orderDetails['order_status'] == 1){
+							?>
+									<p class='del_time cancelOrder_tag'><a style="color: red; font-size: 15px; cursor: pointer;" data-toggle="modal" data-target="#reasonModal">Cancel Order</a></p>
+							<?php
+								}
+							?>
 						</p>
 					</div>
 
@@ -74,7 +85,20 @@
 		        				<ul>
 		        					<li><i class="fa fa-user" aria-hidden="true"></i> &nbsp <?php echo $orderDetails['address']['cust_name']; ?></li>
 		        					<li><i class="fa fa-phone" aria-hidden="true"></i> &nbsp (+965) <?php echo $orderDetails['address']['cust_contact_no']; ?></li>
-		        					<li><i class="fa fa-home" aria-hidden="true"> </i>  &nbsp <?php echo $orderDetails['address']['cust_address']; ?></li>
+		        					<li><i class="fa fa-home" aria-hidden="true"> </i>  &nbsp 
+		        						<font size="3" color="#00AE4A">
+		        							<?= ($orderDetails['address']['address_type'] == 1 ? "Home" : ($orderDetails['address']['address_type'] == 2 ? "Office" : ucfirst($orderDetails['address']['other_address']))) ?>
+		        						</font>
+		        						<font size="1">
+			        					   <?= ($orderDetails['address']['appartment_no'] !="")?$orderDetails['address']['appartment_no'].",&nbsp":""; ?>
+	                                        <?= ($orderDetails['address']['floor']!="")?"Floor -".$orderDetails['address']['floor'].",&nbsp":"";  ?>
+	                                        <?= ($orderDetails['address']['block']!="")?"Block -".$orderDetails['address']['block'].",&nbsp":""; ?>
+	                                        <?= ($orderDetails['address']['building']!="")?"Building -".$orderDetails['address']['building'].",&nbsp":"" ?>
+	                                        <?= ($orderDetails['address']['street'] !="")?$orderDetails['address']['street'].',&nbsp':''; ?>
+	                                        <?= ($orderDetails['address']['avenue']!="")?$orderDetails['address']['avenue'].',&nbsp':''; ?>
+	                                        <?= ($orderDetails['address']['cust_address']!="")?$orderDetails['address']['cust_address']:""; ?>
+                                    	</font>
+		        					</li>
 		        				</ul>
 		        			</div>            
 		        		</div>
@@ -109,6 +133,7 @@
 		        											<tr>
 		        												<td>
 		        													<?php echo $dishvalue['product_en_name'] ?><span><?php echo trim($dishvalue['choices'],','); ?></span>
+		        													<span><?php echo 'Instruction:- '.$dishvalue['description']; ?></span>
 		        												</td>
 		        												<td>
 		        													KD <?php echo number_format($dishvalue['price']/$dishvalue['quantity'],3) ?>
@@ -209,16 +234,16 @@
 		        							<p><?php echo $this->lang->line('message_WentPerfect'); ?></p>
 		        							<ul>
 		        								<li>
-		        									<input  type="radio" name="res_pot" value="<?php echo $this->lang->line('message_WellDriver'); ?>" checked><?php echo $this->lang->line('message_WellDriver'); ?>
+		        									<input  type="checkbox" name="res_pot[]" value="<?php echo $this->lang->line('message_WellDriver'); ?>" ><?php echo $this->lang->line('message_WellDriver'); ?>
 		        								</li>
 		        								<li>
-		        									<input  type="radio" name="res_pot" value="<?php echo $this->lang->line('message_OnTimeDelivery'); ?> " >  <?php echo $this->lang->line('message_OnTimeDelivery'); ?>
+		        									<input  type="checkbox" name="res_pot[]" value="<?php echo $this->lang->line('message_OnTimeDelivery'); ?> " >  <?php echo $this->lang->line('message_OnTimeDelivery'); ?>
 		        								</li>
 		        								<li>
-		        									<input  type="radio" name="res_pot" value="<?php echo $this->lang->line('message_ValueForMoney'); ?>"><?php echo $this->lang->line('message_ValueForMoney'); ?>
+		        									<input  type="checkbox" name="res_pot[]" value="<?php echo $this->lang->line('message_ValueForMoney'); ?>"><?php echo $this->lang->line('message_ValueForMoney'); ?>
 		        								</li>
 		        								<li>
-		        									<input  type="radio" name="res_pot" value="<?php echo $this->lang->line('message_Other'); ?>"><?php echo $this->lang->line('message_Other'); ?>
+		        									<input  type="checkbox" name="res_pot[]" value="<?php echo $this->lang->line('message_Other'); ?>"><?php echo $this->lang->line('message_Other'); ?>
 		        								</li>
 		        								<li>
 		        									<textarea style="display:none" class="other_reason" placeholder="<?php echo $this->lang->line('message_EnterOtherReason'); ?>"></textarea>
@@ -235,16 +260,16 @@
 		        							<p><?php echo $this->lang->line('message_WentWrong'); ?></p>
 		        							<ul>
 		        								<li>
-		        									<input name="res_pot" type="radio" value="<?php echo $this->lang->line('message_FoodNotWell'); ?>" checked><?php echo $this->lang->line('message_FoodNotWell'); ?>
+		        									<input name="res_pot[]" type="checkbox" value="<?php echo $this->lang->line('message_FoodNotWell'); ?>" ><?php echo $this->lang->line('message_FoodNotWell'); ?>
 		        								</li>
 		        								<li>
-		        									<input name="res_pot" type="radio" value="<?php echo $this->lang->line('message_DeliveredLate'); ?>"><?php echo $this->lang->line('message_DeliveredLate'); ?>
+		        									<input name="res_pot[]" type="checkbox" value="<?php echo $this->lang->line('message_DeliveredLate'); ?>"><?php echo $this->lang->line('message_DeliveredLate'); ?>
 		        								</li>
 		        								<li>
-		        									<input name="res_pot" type="radio" value="<?php echo $this->lang->line('message_FoodWasRaw'); ?>"><?php echo $this->lang->line('message_FoodWasRaw'); ?>
+		        									<input name="res_pot[]" type="checkbox" value="<?php echo $this->lang->line('message_FoodWasRaw'); ?>"><?php echo $this->lang->line('message_FoodWasRaw'); ?>
 		        								</li>
 		        								<li>
-		        									<input name="res_pot" type="radio" value="Other"><?php echo $this->lang->line('message_Other'); ?>
+		        									<input name="res_pot[]" type="checkbox" value="Other"><?php echo $this->lang->line('message_Other'); ?>
 		        								</li>
 		        								<li>
 		        									<textarea style="display:none" class="other_reason" placeholder="<?php echo $this->lang->line('message_EnterOtherReason'); ?>"></textarea>
@@ -288,16 +313,16 @@
 		        							<p><?php echo $this->lang->line('message_WentPerfect'); ?></p>
 		        							<ul>
 		        								<li>
-		        									<input  type="radio" name="res_pot" value="<?php echo $this->lang->line('message_WellDriver'); ?>" checked><?php echo $this->lang->line('message_WellDriver'); ?>
+		        									<input  type="checkbox" name="res_pot[]" value="<?php echo $this->lang->line('message_WellDriver'); ?>" ><?php echo $this->lang->line('message_WellDriver'); ?>
 		        								</li>
 		        								<li>
-		        									<input  type="radio" name="res_pot" value="<?php echo $this->lang->line('message_OnTimeDelivery'); ?> " >  <?php echo $this->lang->line('message_OnTimeDelivery'); ?>
+		        									<input  type="checkbox" name="res_pot[]" value="<?php echo $this->lang->line('message_OnTimeDelivery'); ?> " >  <?php echo $this->lang->line('message_OnTimeDelivery'); ?>
 		        								</li>
 		        								<li>
-		        									<input  type="radio" name="res_pot" value="<?php echo $this->lang->line('message_ValueForMoney'); ?>"><?php echo $this->lang->line('message_ValueForMoney'); ?>
+		        									<input  type="checkbox" name="res_pot[]" value="<?php echo $this->lang->line('message_ValueForMoney'); ?>"><?php echo $this->lang->line('message_ValueForMoney'); ?>
 		        								</li>
 		        								<li>
-		        									<input  type="radio" name="res_pot" value="<?php echo $this->lang->line('message_Other'); ?>"><?php echo $this->lang->line('message_Other'); ?>
+		        									<input  type="checkbox" name="res_pot[]" value="<?php echo $this->lang->line('message_Other'); ?>"><?php echo $this->lang->line('message_Other'); ?>
 		        								</li>
 		        								<li>
 		        									<textarea style="display:none" class="other_reason" placeholder="<?php echo $this->lang->line('message_EnterOtherReason'); ?>"></textarea>
@@ -314,16 +339,16 @@
 		        							<p><?php echo $this->lang->line('message_WentWrong'); ?></p>
 		        							<ul>
 		        								<li>
-		        									<input name="res_pot" type="radio" value="<?php echo $this->lang->line('message_FoodNotWell'); ?>" checked><?php echo $this->lang->line('message_FoodNotWell'); ?>
+		        									<input name="res_pot[]" type="checkbox" value="<?php echo $this->lang->line('message_FoodNotWell'); ?>" ><?php echo $this->lang->line('message_FoodNotWell'); ?>
 		        								</li>
 		        								<li>
-		        									<input name="res_pot" type="radio" value="<?php echo $this->lang->line('message_DeliveredLate'); ?>"><?php echo $this->lang->line('message_DeliveredLate'); ?>
+		        									<input name="res_pot[]" type="checkbox" value="<?php echo $this->lang->line('message_DeliveredLate'); ?>"><?php echo $this->lang->line('message_DeliveredLate'); ?>
 		        								</li>
 		        								<li>
-		        									<input name="res_pot" type="radio" value="<?php echo $this->lang->line('message_FoodWasRaw'); ?>"><?php echo $this->lang->line('message_FoodWasRaw'); ?>
+		        									<input name="res_pot[]" type="checkbox" value="<?php echo $this->lang->line('message_FoodWasRaw'); ?>"><?php echo $this->lang->line('message_FoodWasRaw'); ?>
 		        								</li>
 		        								<li>
-		        									<input name="res_pot" type="radio" value="Other"><?php echo $this->lang->line('message_Other'); ?>
+		        									<input name="res_pot[]" type="checkbox" value="Other"><?php echo $this->lang->line('message_Other'); ?>
 		        								</li>
 		        								<li>
 		        									<textarea style="display:none" class="other_reason" placeholder="<?php echo $this->lang->line('message_EnterOtherReason'); ?>"></textarea>
@@ -349,9 +374,66 @@
 
 </div>
 </div>
+
+<div class="modal fade" id="reasonModal" role="dialog">
+	<div class="modal-dialog">
+
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Cancel Order</h4>
+			</div>
+			<div class="modal-body">
+				<div class="cancelOrder_resion">
+				<label style="padding-bottom: 15px; margin-bottom: 0;">Enter Reason</label>
+				<textarea name="reason" id="reasonText" style="width: 100%;padding: 5px 10px; height: 80px;"></textarea>
+				<span class="reasonTextError" style="color: red;display: none;">Please add reason for cancel.</span>
+			</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" onclick="cancelUserOrder('<?= $orderDetails['order_id'] ?>')">Submit</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+
+	</div>
+</div>
+
 <input type="hidden" id="deliveryTime" value="<?php echo date('Y-m-d H:i:s'); ?>">
 <script src="<?= base_url('assets/front-end/js/myOrder.js'); ?>"></script> 
 <script type="text/javascript">
 	var oID ="<?php echo $orderDetails['order_id'] ?>";
-	
+	var cancelOrderAPI     = "<?= base_url('Home/cancelOrder')?>";
+
+	function cancelUserOrder(orderId){
+
+		if($('#reasonText').val() == ''){
+			$('.reasonTextError').show();
+			return false;
+		}else{
+			$('.reasonTextError').hide();
+		}
+
+		$.ajax({
+			url : cancelOrderAPI,
+			type: 'POST',
+			data: {
+				order_id : orderId,
+				reason : $('#reasonText').val()
+			},
+			success: function(response){
+
+				var obj = JSON.parse(response);
+
+				if(obj.success == 1){
+
+					window.location.reload();
+				}else{
+					alert("Can not cancel order!");
+					$('#reasonText').val('');
+				}
+			}
+		});
+	}
 </script>

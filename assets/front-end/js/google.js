@@ -2,7 +2,8 @@
 function onLoadGoogleCallback() {
 	gapi.load('auth2', function() {
 		auth2 = gapi.auth2.init({
-			'client_id': '823542492889-n17k4kteoi45l7q9kv2fltigsjopa8ob.apps.googleusercontent.com',
+			//'client_id': '823542492889-n17k4kteoi45l7q9kv2fltigsjopa8ob.apps.googleusercontent.com',
+			'client_id': '211802950628-t19693t361crs1ncel5klaf9uh3phni7.apps.googleusercontent.com',
 			'cookiepolicy': 'single_host_origin',
 			'scope': 'profile email',
 			'onsuccess': onSuccess,

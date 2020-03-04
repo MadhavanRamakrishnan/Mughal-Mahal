@@ -19,7 +19,7 @@ class Webservice_Drivers extends MY_Controller{
 	*/ 
 	function __construct(){
 		parent::__construct();
-		$this->load->model('Webservice_driver_model');
+		$this->load->model(array('Webservice_driver_model', 'Home_model'));
 		$this->default_language = $this->config->item('default_language');
 		$this->supported_language = $this->config->item('supported_languages');
 		$this->OrderStatus    = $this->config->item('OrderStatus');
@@ -50,27 +50,19 @@ class Webservice_Drivers extends MY_Controller{
 		}
 
 		$this->lang->load($langFile,$lang);
-		$message_normalUserLogin 	= $this->lang->line('message_normalUserLogin');
-		$invalid_login 			 	= $this->lang->line('invalid_login');		
-		$password_required 			= $this->lang->line('password_required');		
-		$email_required 		 	= $this->lang->line('email_required');	
-		$default_language_required 	= $this->lang->line('default_language_required');
 
 		if(trim($this->input->post('email'))=="")
 		{
-			$response=array("response"=>"false","message"=>$email_required);
+			$response=array("response"=>"false","message"=>$this->lang->line('email_required'));
 		}
 		else if(trim($this->input->post('password'))=="")
 		{
-			$response=array("response"=>"false","message"=>$password_required);	
-		}
-		else if(trim($this->input->post('default_language'))==""){
-			$response = array("response"=>"false","message"=>$default_language_required);
+			$response=array("response"=>"false","message"=>$this->lang->line('password_required'));	
 		}
 		else
 		{
 			$email 		= $this->input->post('email');
-			$password 	= $this->input->post('password');
+			$password 	= trim($this->input->post('password'));
 
 			if(is_numeric($email))
 			{
@@ -84,7 +76,7 @@ class Webservice_Drivers extends MY_Controller{
 			}
 			else
 			{
-				$error 	= $invalid_login;
+				$error 	= $this->lang->line('invalid_login');
 			}
 
 			if($error)
@@ -124,11 +116,11 @@ class Webservice_Drivers extends MY_Controller{
 						$userDetails[0]->profile_photo = base_url().'assets/uploads/users/drivers/'.$userDetails[0]->profile_photo;
 					}
 					
-					$response = array("response"=>"true","data"=>$userDetails,"message"=>$message_normalUserLogin,"webservice_name"=>"normalUserLogin");
+					$response = array("response"=>"true","data"=>$userDetails,"message"=>$this->lang->line('message_normalUserLogin'),"webservice_name"=>"normalUserLogin");
 				}
 				else
 				{
-					$response=array("response"=>"false","message"=>$invalid_login,"webservice_name"=>"normalUserLogin");
+					$response=array("response"=>"false","message"=>$this->lang->line('invalid_login'),"webservice_name"=>"normalUserLogin");
 				}
 			}			
 		}
@@ -334,10 +326,10 @@ class Webservice_Drivers extends MY_Controller{
 					$orderDetail = $this->Webservice_driver_model->getOrdersAllocatedtoDriver($userId);
 					
 					if(is_array($orderDetail) && count($orderDetail)>0){
-						
+						$k = 0;
 						foreach ($orderDetail as $key => $value) {
 							
-							$orderDetails[$value->order_id]['order_id'] 				= $value->order_id;
+							$orderDetails[$value->order_id]['order_id'] 				= $value->sequence_no;
 							$orderDetails[$value->order_id]['is_replaced'] 				= ($value->order_refer_by !=0)?"1":"0";
 							$orderDetails[$value->order_id]['replace_ord'] 				= $value->order_refer_by;
 							$orderDetails[$value->order_id]['order_status'] 			= $value->order_status;
@@ -356,16 +348,16 @@ class Webservice_Drivers extends MY_Controller{
 							$orderDetails[$value->order_id]['customer_latitude'] 		= $value->customer_latitude;
 							$orderDetails[$value->order_id]['customer_longitude'] 		= $value->customer_longitude;
 
-						    $orderDetails[$value->order_id]['dishes'][$value->product_id]['product_id']  = $value->product_id;
-						    $orderDetails[$value->order_id]['dishes'][$value->product_id]['quantity']  = $value->quantity;
-						    $orderDetails[$value->order_id]['dishes'][$value->product_id]['amount']  = $value->amount;
-						    $orderDetails[$value->order_id]['dishes'][$value->product_id]['discount_type']  = $value->discount_type;
-						    $orderDetails[$value->order_id]['dishes'][$value->product_id]['discount_amount']  = $value->discount_amount;
-						    $orderDetails[$value->order_id]['dishes'][$value->product_id]['name']  = $value->name;
-						    $orderDetails[$value->order_id]['dishes'][$value->product_id]['product_ar_name']  = $value->product_ar_name;
-						    $orderDetails[$value->order_id]['dishes'][$value->product_id]['description']  = $value->description;
-						    $orderDetails[$value->order_id]['dishes'][$value->product_id]['price']  = $value->price;
-						    $orderDetails[$value->order_id]['dishes'][$value->product_id]['dish_image']  = base_url().'assets/uploads/products/'.$value->dish_image;
+						    $orderDetails[$value->order_id]['dishes'][$value->product_id][$k]['product_id']  = $value->product_id;
+						    $orderDetails[$value->order_id]['dishes'][$value->product_id][$k]['quantity']  = $value->quantity;
+						    $orderDetails[$value->order_id]['dishes'][$value->product_id][$k]['amount']  = $value->amount;
+						    $orderDetails[$value->order_id]['dishes'][$value->product_id][$k]['discount_type']  = $value->discount_type;
+						    $orderDetails[$value->order_id]['dishes'][$value->product_id][$k]['discount_amount']  = $value->discount_amount;
+						    $orderDetails[$value->order_id]['dishes'][$value->product_id][$k]['name']  = $value->name;
+						    $orderDetails[$value->order_id]['dishes'][$value->product_id][$k]['product_ar_name']  = $value->product_ar_name;
+						    $orderDetails[$value->order_id]['dishes'][$value->product_id][$k]['description']  = $value->description;
+						    $orderDetails[$value->order_id]['dishes'][$value->product_id][$k]['price']  = $value->price;
+						    $orderDetails[$value->order_id]['dishes'][$value->product_id][$k]['dish_image']  = base_url().'assets/uploads/products/'.$value->dish_image;
 
 						    $orderDetails[$value->order_id]['user_details'][$value->user_id]['first_name']  = $value->customer_name;
 						    $orderDetails[$value->order_id]['user_details'][$value->user_id]['last_name']  ="";
@@ -376,15 +368,27 @@ class Webservice_Drivers extends MY_Controller{
 						    $orderDetails[$value->order_id]['restaurant']['address']= $value->address;
 						    $orderDetails[$value->order_id]['restaurant']['contact_no']  = $value->res_contact_no;
 						    $orderDetails[$value->order_id]['delivery_address'][$value->address_id]['address_id']  		= $value->address_id;
-						    $orderDetails[$value->order_id]['delivery_address'][$value->address_id]['address1'] 		= $value->address1;
 						    $orderDetails[$value->order_id]['delivery_address'][$value->address_id]['address2']  		= $value->address2;
 						    $orderDetails[$value->order_id]['delivery_address'][$value->address_id]['customer_name'] 	= $value->customer_name;
 						    $orderDetails[$value->order_id]['delivery_address'][$value->address_id]['email']  			= $value->del_email;
 						    $orderDetails[$value->order_id]['delivery_address'][$value->address_id]['delivery_contact'] = $value->delivery_contact;
 						    $orderDetails[$value->order_id]['delivery_address'][$value->address_id]['zipcode']  		= $value->zipcode;
+
+						   $fullAddress =($value->appartment_no !="" || $value->appartment_no !=null)?$value->appartment_no.",":"";
+							$fullAddress .=($value->floor!="" || $value->floor!=null)?"Floor -".$value->floor.",":"";
+							$fullAddress .=($value->block!="" || $value->block!=null)?"Block -".$value->block.",":"";
+							$fullAddress .=($value->building !="" ||$value->building !=null)?"Building -".$value->building.",":"";
+							$fullAddress .=($value->street !="" ||$value->street !=null )?$value->street.',':'';
+							$fullAddress .=($value->avenue !="" || $value->avenue !=null)?$value->avenue.',':'';
+							$fullAddress .=($value->address1!="")?$value->address1:""; 
+
+						    $orderDetails[$value->order_id]['delivery_address'][$value->address_id]['address1'] 		= $fullAddress;
+
+						    $k++;
 						}
 						
 						$i = 0;
+						$k = 0;
 
 						foreach ($orderDetails as $key => $value) {
 							
@@ -410,17 +414,20 @@ class Webservice_Drivers extends MY_Controller{
 							$j =0;
 							foreach ($value['dishes'] as $key => $val) {
 
-								$orderData[$i]['dishes'][$j]['product_id'] 		= $val['product_id'];
-								$orderData[$i]['dishes'][$j]['quantity'] 			= $val['quantity'];
-								$orderData[$i]['dishes'][$j]['amount'] 			= $val['amount'];
-								$orderData[$i]['dishes'][$j]['discount_type'] 	= $val['discount_type'];
-								$orderData[$i]['dishes'][$j]['discount_amount'] 	= $val['discount_amount'];
-								$orderData[$i]['dishes'][$j]['name'] 				= $val['name'];
-								$orderData[$i]['dishes'][$j]['product_ar_name'] 				= $val['product_ar_name'];
-								$orderData[$i]['dishes'][$j]['description'] 		= $val['description'];
-								$orderData[$i]['dishes'][$j]['price'] 			= $val['price'];
-								$orderData[$i]['dishes'][$j]['dish_image'] 		= base_url().'assets/uploads/products/'.$val['name'];
-								$j++;
+								for($kkey = 0; $kkey < sizeof($val); $kkey++){
+									$orderData[$i]['dishes'][$j]['product_id'] 		= $val[$k]['product_id'];
+									$orderData[$i]['dishes'][$j]['quantity'] 			= $val[$k]['quantity'];
+									$orderData[$i]['dishes'][$j]['amount'] 			= $val[$k]['amount'];
+									$orderData[$i]['dishes'][$j]['discount_type'] 	= $val[$k]['discount_type'];
+									$orderData[$i]['dishes'][$j]['discount_amount'] 	= $val[$k]['discount_amount'];
+									$orderData[$i]['dishes'][$j]['name'] 				= $val[$k]['name'];
+									$orderData[$i]['dishes'][$j]['product_ar_name'] 				= $val[$k]['product_ar_name'];
+									$orderData[$i]['dishes'][$j]['description'] 		= $val[$k]['description'];
+									$orderData[$i]['dishes'][$j]['price'] 			= $val[$k]['price'];
+									$orderData[$i]['dishes'][$j]['dish_image'] 		= base_url().'assets/uploads/products/'.$val[$k]['name'];
+									$k++;
+									$j++;
+								}
 							}
 
 							foreach ($value['user_details'] as $key => $val) {
@@ -772,6 +779,9 @@ class Webservice_Drivers extends MY_Controller{
 			$orderId 		= trim($this->input->post("order_id"));
 			$orderStatus 	= trim($this->input->post("order_status"));
 			
+			$order_id 		= $this->Home_model->getOrderIdFromSequenceNo($orderId);
+			$orderId 		= $order_id->orderId;
+
 			$token 			= $this->checkAccessToken($userId,$accessToken);
 	
 			if($accessToken===$token){
@@ -839,7 +849,7 @@ class Webservice_Drivers extends MY_Controller{
 									if(is_array($orderDetail) && count($orderDetail)>0){
 
 										foreach ($orderDetail as $key => $value) {
-											
+											$orderDetails[$value->order_id]['sequence_no'] 				= $value->sequence_no;
 											$orderDetails[$value->order_id]['order_id'] 				= $value->order_id;
 											$orderDetails[$value->order_id]['order_status'] 			= $value->order_status;
 											$orderDetails[$value->order_id]['order_placed_time'] 		= $value->order_placed_time;
@@ -850,6 +860,12 @@ class Webservice_Drivers extends MY_Controller{
 											$orderDetails[$value->order_id]['restaurant_address'] 		= $value->res_address;
 											$orderDetails[$value->order_id]['restaurant_email'] 		= $value->res_email;
 											$orderDetails[$value->order_id]['restaurant_contact_no'] 	= $value->res_contact_no;
+											$orderDetails[$value->order_id]['block'] 					= $value->block;
+											$orderDetails[$value->order_id]['street'] 					= $value->street;
+											$orderDetails[$value->order_id]['avenue'] 					= $value->avenue;
+											$orderDetails[$value->order_id]['building'] 				= $value->building;
+											$orderDetails[$value->order_id]['floor'] 					= $value->floor;
+											$orderDetails[$value->order_id]['appartment_no'] 			= $value->appartment_no;
 											$orderDetails[$value->order_id]['delivery_address'] 		= $value->usr_address;
 											$orderDetails[$value->order_id]['customer_name'] 			= $value->customer_name;
 											$orderDetails[$value->order_id]['customer_contact_no'] 		= $value->usr_contact_no;
@@ -890,15 +906,23 @@ class Webservice_Drivers extends MY_Controller{
 										$dishArray1[0]['email_template'] = 'delivery_email';
 										$dishArray1[0]['subject'] = 'Your order from '.$dishArray[0]['restaurant_name'];
 
+										$address = $dishArray[0]['block']?', block-'.$dishArray[0]['block']:'';
+										$address .= $dishArray[0]['street']?', '.$dishArray[0]['street'].', ':'';
+										$address .= $dishArray[0]['avenue']?', '.$dishArray[0]['avenue'].', ':'';
+										$address .= $dishArray[0]['building']?', building- '.$dishArray[0]['building']:'';
+										$address .= $dishArray[0]['floor']?', floor- '.$dishArray[0]['floor']:'';
+										$address .= $dishArray[0]['appartment_no']?$dishArray[0]['appartment_no']:'';
+
 										if(strcmp($dishArray[0]['customer_email'],$dishArray[0]['user_email'])==0)
 										{
 											if($dishArray[0]['customer_email'] || $dishArray[0]['user_email'])
 											{
+												$dishArray[0]['sequence_no'] = $dishArray[0]['sequence_no'];
 												$dishArray[0]['order_id'] = $orderId;
 												$dishArray[0]['order_placed_time'] = $dishArray[0]['order_placed_time'];
 												$dishArray[0]['total_price'] = $dishArray[0]['total_price'];
 												$dishArray[0]['delivery_charges'] = $dishArray[0]['delivery_charges'];
-												$dishArray[0]['delivery_address'] = $dishArray[0]['delivery_address'];
+												$dishArray[0]['delivery_address'] = $address.$dishArray[0]['delivery_address'];
 
 												$dishArray[0]['username'] = $dishArray[0]['customer_name'];
 												$dishArray[0]['to_email'] = $dishArray[0]['customer_email'];
@@ -910,11 +934,12 @@ class Webservice_Drivers extends MY_Controller{
 										{
 											if($dishArray[0]['customer_email'])
 											{
+												$dishArray[0]['sequence_no'] = $dishArray[0]['sequence_no'];
 												$dishArray[0]['order_id'] = $orderId;
 												$dishArray[0]['order_placed_time'] = $dishArray[0]['order_placed_time'];
 												$dishArray[0]['total_price'] = $dishArray[0]['total_price'];
 												$dishArray[0]['delivery_charges'] = $dishArray[0]['delivery_charges'];
-												$dishArray[0]['delivery_address'] = $dishArray[0]['delivery_address'];
+												$dishArray[0]['delivery_address'] = $address.$dishArray[0]['delivery_address'];
 
 												$dishArray[0]['username'] = $dishArray[0]['user_first_name'].' '.$dishArray[0]['user_last_name'];
 												$dishArray[0]['to_email'] = $dishArray[0]['customer_email'];
@@ -924,11 +949,12 @@ class Webservice_Drivers extends MY_Controller{
 											
 											if($dishArray[0]['user_email'])
 											{
+												$dishArray1[0]['sequence_no'] = $dishArray[0]['sequence_no'];
 												$dishArray1[0]['order_id'] = $orderId;
 												$dishArray1[0]['order_placed_time'] = $dishArray[0]['order_placed_time'];
 												$dishArray[0]['total_price'] = $dishArray[0]['total_price'];
 												$dishArray11[0]['delivery_charges'] = $dishArray[0]['delivery_charges'];
-												$dishArray1[0]['delivery_address'] = $dishArray[0]['delivery_address'];
+												$dishArray1[0]['delivery_address'] = $address.$dishArray[0]['delivery_address'];
 												
 												$dishArray1[0]['username'] = $dishArray[0]['customer_name'];
 												$dishArray1[0]['to_email'] = $dishArray[0]['user_email'];
@@ -943,7 +969,7 @@ class Webservice_Drivers extends MY_Controller{
 								$response=array("response"=>"false","message"=>$fail_to_change_order_status,"webservice_name"=>"changeOrderStatus");
 							}
 						}
-						// $this->sendPushNotificationUsingFirebase($orderStatus, $orderId);
+						$this->sendPushNotificationUsingFirebaseToDriver($orderStatus, $orderId);
 					}
 					else{
 
@@ -1007,6 +1033,8 @@ class Webservice_Drivers extends MY_Controller{
 			$accessToken 		= trim($this->input->post("access_token"));
 			$orderId 			= trim($this->input->post("order_id"));
 			
+			$orderData 			= $this->Home_model->getOrderIdFromSequenceNo($orderId);
+			$orderId 			= $orderData->order_id;
 			$token = $this->checkAccessToken($userId,$accessToken);
 		
 			if($accessToken===$token)

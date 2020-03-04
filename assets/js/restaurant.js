@@ -16,6 +16,8 @@ function deleteRestaurantDetail(id){
 
       if(obj.success==1)  {
         $('#confirmationModal').modal('hide');
+        var table = $('#basic-datatable123').DataTable();
+        table.row( $('#res_details_'+id).closest('tr') ).remove().draw();
         $("#res_details_"+id).remove();
 
         $("#success_message").text(obj.message);
@@ -47,6 +49,8 @@ function deleteOwnerDetail(id){
 
       if(obj.success==1)  {
         $('#confirmationModal').modal('hide');
+        var table = $('#basic-datatable').DataTable();
+        table.row( $('#owner_details_'+id).closest('tr') ).remove().draw();
         $("#owner_details_"+id).remove();
         $("#success_message").text(obj.message);
         $("#success_notification").show();
@@ -186,3 +190,28 @@ function IsRamadhanMonth(res_id){
       }
   })
 }
+
+
+function setAdditionalDeliveryTime(rId)
+{
+  var time =$("#additionalDeliveryTime").val();
+  $.ajax({
+    type:'POST',
+    url:setAdditionalDeliveryTimeUrl,
+    data:{res_id:rId,time:time},
+    success:function(data){
+        var obj =$.parseJSON(data);
+        if(obj.success==1)  {
+          $(".additionalDeliveryTime").show();
+          $(".additionalDeliveryTime").text(obj.message);
+        }
+        else{
+          $(".additionalDeliveryTimeerror").show();
+          $(".additionalDeliveryTimerror").text(obj.message);
+        }
+        
+    }
+  })
+}
+
+setTimeout(function(){ $(".additionalDeliveryTime").hide(); },3000);

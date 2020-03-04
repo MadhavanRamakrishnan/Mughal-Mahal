@@ -619,23 +619,6 @@ var delete_cookie = function(name) {
     document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/';
 };
 
-function deleteAddressData(addId) {
-    $("#remove_address").unbind().click(function() {
-        $.ajax({
-            url: deleteCustomerAddress + "/" + addId,
-            type: "POST",
-            success: function(data) {
-                var obj = $.parseJSON(data);
-                if (obj.success == 1) {
-                    $("#removeaddress").modal('hide');
-                    $(".custDilAddress" + addId).remove();
-                } else {
-                    $(this).parent().append("<span state='color:red;'>" + obj.message + "</span>");
-                }
-            }
-        })
-    });
-}
 
 function editAddressData(address_id, oSummary = "") {
     getlocality();

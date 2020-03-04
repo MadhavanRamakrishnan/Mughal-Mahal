@@ -176,7 +176,8 @@
                         </li>
                         <li>
                           <input type="radio" id="kent_payment_gateway" name="payment-radio" value="1">
-                          <label for="kent_payment_gateway">Pay via Credit Card/Debit Card</label>
+                          <!-- <label for="kent_payment_gateway">Pay via KNET Credit Card/Debit Card</label> -->
+                          <label for="kent_payment_gateway">Pay via KNET</label>
                         </li>
                       </ul>
                     </div>

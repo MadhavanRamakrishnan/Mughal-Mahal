@@ -30,6 +30,7 @@ $(document).on('click','.addButtons',function(){
 		}
 		
 	}else{
+
 		if(rep_type == 1 || rep_type == 2 || rep_type == 3 || rep_type == 7 || rep_type == 9) {
 			$(".paging_simple_numbers").show();
 			$("#datatable").hide();
@@ -37,9 +38,11 @@ $(document).on('click','.addButtons',function(){
 			getReportData(getReportdata);
 
 		}else{
+			
 			$("#datatable").show();
 			$("#report_table").hide();
 			$(".paging_simple_numbers").hide();
+
 			var data ={oprion:opt,type:rep_type,startDate:startDate,endDate:endDate,restaurant:restaurant,payment_type:paymt_type};
 			$.post(getReport+"/"+opt,data,function(response){
 			
@@ -174,6 +177,7 @@ function getReportData(aLink){
 	var endDate    =$("#endDate").val();
 	var restaurant =$("#restaurant").val();
 	var lastday    = new Date(curr.getFullYear(), curr.getMonth() + 6, 0);
+
     var data ={oprion:opt,type:rep_type,startDate:startDate,endDate:endDate,restaurant:restaurant,payment_type:paymt_type};
     $.ajax({
         type:"GET",

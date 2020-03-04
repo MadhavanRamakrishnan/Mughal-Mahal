@@ -57,8 +57,17 @@
                         </div> -->
                   </div>
                 </div>
-                <div class="panel-body">
-                    <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+
+                <div class="row">
+                    <div class="col-lg-8" style="margin: 20px 20px -55px 14px;">
+                        <input type="text" class="dataSearch" placeholder="Search..." value="<?= $text; ?>" style="width: 185px;height: 30px;">
+                        <button class="btn btn-success btn-sm" type="button" onclick="filterData()">Search</button>
+                    </div>
+                    
+
+                </div>
+                <div class="panel-body customersDiv">
+                    <table cellpadding="0" cellspacing="0" border="0" id="customerTable" class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>Sr #</th>
@@ -134,7 +143,7 @@
                                 <?php if($userdata[0]->role_id <3){ ?>
                                         <td class="center">
                                             <a href="#" title="Add Address" data-toggle="modal" data-target="#addDiliverAddress" data-backdrop="static" data-keyboard="false" onclick="setUserId(<?php echo $value->user_id; ?>)"><i class="fa fa-plus-circle"> </i></a> | 
-                                            <a title="Edit Customer" href="<?php echo site_url('Customers/editCustomers/'.$value->user_id); ?>"><i class="fa fa-edit"> </i></a> | 
+                                            <a title="Edit Customer" href="<?php echo site_url('Customers/updateCustomer/'.$value->user_id); ?>"><i class="fa fa-edit"> </i></a> | 
                                             <a title="Delete" data-toggle="modal" data-target="#confirmationModal" data-backdrop="static" data-keyboard="false" onclick="deleteCustomerDetail(<?php echo $value->user_id; ?>)" id="delete"><i class="fa fa-trash"> </i></a>         
                                         </td>
                                 <?php } ?>
@@ -290,20 +299,24 @@
     var deleteCustomerDetailUrl  = "<?php echo site_url('Customers/deleteCustomerDetails')?>";
     var getLatlongdata       = "<?php echo site_url('Restaurants/getLatlongdata')?>";
     var addDiliverAddress    = "<?php echo site_url('Customers/addDiliverAddress')?>";
+    var searchUrl            = "<?php echo site_url('Customers/filterDataGet')?>";
+    var getCutomerData       = "<?php echo site_url('Customers/getCustomerDetails/')?>";
+    var editCustomer         = "<?php echo site_url('Customers/editCustomers/')?>";
+    var returnUrl            = "<?php echo site_url('Customers/index/')?>";
     //var countryId                = '';
     //var stateId                  = '';
 </script>
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/customer.js"></script>
-<script async defer
+<!-- <script async defer
 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwLVfszKFujmgzHlkVLgUObIdmRgFXt2g&callback=initMap">
-</script>
+</script> -->
 <script>
   //var latlong_id = $('.LatiLngi').find(":selected").val();
-  $(document).ready(function(){
+ /* $(document).ready(function(){
         $("#address1").val(7);
         initMap(lat=29.36972,lon=47.97833);
 
-  });
+  });*/
 
   $("#address1").change(function() {
 

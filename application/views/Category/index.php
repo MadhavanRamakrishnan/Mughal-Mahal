@@ -56,7 +56,7 @@ table thead tr th, .center{
         } ?>
         
         <tr class="odd gradeX" id="category_details_<?php echo $value->category_id; ?>">
-          <td><?php echo ($value->category_name)?$value->category_name:'N/A'; ?></td>
+          <td><?php echo ($value->category_name)?stripslashes($value->category_name):'N/A'; ?></td>
           <td align="center"><div class="img-height"><img style="width:80px;" src="<?php echo base_url()."assets/uploads/category/".$categoryImage; ?>"></div></td>
           <td class="center"><a href="<?php echo site_url('Category/editCategory/'.$value->category_id); ?>"><i class="fa fa-edit"> </i></a> |<a title="Delete" data-toggle="modal" data-target="#confirmationModal" data-backdrop="static" data-keyboard="false" onclick="deleteCategory(<?php echo $value->category_id; ?>)"  id="delete"><i class="fa fa-trash"> </i></a></td>
         </tr>
@@ -84,6 +84,8 @@ table thead tr th, .center{
 
         if(obj.success==1)  {
           $('#confirmationModal').modal('hide');
+          var table = $('#basic-datatable').DataTable();
+          table.row( $('#category_details_'+id).closest('tr') ).remove().draw();
           $("#category_details_"+id).remove();
                             // var t =  $('#basic-datatable').dataTable();
                             // t.rows().invalidate().draw();

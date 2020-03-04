@@ -734,6 +734,11 @@ input[type=checkbox], input[type=radio] {
     box-sizing: border-box;
     padding: 0;
 }
+
+input[type=checkbox] {
+    -webkit-appearance: checkbox;
+}
+
 .order_address ul li [type="radio"]:checked + label, .order_address ul li [type="radio"]:not(:checked) + label {
     position: relative;
     padding-left: 35px;
@@ -1350,14 +1355,13 @@ input[type=radio], input[type=checkbox] {
     width: 100%;
     float: left;
     background: #F7F7F7;
-    padding: 0 30px;
+    padding:0 30px;
     line-height: 30px;
     font-size: 16px;
     color: #030303;
     margin-bottom: 15px;
 }
 .address_type .cus_radio {
-    padding: 0 30px;
     margin-top: 0;
 }
 .cus_radio {
@@ -1377,10 +1381,12 @@ input[type=radio], input[type=checkbox] {
     float: left;
 }
 .cus_radio > ul li {
+/*
     width: 100%;
     float: left;
+*/
     padding: 15px 30px 13px;
-    box-shadow: inset 0 -1px 0 0 #EFEFEF;
+/*    box-shadow: inset 0 -1px 0 0 #EFEFEF;*/
 }
 .cus_radio > ul li [type="radio"]:checked, .cus_radio > ul li [type="radio"]:not(:checked) {
     position: absolute;
@@ -1455,190 +1461,33 @@ input[type=radio], input[type=checkbox] {
     top: 30px;
     right: 30px;
 }
-.popup_close {
-    width: auto;
-    float: right;
-    position: absolute;
-    top: 15px;
-    right: 15px;
-}
-#cboxLoadedContent .checkout_popup h2 {
-    font-size: 30px;
-    color: #000;
-    padding: 0 30px 30px;
-    background: none;
-}
-
-.address_type ul li {
-    width: auto;
-    float: left;
-}
-.cus_radio > ul li {
-    width: 100%;
-    float: left;
-    padding: 15px 30px 13px;
-    box-shadow: inset 0 -1px 0 0 #EFEFEF;
-}
-
+.popup_close {width: auto;float: right;position: absolute;top: 15px;right: 15px;}
+#cboxLoadedContent .checkout_popup h2 {font-size: 30px;color: #000;padding: 0 30px 30px;background: none;}
+.address_type ul li {width: auto;float: left;}
+.cus_radio > ul li {/*width: 100%;float: left;*/padding: 15px 39px;border:1px solid #ccc; border-radius:5px; margin-right:44px;/* box-shadow: inset 0 -1px 0 0 #EFEFEF;*/}
+.check_out_lf .cus_radio > ul li {/*width: 100%;float: left;*/padding: 15px 17px;border:1px solid #ccc; border-radius:5px; margin-right:44px;/* box-shadow: inset 0 -1px 0 0 #EFEFEF;*/}
 /* ==========================================address popup style ends=================================*/
 /* ==========================================checkout popup style =================================*/
-.cartPopup {
-    display: none;
-    position: absolute;
-    background-color: #fff;
-    min-width: 360px;  
-    box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.2);
-    z-index: 1000;
-    right: 273px;
-    padding: 0;
-    top: 44px;
-}
-.rightTwopopup.rightTwopopup-cart {
-    padding:0;
-   
-}
-.numbers-row.numbers-row-cart .dec.button{   
-    background: none;
-    border: none;
-    font-size: 24px;
-    color: #000;
-    padding: 0 10px;
-    font-weight: bold;
-    outline: none;
-    line-height: 40px;
-        height: 40px;
-}
-.numbers-row.numbers-row-cart .inc.button{
-        width: 30px;
-    height: 40px;
-    text-align: center;
-    background: none;
-      background: none;
-    border: none;
-    font-size: 24px;
-    color: #000;
-    padding: 0 10px;
-    font-weight: bold;
-    outline: none;
-    line-height: 40px;
-}
-.numbers-row.numbers-row-cart {
-    border: 1px solid #ccc;  height: 40px;
-    width: auto;
-    display: block;
-    height: 45px;
-    border-radius: 20px;
-    line-height: 25px;
-    width: 98px;
-        float: left;
-}
-.numbers-row.numbers-row-cart input#numId {
-    margin: 0 10px;
-    height: 40px;
-    border: 0;
-    width: 20px;
-    text-align: center;
-    font-size: 18px;
-    color: #393939;
-    outline: none;
-    margin-top: 3px;
-}
-
-.numbers-row-inner.numbers-row-cart .inc.button{
-        width: 30px;
-    height: 40px;
-    text-align: center;
-    background: none;
-      background: none;
-    border: none;
-    font-size: 24px;
-    color: #000;
-    padding: 0 10px;
-    font-weight: bold;
-    outline: none;
-    line-height: 40px;
-}
-.numbers-row-inner.numbers-row-cart {
-    border: 1px solid #ccc;  height: 40px;
-    width: auto;
-    display: block;
-    height: 45px;
-    border-radius: 20px;
-    line-height: 25px;
-    width: 98px;
-        float: left;
-}
-.numbers-row-inner.numbers-row-cart input#numId {
-    margin: 0 10px;
-    height: 40px;
-    border: 0;
-    width: 20px;
-    text-align: center;
-    font-size: 18px;
-    color: #393939;
-    outline: none;
-    margin-top: 3px;
-}
-
-.left-cart-2{
-    text-align: left;
-}
-.left.left-cart-2 p {
-    text-align: left;
-}
-.row2 {
-    float: left;
-    width: 100%;
-    border-top: 1px solid #F1F1F1;
-    padding-top: 15px;
-    margin-top: 15px;
-}
-.row11{
-    width: 100%;
-    float: left;
-    padding-top: 10px;
-}
-.row2 *{
-    font-weight: 400 !important; 
-    
-}
-.checkoutbutton{
-    background: #009640;
-    color: #fff;
-    font-weight: 700;
-    border-bottom: 3px solid #009640;
-}
-.rightTwopopup.rightTwopopup-cart{
-
-}
-.checkoutbutton {
-    background: #009640;
-    color: #fff;
-    font-weight: 700;
-    border-bottom: 3px solid #009640;
-    width: 100%;
-    float: left;
-    text-align: center;
-    padding: 10px 0;
-    text-transform: uppercase;
-    margin: 20px auto 0 auto;
-    font-weight: 700;
-    margin-left: 0 !important;
-}
-.rightTwopopup .right-cart {
-    float: right;
-    width: 15%;
-}
-
-.rightTwopopup .left-cart{
-    float: left;
-    width: 85%;
-    padding-left: 10px;
-}
-
+.cartPopup {display: none;position: absolute;background-color: #fff;min-width: 360px; box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.2);z-index: 1000;right: 273px;padding: 0;top: 44px;}
+.rightTwopopup.rightTwopopup-cart {padding:0;}
+.numbers-row.numbers-row-cart .dec.button{ background: none;border: none;font-size: 24px;color: #000;padding: 0 10px;font-weight: bold;outline: none;line-height: 40px;height: 40px;}
+.numbers-row.numbers-row-cart .inc.button{width: 30px;height: 40px;text-align: center;background: none;background: none;border: none;font-size: 24px;color: #000;padding: 0 10px;font-weight: bold;outline: none;line-height: 40px;}
+.numbers-row.numbers-row-cart {border: 1px solid #ccc; height: 40px;width: auto;display: block;height: 45px;border-radius: 20px;line-height: 25px;width: 98px;float: left;}
+.numbers-row.numbers-row-cart input#numId {margin: 0 10px;height: 40px;border: 0;width: 20px;text-align: center;font-size: 18px;color: #393939;outline: none;margin-top: 3px;}
+.numbers-row-inner.numbers-row-cart .inc.button{width: 30px;height: 40px;text-align: center;background: none;background: none;border: none;font-size: 24px;color: #000;padding: 0 10px;font-weight: bold;outline: none;line-height: 40px;}
+.numbers-row-inner.numbers-row-cart {border: 1px solid #ccc; height: 40px;width: auto;display: block;height: 45px;border-radius: 20px;line-height: 25px;width: 98px;float: left;}
+.numbers-row-inner.numbers-row-cart input#numId {margin: 0 10px;height: 40px;border: 0;width: 20px;text-align: center;font-size: 18px;color: #393939;outline: none;margin-top: 3px;}
+.left-cart-2{text-align: left;}
+.left.left-cart-2 p {text-align: left;}
+.row2 {float: left;width: 100%;border-top: 1px solid #F1F1F1;padding-top: 15px;margin-top: 15px;}
+.row11{width: 100%;float: left;padding-top: 10px;}
+.row2 *{font-weight: 400 !important; }
+.checkoutbutton{background: #009640;color: #fff;font-weight: 700;border-bottom: 3px solid #009640;}
+.rightTwopopup.rightTwopopup-cart{}
+.checkoutbutton {background: #009640;color: #fff;font-weight: 700;border-bottom: 3px solid #009640;width: 100%;float: left;text-align: center;padding: 10px 0;text-transform: uppercase;margin: 20px auto 0 auto;font-weight: 700;margin-left: 0 !important;}
+.rightTwopopup .right-cart {float: right;width: 15%;}
+.rightTwopopup .left-cart{float: left;width: 85%;padding-left: 10px;}
 /* ==========================================checkout popup style ends=================================*/
-
-
 #cboxClose,#cboxClose:hover {
     position: absolute;
     top: 29px;
@@ -2349,6 +2198,7 @@ h3.tab_drawer_heading {
     padding: 10px 10px;
     font-size: 14px;
     line-height: 22px;
+    position: relative;
 }
 button#loginform {
     font-family: 'Lato', sans-serif;
@@ -2431,9 +2281,9 @@ a.cartLink {
     .paymeny_summary .order_delivery_option > ul li [type="radio"]:checked + label,
     .paymeny_summary .order_delivery_option > ul li [type="radio"]:not(:checked) + label{ position:relative; padding-left:10px; cursor:pointer; line-height:20px; display:inline-block; color:#666; width:auto; }
     .paymeny_summary .order_delivery_option > ul li [type="radio"]:checked + label:before,
-    .paymeny_summary .order_delivery_option > ul li [type="radio"]:not(:checked) + label:before{ content:''; position:absolute; left:0; top:-2px; width:22px; height:22px; border-radius:100%; background:url(../images/icon/tick_circle_normal.png) no-repeat; }
+    .paymeny_summary .order_delivery_option > ul li [type="radio"]:not(:checked) + label:before{ content:''; position:absolute; left:-21px; top:-2px; width:22px; height:22px; border-radius:100%; background:url(../images/icon/tick_circle_normal.png) no-repeat; }
     .paymeny_summary .order_delivery_option > ul li [type="radio"]:checked + label:after,
-    .paymeny_summary .order_delivery_option > ul li [type="radio"]:not(:checked) + label:after{ content:''; width:22px; height:22px; background:url(../images/icon/tick_circle_active.png) no-repeat; position:absolute; top:-2px; left:0; border-radius:100%; -webkit-transition:all 0.2s ease; transition:all 0.2s ease; }
+    .paymeny_summary .order_delivery_option > ul li [type="radio"]:not(:checked) + label:after{ content:''; width:22px; height:22px; background:url(../images/icon/tick_circle_active.png) no-repeat; position:absolute; top:-2px; left:-21px; border-radius:100%; -webkit-transition:all 0.2s ease; transition:all 0.2s ease; }
     .paymeny_summary .order_delivery_option > ul li [type="radio"]:not(:checked) + label:after{ opacity:0; -webkit-transform:scale(0); transform:scale(0);}
     .paymeny_summary .order_delivery_option > ul li [type="radio"]:checked + label:after{ opacity:1; -webkit-transform:scale(1); transform:scale(1); }
 
@@ -2442,6 +2292,60 @@ div#startorderonline{
 	width: 100%;
 }
 
+/*-------Rating-------*/
+
+.order_rating {
+    width: 100%;
+    float: left;
+    border: 1px solid #E9E9E9;
+    margin: 20px 0;
+    background: #fff;
+}
+
+.order_rating{ width:100%; float:left; border:1px solid #E9E9E9; padding:0 0 20px; }
+.order_rating h4{ width:100%; float:left; padding:15px; border-bottom:1px solid #E9E9E9; font-size:20px; color:#fff; background:#00AE4A; margin-top: 0; margin-bottom: 0; }
+.food_rating{ width:100%; float:left; text-align:center; }
+.food_rating h5{ font-size:18px; color:#000; padding:15px 0; }
+.food_rating ul{ width:100%; float:left; margin:0; padding:0; list-style-type:none; }
+.food_rating ul li{ width:auto; display:inline-block; padding:0 5px; }
+.delivery_rating{ width:100%; float:left; text-align:center; }
+.delivery_rating h5{ font-size:18px; color:#000; padding:15px 0; }
+.delivery_rating ul{ width:100%; float:left; margin:0; padding:0; list-style-type:none; }
+.delivery_rating ul li{ width:auto; display:inline-block; padding:0 5px; }
+
+.order_rating .restaurant_details{text-align:left;}
+.reason_list{margin-left:460px;}
+.reason_list p{margin-bottom :5px;}
+.reason_list .res_other_reason,.reason_list .driver_other_reason{margin-top :5px;}
+
+.food_rating .rate_list,.delivery_rating .rate_list{padding-bottom: 30px;}
+
+.reason_list ul li a{
+    border: 1px solid #00AE4A;
+    background: #00AE4A;
+    color: #fff;
+    border-radius: 3px;
+    padding: 5px 35px;
+    text-align: center;
+}
+.reason_list ul li span{color:red;}
+.reason_list ul .addratebtn{padding-top:10px;}
+
+.positive_res,.negative_res ul li { font-size: 14px; color: #000; font-family: 'Lato-Regular'; -webkit-font-smoothing: antialiased; }
+.positive_driv,.negative_driv ul li { font-size: 14px; color: #000; font-family: 'Lato-Regular'; -webkit-font-smoothing: antialiased; }
+
+ul, li, p{margin:0;padding:0;list-style-type:none;} 
+a{ text-decoration:none; outline:none; transition: 0.3s; }
+a:focus, a:hover{ transition:0.3s; text-decoration: none; outline: none; }
+h1, h2, h3, h4, h5, h6{ margin:0; padding:0; }
+
+
+/*addres fild section */
+.address_type .check_out_lf {width: 50%; float: left;}
+.address_type .check_out_fild { width: 100%; float: left; margin-bottom: 15px; padding: 0 30px;}
+.address_type .check_out_fild input{padding: 15px 20px;border: 1px solid #ccc;border-radius: 5px;width: 100%;}
+.address_type .check_out_fild textarea {height: 47px; padding: 15px 20px;border: 1px solid #ccc;border-radius: 5px;width: 100%;}
+.cus_radio > ul li:last-child{margin-right: 0px;}
 
 /*==================================================Responsive Style====================================*/
 
@@ -2518,10 +2422,6 @@ div#startorderonline{
         font-size: 15px;
     }
 
-
-
-
-
 }
 
 @media screen and (max-width: 1500px){
@@ -2565,17 +2465,6 @@ div#startorderonline{
         font-size: 17px;
         font-weight: 600;
     }
-
-
-
-
-
-
-
-
-
-
-
 
 }
 
@@ -2622,11 +2511,6 @@ div#startorderonline{
 		width: 100%;
 	}
 
-
-
-
-
-
 }
 
 @media screen and (max-width: 1200px){
@@ -2659,8 +2543,6 @@ div#startorderonline{
 
     }
 }
-
-
 
 
 @media screen and (max-width: 1024px){
@@ -2760,10 +2642,6 @@ div#startorderonline{
 		width: 100%;
 	}
 
-
-
-
-
 }
 
 
@@ -2811,17 +2689,7 @@ div#startorderonline{
         width: 20%;
     }
    
-
-
-
-
-
-
-
-
 }
-
-
 
 @media screen and (max-width: 800px){
     .rightOne {     
@@ -3024,20 +2892,7 @@ div#startorderonline{
     .leftPopup input[type="radio"], .leftPopup form, .rightTwopopup .left p {
         font-size: 15px;
     }
-
-
-
-
-
-
-
-
-
-
-
-
 }
-
 
 @media screen and (max-width: 767px){
     .leftMain {
@@ -3175,6 +3030,11 @@ div#startorderonline{
        /* height: 100px;
         overflow-y: scroll;*/
     }
+    .tabs_wrapper.is-affixed ul#category_tab {
+        height: 100px;
+        overflow-y: scroll;
+        left: 0 !important;
+    }
     .tabs li {
        /* width: 90%;
         border-right: 0;*/
@@ -3203,8 +3063,8 @@ div#startorderonline{
             width: 70%;
     }
     #colorbox {
-        max-width: 98% !important;
-        left: 0;
+        max-width: 100% !important;
+        left: 0 !important;
         right: 0;
         margin: 0 auto;
     }
@@ -3219,13 +3079,13 @@ div#startorderonline{
         text-align: center;
         font-weight: normal;
         width: 50%;
-        padding: 0;
+        padding: 0 !important;
         border-bottom: 1px solid #f3f3f3;
         border-right: 1px solid #f3f3f3;
     }
     .tabs li{
         border: 0px;
-        padding:0;
+        padding:4px 2px !important;
         width: 100%;
         font-weight: 300;
         padding: 4px 2px;
@@ -3258,16 +3118,15 @@ div#startorderonline{
 	.rightTwo.rightFour .left, .rightTwo.rightSix .left {
 	    width: 70%;
 	}
+    .cus_radio > ul li {margin-right: 5px; padding: 10px 6px;}
+	.check_out_lf .cus_radio > ul li {margin-right: 5px; padding: 10px 17px;}
 
-
-
-
-
-
-    
-
-
-
+	.address_type .check_out_fild {padding: 0 10px;}
+	.cus_radio > ul li [type="radio"]:checked + label, .cus_radio > ul li [type="radio"]:not(:checked) + label{padding-left: 15px;}
+	.cus_radio > ul li label {font-size: 14px;}
+	.cus_radio > ul li [type="radio"]:checked + label:before, .cus_radio > ul li [type="radio"]:not(:checked) + label:before, .cus_radio > ul li [type="radio"]:checked + label:after, .cus_radio > ul li [type="radio"]:not(:checked) + label:after{background-size: cover; width: 15px; height: 15px; left: -3px; top: 3px;}
+	
+	
 }
 
 @media screen and (max-width: 680px){
@@ -3299,10 +3158,11 @@ div#startorderonline{
 	}
 }
 
+@media screen and (max-width: 600px){
+	.cus_radio > ul li{ padding:10px 15px; margin-right:15px;}
+	.address_type .check_out_lf{ width:100%; }
 
-
-
-
+}
 
 
 @media screen and (max-width: 414px){
@@ -3346,13 +3206,6 @@ div#startorderonline{
 	}
 
 }
-
-
-
-
-
-
-
 
 @media screen and (max-width: 414px){
 
@@ -3763,56 +3616,3 @@ div#startorderonline{
 
 
 }
-
-
-
-
-
-
-
-/*-------Rating-------*/
-
-.order_rating {
-    width: 100%;
-    float: left;
-    border: 1px solid #E9E9E9;
-    margin: 20px 0;
-    background: #fff;
-}
-
-.order_rating{ width:100%; float:left; border:1px solid #E9E9E9; padding:0 0 20px; }
-.order_rating h4{ width:100%; float:left; padding:15px; border-bottom:1px solid #E9E9E9; font-size:20px; color:#fff; background:#00AE4A; margin-top: 0; margin-bottom: 0; }
-.food_rating{ width:100%; float:left; text-align:center; }
-.food_rating h5{ font-size:18px; color:#000; padding:15px 0; }
-.food_rating ul{ width:100%; float:left; margin:0; padding:0; list-style-type:none; }
-.food_rating ul li{ width:auto; display:inline-block; padding:0 5px; }
-.delivery_rating{ width:100%; float:left; text-align:center; }
-.delivery_rating h5{ font-size:18px; color:#000; padding:15px 0; }
-.delivery_rating ul{ width:100%; float:left; margin:0; padding:0; list-style-type:none; }
-.delivery_rating ul li{ width:auto; display:inline-block; padding:0 5px; }
-
-.order_rating .restaurant_details{text-align:left;}
-.reason_list{margin-left:460px;}
-.reason_list p{margin-bottom :5px;}
-.reason_list .res_other_reason,.reason_list .driver_other_reason{margin-top :5px;}
-
-.food_rating .rate_list,.delivery_rating .rate_list{padding-bottom: 30px;}
-
-.reason_list ul li a{
-    border: 1px solid #00AE4A;
-    background: #00AE4A;
-    color: #fff;
-    border-radius: 3px;
-    padding: 5px 35px;
-    text-align: center;
-}
-.reason_list ul li span{color:red;}
-.reason_list ul .addratebtn{padding-top:10px;}
-
-.positive_res ul li { font-size: 14px; color: #000; font-family: 'Lato-Regular'; -webkit-font-smoothing: antialiased; }
-.positive_driv ul li { font-size: 14px; color: #000; font-family: 'Lato-Regular'; -webkit-font-smoothing: antialiased; }
-
-ul, li, p{margin:0;padding:0;list-style-type:none;} 
-a{ text-decoration:none; outline:none; transition: 0.3s; }
-a:focus, a:hover{ transition:0.3s; text-decoration: none; outline: none; }
-h1, h2, h3, h4, h5, h6{ margin:0; padding:0; }

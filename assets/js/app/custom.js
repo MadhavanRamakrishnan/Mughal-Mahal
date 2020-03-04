@@ -7,7 +7,7 @@ Preloader
 ********************************/
 $(window).load(function() {
   $('.loading-container').fadeOut(1000, function() {
-	$(this).remove();
+	// $(this).remove();
   });
 });	
 
@@ -46,6 +46,8 @@ $(function(){
 
 	$("aside.left-panel nav.navigation > ul > li:has(ul) > a").click(function(){
 		
+
+
 		if( $("aside.left-panel").hasClass('collapsed') == false || $(window).width() < 768 ){
 
 		
@@ -66,7 +68,14 @@ $(function(){
 		
 	});
 	
-	
+	$(".navigation > ul > li > a").click(function(){
+		if($(this).parent().hasClass("active")){
+			$(this).parent().find("ul").removeClass("hide");
+		}
+		else{
+			$(this).parent().find("ul").addClass("hide");
+		}
+	});
 	
 	/********************************
 	popover
@@ -233,5 +242,4 @@ function toggleFullScreen() {
 		}
 	}
 }
-
 

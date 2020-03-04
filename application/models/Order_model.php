@@ -16,7 +16,7 @@
 	
 
 
-	function getAllOrderCount($resId="",$orderId="",$phone="",$date="",$date1="",$status=null)
+	function getAllOrderCount($resId="",$orderId="",$phone="",$date="",$date1="",$orderType="",$status=null)
 	{
 
 		if($resId !=''){
@@ -33,6 +33,9 @@
 		}
 		if($date1 !=""){
 			$this->db->where("tbl_orders.order_placed_time <",$date1);
+		}
+		if($orderType !=""){
+			$this->db->where("tbl_orders.order_category",$orderType);
 		}
 		if($status){
 
@@ -186,7 +189,7 @@
 
 	function getOrderDetails($oid)
 	{
-		$this->db->select("ord.*,od.order_detail_id,od.amount,od.quantity,dish.*,choice.*,choice_cat.choice_category_name");
+		$this->db->select("ord.*,od.order_detail_id,od.amount,od.quantity,dish.*,choice.*,choice_cat.choice_category_name,od.description as comment");
 		$this->db->from('tbl_orders as ord'); 
 		$this->db->join('tbl_order_details as od','od.order_id=ord.order_id','left');
 		$this->db->join('tbl_dishes as dish','dish.product_id=od.product_id','left');
@@ -386,10 +389,10 @@
 		{
 			$this->db->where("tbl_orders.order_status NOT IN('0')");
 		}
-		$this->db->group_by('tbl_orders.order_id');
 		$this->db->order_by('order_id','desc');
+		$this->db->select("count(order_id) as total");
 		$query=$this->db->get();
-		return $query->num_rows();
+		return $query->row();
 	}
 
 	/**
@@ -481,7 +484,7 @@
 	 * Created date: 28/06/2018 10:50 AM
 	 */
 
-	function getNewOrderDetails($resId="",$limit=null,$offset=null,$orderId="",$phone="",$date="",$date1="",$status=null)
+	function getNewOrderDetails($resId="",$limit=null,$offset=null,$orderId="",$phone="",$date="",$date1="",$orderType="",$status=null)
 	{
 
 		if($limit)
@@ -503,18 +506,22 @@
 		if($date1 !=""){
 			$this->db->where("od.order_placed_time <",$date1);
 		}
+		if($orderType !=""){
+			$this->db->where("od.order_category",$orderType);
+		}
 		if($status){
 			$this->db->where("od.order_status",$status);
 		}else{
 			$this->db->where("od.order_status NOT IN('1','0','8')");
 		}
-		$this->db->select('od.order_id,od.order_placed_time as order_time,od.order_type as paymnet,od.total_price as amount,od.delivery_charges,od.order_status as status,address.customer_name as name,address.contact_no,address.address1 as address,res.restaurant_name,lc.name as area');
+		$this->db->select('od.order_id,od.order_placed_time as order_time,od.order_type as paymnet,od.total_price as amount,od.delivery_charges,od.order_status as status,address.customer_name as name,address.contact_no,address.address1 as address,res.restaurant_name,lc.name as area,tbl_order_type.type, od.sequence_no');
 		$this->db->from('tbl_orders as od');
 		$this->db->join('tbl_customer_delivery_address as address','address.address_id=od.selected_delivery_address','left');
 		$this->db->join('tbl_restaurants as res','od.restaurant_id=res.restaurant_id','left');
+		$this->db->join('tbl_order_type','od.order_category=tbl_order_type.id','left');
 		$this->db->join('tbl_locality as lc','lc.locality_id=address.locality_id','left');
 		$this->db->where('od.is_active','1');
-		$this->db->order_by('od.order_id','DESC');
+		$this->db->order_by('od.sequence_no','DESC');
 		$query=$this->db->get();
 		return $query->result();
 	}
@@ -625,4 +632,62 @@
 
 	}
 
+	/**
+	 * [getOrderTypes Get Order type list]
+	 * @author Hardik Ghadshi
+	 * @Created Date   2019-11-04T12:50:23+0530
+	 * @param   [type] $data                    [description]
+	 * @return  [type]                          [description]
+	 */
+	function getOrderTypes($compairValue=""){
+
+		if($compairValue)
+		{
+			$this->db->where('type',$compairValue);
+		}
+		$this->db->where('is_active',1);
+		$query = $this->db->get('tbl_order_type');
+
+		return $query->result();
+	}
+
+	/**
+	 * [addOrderType To add order type]
+	 * @author Hardik Ghadshi
+	 * @Created Date   2019-11-04T12:38:53+0530
+	 * @param   [type] $data                    [description]
+	 */
+	function addOrderType($data){
+
+		$query = $this->db->insert('tbl_order_type', $data);
+		return $this->db->insert_id();
+	}
+
+	/**
+	 * [deleteOrderType Delete order type]
+	 * @author Hardik Ghadshi
+	 * @Created Date   2019-11-04T17:24:18+0530
+	 * @param   [type] $data                    [description]
+	 * @return  [type]                          [description]
+	 */
+	function deleteOrderType($data){
+
+		$this->db->where('id', $data['id']);
+		$query = $this->db->update('tbl_order_type', $data);
+		return $this->db->affected_rows();
+	}
+
+	/**
+	 * [getLatestSequenceNumber Get Latest Sequence Number]
+	 * @author Hardik Ghadshi
+	 * @Created Date   2020-02-18T13:21:55+0530
+	 * @return  [type] [description]
+	 */
+	function updateOrderWithSequenceNumber($data){
+
+		$query = $this->db->query('UPDATE `tbl_orders` t1, (SELECT `sequence_no` FROM `tbl_orders` WHERE `order_status` >= 1 ORDER BY `sequence_no` DESC LIMIT 1) as t2 SET t1.`order_status` = '.$data['order_status'].', t1.`reason` = " ", t1.`sequence_no` = (1 + t2.sequence_no) WHERE `order_id` = '.$data['fk_order_id'].'');
+
+		return $query->result();
+
+	}
 }

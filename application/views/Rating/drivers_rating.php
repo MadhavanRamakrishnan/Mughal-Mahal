@@ -66,8 +66,15 @@ color: orange;
                                             <?php } ?>
                                         </td>
                                         <?php if ($value->reason) {?>
-                                            <td class="center"><?php echo substr($value->reason, 0, 25) . '...'; ?><a href="" class="" data-toggle="modal" data-target="#myModal" onClick="setReason('<?php echo $value->reason; ?>');">Read more</a></td>
-                                      
+
+
+                                          <td class="center"><?php echo substr($value->reason, 0, 70); 
+                                          if (strlen($value->reason) >strlen(substr($value->reason, 0, 70))) { ?>
+                                            <a href="" class="" data-toggle="modal" data-target="#myModal" onClick="setReason('<?php echo $value->reason; ?>');">...Read more</a>  
+                                          <?php   } ?>
+
+                                          </td>
+
                                      <?php   }else{?>
                                                  <td class="center">N/A</td>
                                      <?php }?>

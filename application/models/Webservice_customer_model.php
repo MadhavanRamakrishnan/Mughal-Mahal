@@ -238,6 +238,7 @@ class Webservice_customer_model extends CI_Model
 			
 			$select .="tbl_restaurant_dishes.dish_price as resDishPrice,tbl_restaurant_dishes.choice_id,tbl_restaurant_dishes.choice_price,tbl_restaurant_dishes.is_best_dishes,";
 			$this->db->where("tbl_locality.locality_id",$locality);
+			$this->db->where("tbl_restaurant_dishes.is_show",1);
 		}
 		$select .="tbl_dishes.*,tbl_dishes.product_en_name as name,cat.category_id,cat.category_name,cat.image,cat.category_ar_name";
 		$this->db->select($select);
@@ -375,6 +376,7 @@ class Webservice_customer_model extends CI_Model
 		$this->db->where("tbl_restaurant_dishes.fk_restaurant_id ",$restaurantId);
 		$this->db->join("tbl_dishes as cat","cat.product_id=tbl_restaurant_dishes.fk_dish_id","left");
 		$this->db->where("cat.is_active","1");
+		$this->db->where("tbl_restaurant_dishes.is_show",1);
 		$query = $this->db->get();
 		return $query->result();
 	}
@@ -485,7 +487,7 @@ class Webservice_customer_model extends CI_Model
 	*/ 
 	function getMyOrders($id,$oid=null)
 	{
-		$this->db->select('ord.*,od.product_id,od.quantity,od.amount,od.description as od_desc,od.discount_type,od.discount_amount,od.is_complimentry,dish.category_id,dish.product_en_name as name,dish.product_ar_name,dish.en_description as description,dish.ar_description,dish.price,dish.dish_image,dish_ch.price as choice_price,choice.choice_id,choice.choice_name,choice.choice_description,choice_cat.choice_category_name,res.restaurant_name,res.delivery_charge,res.custom_delivery_time,res.address as res_address,res.email as res_email,res.contact_no` as res_contact_no,del.address1 as usr_address,res.res_latitude,res.res_longitude,del.customer_name,del.email as usr_email,del.contact_no as usr_contact_no,del.zipcode,del.customer_latitude,del.customer_longitude,choice.choice_name_ar,choice_cat.choice_category_name_ar,driver.first_name as driver_first_name,driver.last_name as driver_last_name,driver.contact_no as driver_contact_no');
+		$this->db->select('ord.*,od.product_id,od.quantity,od.amount,od.description as od_desc,od.discount_type,od.discount_amount,od.is_complimentry,dish.category_id,dish.product_en_name as name,dish.product_ar_name,dish.en_description as description,dish.ar_description,dish.price,dish.dish_image,dish_ch.price as choice_price,choice.choice_id,choice.choice_name,choice.choice_description,choice_cat.choice_category_name,res.restaurant_name,res.delivery_charge,res.custom_delivery_time,res.address as res_address,res.email as res_email,res.contact_no` as res_contact_no,del.address_type,del.address1 as usr_address,del.other_address,res.res_latitude,res.res_longitude,del.customer_name,del.email as usr_email,del.contact_no as usr_contact_no,del.appartment_no,del.floor,del.block,del.building,del.street,del.avenue,del.zipcode,del.customer_latitude,del.customer_longitude,choice.choice_name_ar,choice_cat.choice_category_name_ar,driver.first_name as driver_first_name,driver.last_name as driver_last_name,driver.contact_no as driver_contact_no');
 		$this->db->from('tbl_orders as ord'); 
 		$this->db->join('tbl_order_details as od','od.order_id=ord.order_id','left');
 		$this->db->join('tbl_dishes as dish','dish.product_id=od.product_id','left');
@@ -558,7 +560,7 @@ class Webservice_customer_model extends CI_Model
 	*/ 
 	function getOrderData($oid)
 	{
-		$this->db->select("tbl_orders.order_status,tbl_restaurants.custom_delivery_time,	tbl_orders.restaurant_id,tbl_orders.delivery_charges as delivery_charge");
+		$this->db->select("tbl_orders.order_status,tbl_restaurants.custom_delivery_time,	tbl_orders.restaurant_id,tbl_orders.delivery_charges as delivery_charge,tbl_orders.sequence_no");
 		$this->db->from("tbl_orders");
 		$this->db->join("tbl_restaurants","tbl_orders.restaurant_id=tbl_restaurants.restaurant_id","left");
 		$this->db->where("tbl_orders.is_active","1");
@@ -573,6 +575,7 @@ class Webservice_customer_model extends CI_Model
 		if($offset && $total){
 			$this->db->limit($total,$offset);
 		}
+		$this->db->where('is_active',1);
 		$this->db->order_by('choice_id','asc');
 		$query = $this->db->get('tbl_choice');
 		return $query->result();
@@ -583,6 +586,7 @@ class Webservice_customer_model extends CI_Model
 			$this->db->limit($total,$offset);
 		}
 		$this->db->order_by('choice_category_id','asc');
+		$this->db->where('is_active',1);
 		$query = $this->db->get('tbl_choice_category');
 		return $query->result();
 	}
@@ -592,6 +596,7 @@ class Webservice_customer_model extends CI_Model
 			$this->db->limit($total,$offset);
 		}
 		$this->db->order_by('dish_choice_id','asc');
+		$this->db->where('is_active',1);
 		$query = $this->db->get('tbl_dish_choice');
 		return $query->result();
 	}
@@ -603,6 +608,7 @@ class Webservice_customer_model extends CI_Model
 			$this->db->limit($total,$offset);
 			}
 			$this->db->order_by('priority','asc');
+			$this->db->where("is_active",1);
 			$query = $this->db->get('tbl_dish_category');
 			return $query->result();
 		}
@@ -615,6 +621,7 @@ class Webservice_customer_model extends CI_Model
 			if($locality != ""){
 				$this->db->where("tbl_locality.locality_id",$locality);
 			}
+			$this->db->where("tbl_restaurant_dishes.is_show",1);
 			$this->db->where("tbl_dishes.is_active",1);
 			$this->db->group_by('tbl_dish_category.category_id');
 			$this->db->order_by('tbl_dish_category.priority','asc');
@@ -640,14 +647,14 @@ class Webservice_customer_model extends CI_Model
 		}
 		if($type=='popular')
 		{
-			$this->db->where('is_popular',1);
+			$this->db->where('tbl_dishes.is_popular',1);
 		}
 		elseif ($type=='groupby') {
 			$this->db->select('tbl_dish_category.category_name');	
 			$this->db->order_by('category_id','asc');	
 			$this->db->join('tbl_dish_category','tbl_dishes.category_id=tbl_dish_category.category_id','left');
 		}
-		$this->db->where('is_active',1);
+		$this->db->where('tbl_dishes.is_active',1);
 		$this->db->from('tbl_dishes');
 		$query = $this->db->get();
 		//echo $this->db->last_query(); exit;
@@ -658,6 +665,7 @@ class Webservice_customer_model extends CI_Model
 		$this->db->where("tbl_choice.choice_id",$choiceId);
 
 		$this->db->join('tbl_choice_category','tbl_choice_category.choice_category_id=tbl_choice.fk_choice_category_id','left');
+		$this->db->where('tbl_choice.is_active',1);
 		$query = $this->db->get("tbl_choice");
 		return $query->result();
 	}
@@ -913,9 +921,37 @@ class Webservice_customer_model extends CI_Model
 	{
 		$this->db->where('fk_restaurant_id',$restaurantId);
 		$this->db->where('is_best_dishes',1);
+		$this->db->where("is_show",1);
 		$this->db->select('count(id) as total');
 		$query =$this->db->get('tbl_restaurant_dishes');
 		return $query->result();
 
+	}
+
+	/**
+	 * function to build query add get dish for  restaurant 
+	 * @author Manisha Kanazariya 
+	 * Created date:23-04-2018 11:45 PM
+	 */
+	function getRestaurantDishes($restaurantId ="")
+	{
+		if($restaurantId !=""){
+			$this->db->where("fk_restaurant_id",$restaurantId);
+		}
+		$this->db->where("is_show",1);
+		return $this->db->get("tbl_restaurant_dishes")->result();
+	}
+
+	/**
+	 * function to build query update order type
+	 * @author Devesh Khandelwal
+	 * Created date:21-02-2020 04:08 PM
+	 */
+	function updateOrder($orderId, $data)
+	{
+		$this->db->where('order_id', $orderId);
+
+		$this->db->update('tbl_orders', $data);
+		return $this->db->affected_rows();
 	}
 }

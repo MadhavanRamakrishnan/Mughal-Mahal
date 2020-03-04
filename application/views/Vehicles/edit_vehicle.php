@@ -135,10 +135,10 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function(){
-        $('#datepicker').datepicker({
-            autoclose: true,
-            changeYear: true,
-            endDate: '+0d'
-         });
+        // $('#datepicker').datepicker({
+        //     autoclose: true,
+        //     changeYear: true,
+        //     endDate: '+0d'
+        //  });
     });
 </script>

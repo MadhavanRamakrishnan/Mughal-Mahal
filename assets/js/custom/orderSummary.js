@@ -311,37 +311,7 @@ function validateEmail(sEmail) {
     }
 }
 
-function editAddressData(address_id, oSummary = "") {
-    getlocality();
-    $.ajax({
-        url: getCustomerAddress + "/" + address_id,
-        type: "POST",
-        success: function(data) {
-            var obj = $.parseJSON(data);
-            if (obj.success == 1) {
-                $("#is_add_address").val(obj.message[0].address_id);
-                $("#customer_name").val(obj.message[0].customer_name);
-                $("#addemail").val(obj.message[0].email);
-                $("#contact_no").val(obj.message[0].contact_no);
-                $("#locality").val(obj.message[0].locality_id);
-                $("#lat").val(obj.message[0].customer_latitude);
-                $("#long").val(obj.message[0].customer_longitude);
-                $("#address_line1").val(obj.message[0].address1);
-                if (oSummary != "") {
-                    $("#editAdd").val(address_id);
-                }
-                initMap(obj.message[0].customer_latitude, obj.message[0].customer_longitude);
-                if (obj.message[0].address_type == "1") {
-                    $("#home").prop("checked", true);
-                } else if (obj.message[0].address_type == "2") {
-                    $("#office").prop("checked", true);
-                } else {
-                    $("#other").prop("checked", true);
-                }
-            } else {}
-        }
-    })
-}
+
 
 function getlocality() {
     $.ajax({

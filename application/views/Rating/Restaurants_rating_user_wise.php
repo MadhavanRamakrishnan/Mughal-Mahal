@@ -50,7 +50,12 @@ color: orange;
                                             <?php } ?>
                                         </td>
                                       <!--   <td class="center"><?php echo $value->reason ; ?></td> -->
-                                        <td class="center"><?php echo substr($value->reason, 0, 15) . '...'; ?><a href="" class="" data-toggle="modal" data-target="#myModal<?php echo $value->rating_id ; ?>">Read more</a></td>
+                                        <td class="center"><?php echo substr($value->reason, 0, 65); 
+                                          if (strlen($value->reason) >strlen(substr($value->reason, 0, 65))) { ?>
+                                            <a href="" class="" data-toggle="modal" data-target="#myModal<?php echo $value->rating_id ; ?>">...Read more</a>  
+                                        <?php   } ?>
+
+                                        </td>
                                        <div class="modal fade" id="myModal<?php echo $value->rating_id ; ?>" role="dialog">
                                         <div class="modal-dialog">
                                         

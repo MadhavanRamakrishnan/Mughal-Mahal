@@ -87,7 +87,7 @@
 	$lang['message_completeAddress']    = "Enter your complete address";
 	$lang['message_PaymentSummary']     = "Payment Summary";
 	$lang['message_CaseOnDelivery']     = "Cash on Delivery";
-	$lang['message_PayviaCreditCard']   = "Pay via Credit Card";
+	$lang['message_PayviaCreditCard']   = "Pay via KNET";
 	$lang['message_PayviaDebitCard']   	= "Pay via Debit Card";
 	$lang['message_PlaceOrder']         = "Place Order";
 	$lang['message_PleEnterValidEmail'] = "Please enter a valid email address!";
@@ -182,7 +182,7 @@
 	$lang['message_EnterOtherReason']   ="Enter other Reason";
 	$lang['message_AddressReqiured']    ="Address is not selected";
 	$lang['message_PaymentMethod']      ="payment method is not selected";
-	$lang['message_miniOrderAmount']    ="The minimum order amount must grater then";
+	$lang['message_miniOrderAmount']    ="The minimum order amount must greater than";
 	$lang['message_selectAddress']      ="Select any address for order delivery";
 	$lang['message_hotel_timing']       ="Hotel Timing";
 	$lang['message_other_details']      ="Other Details";
@@ -225,6 +225,16 @@
 	$lang['sure_delete_dish']           ="Are you sure to delete this dish?";
 	$lang['add_item_choice']            ="Add Item Choices";
 	$lang['dish_instruction']           ="Type your comment..";
+
+ 	// address feilds
+	$lang['street_req']                 ="Enter street";
+	$lang['other_address_req']          ="Address tag should not be empty";
+	$lang['building_req']               ="Enter building";
+	$lang['appartment_req']             ="Enter appartment number";
+	$lang['block_req']                  ="Enter block";
+	$lang['avenue_req']                 ="Enter avenue";
+	$lang['floor_req']                  ="Enter floor";
+	
 
 
 

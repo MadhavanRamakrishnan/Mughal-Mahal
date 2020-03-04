@@ -22,5 +22,15 @@
     <!-- Base Styling  -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/app/app.v1.css" />
 
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159057794-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-159057794-1');
+    </script>
+
 </head>
 <body>

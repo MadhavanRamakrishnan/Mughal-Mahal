@@ -44,7 +44,7 @@ class Home extends MY_Controller
 		$this->lang->load($this->langsFile,$this->langs);
 		$this->localityId  = json_decode($_COOKIE['locality_id']);
 		$this->locality    =$this->Home_model->getLocality();
-		$this->cartItem   = count(json_decode($_COOKIE['dishDetail']));
+		$this->cartItem   = ($_COOKIE['dishDetail']) ? count(json_decode($_COOKIE['dishDetail'])) : "";
 
 	}
 
@@ -113,8 +113,8 @@ class Home extends MY_Controller
 			setcookie('locality_id', 1, -1,'/');
 			$this->localityId        = json_decode($_COOKIE['locality_id']);
 		}
-
-		$dishCategory     =$this->Home_model->dishCategory($this->localityId);
+		//$resId            =$this->Home_model->getRestaurantByLocality($locality)->restaurant_id;
+		//$dishCategory     =$this->Home_model->dishCategory($resId);
 		$data['locality'] = $this->Home_model->getLocality($this->localityId);
 		$this->load->view('Elements/Frontend-header',$data);
 		$this->load->view('Home/orderNow');
@@ -131,20 +131,21 @@ class Home extends MY_Controller
 	{
 		$locality     =$this->input->post('locality');
 		$search       =($this->input->post('search') !="")?$this->input->post('search'):null;
-		$dishCategory =$this->Home_model->dishCategory($locality,$search);
-		
+		$resId        =$this->Home_model->getRestaurantByLocality($locality)->restaurant_id;
+		$dishCategory =$this->Home_model->dishCategory($resId,$search);
 		if(count($dishCategory) >0)
 		{
 			$dishes =array();
 
 			foreach ($dishCategory as $key => $value) 
 			{
-				$dishes[$value->category_id]=$this->Home_model->getDishData($value->category_id,$locality,$search);
+				$dishes[$value->category_id]=$this->Home_model->getDishData($value->category_id,$resId,$search);
 			}
 			$result['success']  =1;
 			$result['message']  ="";
 			$result['category'] =$dishCategory;
 			$result['dishes']   =$dishes;
+			$result['locality']   =$locality;
 		}
 		else
 		{
@@ -497,10 +498,6 @@ class Home extends MY_Controller
 			$data['addressDetail'] =  $this->Webservice_customer_model->getDeliveryAddress($_COOKIE['user_id']);	
 		}
 
-
-		// print_r($_POST);exit;
-		//$dishdata        =json_decode('[{"id":1,"dishId":"225","choiceOfOne":["1"],"Multiplechoice":[],"dishcount":"2"},{"id":2,"dishId":"264","choiceOfOne":["1"],"Multiplechoice":[],"dishcount":"1"},{"id":3,"dishId":"258","choiceOfOne":["77"],"Multiplechoice":[],"dishcount":"1"}]');
-		
 		$locality        = json_decode($_COOKIE['locality_id']);
 		$finalDishData   = array();
 		$totalPrice      = 0;
@@ -628,9 +625,6 @@ class Home extends MY_Controller
 		$totalprice = 0;
 		$ch         = array();
 
-		// $dishdata   = json_decode('[{"id":1,"dishId":"225","choiceOfOne":["1"],"Multiplechoice":[],"dishcount":"2"},{"id":2,"dishId":"264","choiceOfOne":["1"],"Multiplechoice":[],"dishcount":"1"},{"id":3,"dishId":"258","choiceOfOne":["77","2"],"Multiplechoice":[],"dishcount":"1"}]');
-
-		
 		foreach ($dishdata as $key => $value1)
 		{
 			$dishDetail = $this->Webservice_customer_model->getCartDishDetail($value1->dishId,$_COOKIE['locality_id']);
@@ -691,7 +685,7 @@ class Home extends MY_Controller
 		$orderdata['total_price']       = $totalprice+$orderdata['delivery_charges'];
 		$orderdata['order_placed_time'] = date("Y-m-d H:i:s");
 		if(isset($getLocalityData) && count($getLocalityData)>0){
-			$timestamp = strtotime(date("Y-m-d H:i:s")) + 60*$getLocalityData[0]->delivered_time;
+			$timestamp = strtotime(date("Y-m-d H:i:s")) + 60*($getLocalityData[0]->delivered_time +$getLocalityData[0]->extra_delivery_time);
 		}else{
 			$timestamp = strtotime(date("Y-m-d H:i:s")) + 60*60;
 		}
@@ -704,7 +698,17 @@ class Home extends MY_Controller
 		$orderdata['created_by']        		= $this->input->post('user_id');
 		$orderdata['created_date']      		= date("Y-m-d H:i:s");
 		$tableName1                     		= 'tbl_orders';
+		
+
+		if($this->input->post('payment') != 1 && $this->input->post('payment') != 2){
+
+			$seqNo = $this->Home_model->getLatestSequenceNumber();
+			$orderdata['sequence_no'] = $seqNo->sequence_no + 1;
+		}
 	
+    	$seqNo = $this->Home_model->getLatestSequenceNumber();
+		$orderdata['sequence_no'] = $seqNo->sequence_no + 1;
+		
 		$orderres = $this->Webservice_customer_model->insertData($tableName1,$orderdata);
 		foreach ($finalDishData as $key => $value)		{
 			$orderdetailsdata['order_id']        = $orderres;
@@ -744,6 +748,7 @@ class Home extends MY_Controller
 				"amount" 			=> $orderdata['total_price'],
 				"currency_code"		=> "KWD",
  				"gateway_code" 		=> "test-knet",
+ 				"gateway_code" 		=> "kpayt",
 				"order_no" 			=> "CUSTOMER".date("Ymdhis"),
 				"customer_email" 	=> $getUserData[0]->email,
 				"disclosure_url" 	=> site_url('Home/disclosurePayment/'.$orderres),
@@ -760,6 +765,7 @@ class Home extends MY_Controller
 			curl_setopt($chd,CURLOPT_RETURNTRANSFER, true);
 			//execute post
 			$result = curl_exec($chd);
+			
 			$array  = json_decode($result);
 			curl_close($chd);
 			$response['success'] = 2;
@@ -794,7 +800,8 @@ class Home extends MY_Controller
 		if($data['transaction_status'] == "CAPTURED")
 		{
 			//make order status is "order placed"
-			$updateOrd =$this->Order_model->updateOrder($data['fk_order_id'],array('order_status'=>1,'reason'=>''));
+			$updateOrd = $this->Order_model->updateOrderWithSequenceNumber(array('fk_order_id' => $data['fk_order_id'],'order_status'=>1,'reason'=>''));
+			//$updateOrd =$this->Order_model->updateOrder($data['fk_order_id'],array('order_status'=>1,'reason'=>''));
 			setcookie('dishDetail', null, -1, '/');
 		}
 		
@@ -808,7 +815,7 @@ class Home extends MY_Controller
 	 */
 	function orderDetails($orderId="")
 	{
-		
+		 
 		if(isset($_COOKIE['access_token']) && $_COOKIE['access_token']!='')
 		{
 			$data['userdata'] = $this->Webservice_customer_model->getUserdetails($_COOKIE['user_id']);
@@ -852,24 +859,34 @@ class Home extends MY_Controller
 	        $orderData['address']['cust_name']       = $getDelAdd[0]->customer_name;
 	        $orderData['address']['cust_email']      = $getDelAdd[0]->email;
 	        $orderData['address']['cust_contact_no'] = $getDelAdd[0]->contact_no;
-	        $orderData['address']['cust_address']    = $getDelAdd[0]->address1;
 	        $orderData['address']['cust_longitude']  = $getDelAdd[0]->customer_longitude;
 	        $orderData['address']['cust_latitude']   = $getDelAdd[0]->customer_latitude;
+	        $orderData['address']['cust_address']    = $getDelAdd[0]->address1;
+	        $orderData['address']['address_type']    = $getDelAdd[0]->address_type;
+	        $orderData['address']['appartment_no']   = $getDelAdd[0]->appartment_no;
+	        $orderData['address']['floor']           = $getDelAdd[0]->floor;
+	        $orderData['address']['block']           = $getDelAdd[0]->block;
+	        $orderData['address']['building']        = $getDelAdd[0]->building;
+	        $orderData['address']['street']          = $getDelAdd[0]->street;
+	        $orderData['address']['avenue']          = $getDelAdd[0]->avenue;
+	        $orderData['address']['other_address']   = $getDelAdd[0]->other_address;
+
 
 	        $dishId   =0;
 			foreach ($orderDetails as $key => $value)
 			{
-				$orderData['order_id']        = $value->order_id;
-				$orderData['restaurant_id']   = $value->restaurant_id;
-				$orderData['driver_id']       = $value->delivered_by;
-				$orderData['user_id']         = $value->user_id;
-				$orderData['total_price']     = $value->total_price;
-	            $orderData['delivery_time']   = $value->expected_del_time;
-	            $orderData['delivered_time']  = $value->delivered_time;
-	            $orderData['order_status']    = $value->order_status;
-	            $orderData['rating']          = $resRating;
-	            $orderData['dr_rating']       = $drivetRating;
-	            $orderData['delivery_charges']= $value->delivery_charges;
+				$orderData['order_id']            = $value->order_id;
+				$orderData['restaurant_id']       = $value->restaurant_id;
+				$orderData['driver_id']           = $value->delivered_by;
+				$orderData['user_id']             = $value->user_id;
+				$orderData['total_price']         = $value->total_price;
+	            $orderData['delivery_time']       = $value->expected_del_time;
+	            $orderData['delivered_time']      = $value->delivered_time;
+	            $orderData['order_status']        = $value->order_status;
+	            $orderData['rating']              = $resRating;
+	            $orderData['dr_rating']           = $drivetRating;
+	            $orderData['delivery_charges']    = $value->delivery_charges;
+	            $orderData['special_instruction'] = $value->special_instruction;	
 
 	            $choice   =($_COOKIE['lang'] =="AR")?$value->choice_name_ar:$value->choice_name;
 				
@@ -1025,6 +1042,13 @@ class Home extends MY_Controller
 		
 			$address_id                             =$_POST['address_id'];
 			$delivery_address['user_id']            =$_POST['user_id'];
+			$delivery_address['street']             =$_POST['street'];
+			$delivery_address['other_address']      =$_POST['other_address'];
+			$delivery_address['building']           =$_POST['building'];
+			$delivery_address['appartment_no']      =$_POST['appartmentNo'];
+			$delivery_address['block']              =$_POST['block'];
+			$delivery_address['avenue']             =$_POST['avenue'];
+			$delivery_address['floor']              =$_POST['floor'];
 			$delivery_address['address1']           =$_POST['address1'];
 			$delivery_address['address_type']       =$_POST['address_type'];
 			$delivery_address['customer_name']      =$_POST['customer_name'];
@@ -1073,9 +1097,15 @@ class Home extends MY_Controller
 	 * @author Manisha kanazariya 
 	 * Created date: 04-5-2018 06:30 PM
 	 */
-	function getCustomerAddress($address_id){
+	function getCustomerAddress($address_id,$user_id=null){
 
-		$getCustomerAddress =$this->Webservice_customer_model->getDeliveryAddress($_COOKIE['user_id'],$address_id);
+		if($user_id == null)
+		{
+			$user_id = $_COOKIE['user_id'];
+		}
+
+		$getCustomerAddress =$this->Webservice_customer_model->getDeliveryAddress($user_id,$address_id);
+
 		if(count($getCustomerAddress)>0){
 			$response['success'] =1;
 			$response['message'] =$getCustomerAddress;

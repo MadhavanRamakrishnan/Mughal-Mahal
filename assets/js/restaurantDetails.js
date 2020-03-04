@@ -43,7 +43,9 @@ $(document).ready(function() {
                                 {
                                     dishesData =['<i class="fa fa-play-circle-o" dishId='+key+'></i>',val.dish_name,val.dish_price,'-'];
                                 }else{
-                                    dishesData =['<i class="fa fa-play-circle-o" dishId='+key+'></i>',val.dish_name,val.dish_price,' <a href="'+editDishUrl+'/'+key+'/'+res_id+'" ><i class="fa fa-pencil" title="Edit Dish" ></i></a> |<div id="deleteDish'+key+'" class="deleteDish"  onclick="deleteDish('+key+');" style="width:100%;"><i class="fa fa-trash deleteDish" data-toggle="modal" data-target="#deleteDish" data-backdrop="static" data-keyboard="false" title="Delete Dish" ></i></div>'];
+
+                                    var showIcon =(val.is_show=="1")?"eye":"eye-slash";
+                                    dishesData =['<i class="fa fa-play-circle-o" dishId='+key+'></i>',val.dish_name,val.dish_price,' <a href="'+editDishUrl+'/'+key+'/'+res_id+'" ><i class="fa fa-pencil" title="Edit Dish" ></i></a> |<div id="deleteDish'+key+'" class="deleteDish"  onclick="deleteDish('+key+');" style="width:100%;"><i class="fa fa-trash deleteDish" data-toggle="modal" data-target="#deleteDish" data-backdrop="static" data-keyboard="false" title="Delete Dish" ></i>|<i class="fa fa-'+showIcon+' hideDish'+key+res_id+'" data-toggle="modal" data-target="#hideDish" data-backdrop="static" data-keyboard="false" title="Hide Dish" onclick="hideShowDish('+key+','+res_id+','+val.is_show+')" ></i></div>'];
                                 }
                                 dishesDatas.push(dishesData);
                             });
@@ -243,3 +245,26 @@ function deleteChoice(dish_id,choice_id){
 
 }
 
+function hideShowDish(dishId,resId,is_show)
+{
+     var msg =(is_show=="0")?"Are you sure to show the dish for the restaurant?":"Are you sure to hide the dish for the restaurant?";
+    $("#hideResDish_message_text").text(msg);
+     $("#hideResDishBtn").unbind().click(function(){
+            $.post(hideShowDishUrl,{res_id:resId,dish_id:dishId,is_show,is_show},function(response){
+            var obj =$.parseJSON(response);
+            if(obj.success =='1'){
+                
+                var dishClass ="hideDish"+dishId+resId;
+                var oldyeClass   =(obj.message.is_show=="0")?"fa-eye":"fa-eye-slash";
+                var neweyeClass  =(obj.message.is_show=="1")?"fa-eye":"fa-eye-slash";
+
+                $('.'+dishClass).attr("onclick","hideShowDish("+obj.message.fk_dish_id+","+obj.message.fk_restaurant_id+","+obj.message.is_show+")"  );
+                $('.'+dishClass).removeClass(oldyeClass);
+                $('.'+dishClass).addClass(neweyeClass);
+                $("#hideDish").modal('hide');
+            }else{
+                 $("#errhideResDish").text(obj.message);
+            }
+        }); 
+    });
+}

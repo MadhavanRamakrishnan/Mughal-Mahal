@@ -48,6 +48,7 @@
                         <th>Branch</th>
                         <th>Vehicle</th>
                         <th>Vendor</th>
+                        <th>Password</th>
                         <th>Status</th>
                         <th>Action</th>
                         
@@ -70,7 +71,8 @@
                             <td class="center"> (+965) <?php echo $value->contact_no; ?></td>
                             <td class="center"><?php echo ($value->restaurant_name)?$value->restaurant_name:'N/A'; ?></td>
                             <td class="center" id="vehicleAssignName_<?= $value->user_id; ?>"><?php echo $value->brand.' '.$value->model; ?></td>
-                             <td class="center"><?php echo $value->vendor; ?></td>
+                            <td class="center"><?php echo $value->vendor; ?></td>
+                            <td class="center"><?php echo $value->driver_password; ?></td>
                             <td class="center">
                               <?php if($value->is_active==1){
                                  echo "<span class='label label-success'>Active</span>";
@@ -78,7 +80,7 @@
                                  echo "<span class='label label-danger'>Inactive</span>";
                              }
                              ?>
-                         </td>
+                            </td>
                          
 
                          <td class="center"><a href="<?php echo site_url('Drivers/editDrivers/'.$value->user_id); ?>"><i class="fa fa-edit"> </i></a> |<a title="Delete" data-toggle="modal" data-target="#confirmationModal" data-backdrop="static" data-keyboard="false" onclick="deleteDriverDetail(<?php echo $value->user_id; ?>)"  id="delete"><i class="fa fa-trash"> </i></a>  |

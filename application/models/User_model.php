@@ -150,13 +150,10 @@ class User_model extends CI_Model
 
 		if($user_role !=""){
 			$this->db->where('role_id',$user_role);
-		}else{
-			$this->db->where('role_id !=','5');
 		}
 		$this->db->where("security_token",$securityToken);
 
 		$query=$this->db->get("tbl_users");	
-	
 		return $query->result();
 	}
 
@@ -212,7 +209,7 @@ class User_model extends CI_Model
 	 * @author Rashmi Nayani
 	 * Created date: 10/10/2017 6:00 PM
 	 */
-	function getOrder($resId,$limit=null,$orderBy=null)
+	function getOrder($resId,$limit=null,$orderBy=null, $orderStatus=null)
 	{
 		if($resId)
 		{
@@ -222,6 +219,10 @@ class User_model extends CI_Model
 
 		$this->db->join('tbl_users','tbl_users.user_id = tbl_orders.user_id','left');
 		$this->db->where('tbl_orders.is_active','1');
+		$this->db->where('tbl_orders.order_status > ','0');
+		/*if($orderStatus){
+			$this->db->where('tbl_orders.order_status > ','0');
+		}*/
 		if ($orderBy) {
 			$this->db->group_by('tbl_orders.order_id',$orderBy);
 		}

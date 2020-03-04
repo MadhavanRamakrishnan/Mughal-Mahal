@@ -560,29 +560,25 @@ class Restaurants extends MY_Controller
 				    }
 				    return implode($pass); //turn the array into a string
 				}
-				
-				
 				/*$random = randomPassword();*/
-				$random = "mughalmahal2019kw";
+				//$random = "mughalmahal2019kw";
+				$random = "mughalmahal2020kw";
 				$encrypt = $this->config->item('encryption_key');
 				$encryptpassword = md5($encrypt.$random);
 				$decryptPassword = $encrypt.$random;
 
 				$ownerData['first_name'] 	= trim($this->input->post('fname'));
 				$ownerData['last_name'] 	= trim($this->input->post('lname'));
-		        
 				$ownerData['contact_no']	= trim($this->input->post('contact_no'));
 				$ownerData['email'] 		= trim($this->input->post('email'));
 				$ownerData['password']		= $encryptpassword;
-		         
 				$ownerData['role_id'] 		= $this->config->item('restaurant_owner_role');
+				$ownerData['is_active'] 	= '1';	
 				$ownerData['created_by'] 	= $data['userdata'][0]->user_id;	
 				$ownerData['created_date']	= date("Y-m-d H:i:s");
-
-				
 				$result = $this->Restaurant_model->addOwnerDetail($ownerData);
-				if (sizeof($result)>0)
-				 {
+				if ($result>0)
+				{
 					$restaurantOwners['restaurant_id'] 	= trim($this->input->post('restaurant_id'));
 					$restaurantOwners['fk_user_id'] 	= $result;
 					$restaurantOwners['created_by'] 	= $data['userdata'][0]->user_id;
@@ -592,10 +588,6 @@ class Restaurants extends MY_Controller
 						$this->Restaurant_model->restaurantOwnersData($restaurantOwners);
 					}
 
-				}
-				if (sizeof($result)>0)
-				 {
-					//sending an email on the manager email of its credentials
 					$emailData['login_link']    = site_url('Login');
 					$emailData['email_template']= 'credentials';
 					$emailData['to_email']		= $ownerData['email'];
@@ -815,6 +807,14 @@ class Restaurants extends MY_Controller
 		$data['submenu'] 	 = $submenuArray;
 		$data['days']       =$this->config->item('days');
 
+		$j =0;
+		$deliveryTimes =array();
+		for ($i=0; $j <= 100 ; $i++) { 
+			$deliveryTimes[$j] =$j;
+			$j=$j+5;
+		}
+		$data['deliveryTimes'] =$deliveryTimes;
+
 		//restaurant opening time
 		$restaurantTime = $this->Webservice_customer_model->getRestaurantTime($id);
 		$resData =array();
@@ -859,6 +859,7 @@ class Restaurants extends MY_Controller
 			
 		}
 		$data['dishes'] =$dishes;
+		$data['rId']    =$id;
 		$this->load->view('Elements/header',$data);
 		$this->load->view('Restaurants/restaurant_details');
 		$this->load->view('Elements/footer');
@@ -881,8 +882,9 @@ class Restaurants extends MY_Controller
 			{
 				foreach ($restaurantDishes as $key => $value)
 				{
-					$data[$value->product_id]['dish_name'] =$value->product_en_name;
+					$data[$value->product_id]['dish_name']  =$value->product_en_name;
 					$data[$value->product_id]['dish_price'] =$value->dish_price ."  KD";
+					$data[$value->product_id]['is_show']    =$value->is_show;
 				}
 			}
 		}
@@ -1013,7 +1015,7 @@ class Restaurants extends MY_Controller
 		$data['res_id']	 = $restaurantId;
 		$data['dishList']	 = $this->Restaurant_model->getAllDishes($restaurantId);
 		$data['choiceList'] = $this->Choice_model->getAllChoices();
-		$resDishes           =$this->Restaurant_model->getRestaurantDishes($restaurantId);
+		$resDishes           =$this->Restaurant_model->getRestaurantsDishes($restaurantId);
 
 		if(isset($_POST['add']) && $_POST['add'] =='Save'){
 			$dish =$this->input->post('dish');
@@ -1403,8 +1405,18 @@ class Restaurants extends MY_Controller
 		}else
 		{
 			$resDayData             =$this->Restaurant_model->getRestaurantTimeDetail($res_id,$day);
+			if(empty($resDayData))
+			{
+				$newDay['fk_restaurant_id'] = $res_id;
+				$newDay['day'] = $day;
+				$newDay['created_date']	= date("Y-m-d H:i:s");
+				$addDay = $this->Restaurant_model->addRestaurantDay($newDay);
+				$newData['fk_restaurant_days_id'] =$addDay;
+			}
+			else {
+
 		    $newData['fk_restaurant_days_id'] =$resDayData[0]->restaurant_days_id;
-		   
+		   }
 		    if($resId !="")
 			{
 				$newData['update_from_time'] =$from_time;
@@ -1421,7 +1433,7 @@ class Restaurants extends MY_Controller
 		   
 			$newData['created_by']            =$user[0]->user_id;
 
-			$addTime                          =$this->Restaurant_model->addRestaurantTime($newData);
+			$addTime =$this->Restaurant_model->addRestaurantTime($newData);
 			if($addTime>0){
 			 	$response['success'] ='1';
 			 	$response['message'] ="";
@@ -1726,11 +1738,12 @@ class Restaurants extends MY_Controller
 				$resDishdata['dish_price'] 	     =$dishPrice;
 				$resDishdata['choice_id']       =rtrim($choiceid,",");
 				$resDishdata['choice_price']    =rtrim($choiceprice,",");
-			 
+
 			if(!empty($resDishdata)){
 				$insertDish =$this->Restaurant_model->UpdateRestaurantDish($res_id,$dish,$resDishdata);
+				// print_r($insertDish); die;
 
-				if($insertDish <= 0){
+				if($insertDish < 0){
 					$this->session->set_flashdata('error_msg',"Something went wrong, Please try again.");
 				}else if($insertDish >0 && isset($_POST['add']) && $_POST['add'] =='Save'){
 					redirect('Restaurants/restaurantDishes/'.$res_id);
@@ -1825,10 +1838,37 @@ class Restaurants extends MY_Controller
 	 * @author Manisha Kanazariya
 	 * Created date: 28-09-2018 11:50 PM
 	 */
-	function addBestDish($resId)
+	function addBestDish()
 	{
 		$dishId                    =$this->input->post('dishId');
+		$resId                    =$this->input->post('resId');
 		$resData['is_best_dishes'] =1;
+	    $updateResDish             =$this->Restaurant_model->updateBestDish($resId,$dishId,$resData);
+	    
+	    if($updateResDish > 0)
+	    {
+	    	$response['success'] ='1';
+	    	$response['message'] ='dish add successfully';
+	    }
+	    else
+	    {
+	    	$response['success'] ='0';
+	    	$response['message'] ='Something went wrong,Please try again!';
+	    }
+	    echo json_encode($response);exit();
+	}
+
+	/**
+	 * function for remove best dish form restaurant
+	 * @author Manisha Kanazariya
+	 * Created date: 28-09-2018 11:50 PM
+	 */
+	function removeBestDish()
+	{
+		$resId = $this->input->post('resId');
+		$dishId = $this->input->post('dishId');
+
+		$resData['is_best_dishes'] =0;
 	    $updateResDish             =$this->Restaurant_model->updateBestDish($resId,$dishId,$resData);
 	    
 	    if($updateResDish > 0)
@@ -1845,26 +1885,58 @@ class Restaurants extends MY_Controller
 	}
 
 	/**
-	 * function for remove best dish form restaurant
-	 * @author Manisha Kanazariya
-	 * Created date: 28-09-2018 11:50 PM
+	 * [hideShowDishUrl description]
+	 * Description:
+	 * @author: Manisha Kanazariya
+	 * @CreatedDate:2019-07-09T19:38:03+0530
 	 */
-	function removeBestDish($dishId)
+	function hideShowDishUrl()
 	{
-		$resId                     =$this->input->post('resId');
-		$resData['is_best_dishes'] =0;
-	    $updateResDish             =$this->Restaurant_model->updateBestDish($resId,$dishId,$resData);
-	    
-	    if($updateResDish > 0)
-	    {
-	    	$response['success'] ='1';
-	    	$response['message'] ='';
-	    }
-	    else
-	    {
-	    	$response['success'] ='0';
-	    	$response['message'] ='Something went wrong,Please try again!';
-	    }
-	    echo json_encode($response);exit();
+		$data['fk_restaurant_id']  =$this->input->post('res_id');
+		$data['fk_dish_id']        =$this->input->post('dish_id');
+		$data['is_show']           =($this->input->post('is_show'))?0:1;
+		$updateDishData =$this->Restaurant_model->hideShowDishUrl($data);
+		if($updateDishData)
+		{
+			$response =array('success'=>1,'message'=>$data);
+		}else{
+			$response =array('success'=>0,'message'=>"Something went wrong.Please try again!");
+		}
+		echo json_encode($response);exit;
+	}
+
+	/**
+	 * [setAdditionalDeliveryTime description]
+	 * Description:
+	 * @author: Manisha Kanazariya
+	 * @CreatedDate:2019-08-05T13:40:34+0530
+	 */
+	function setAdditionalDeliveryTime()
+	{
+	
+		$updateLocalityTime   = $this->Restaurant_model->updateLocalityExtraTime($this->input->post('res_id'),array('extra_delivery_time'=>$this->input->post('time')));
+		$updateResDelTimeTime = $this->Restaurant_model->updateAvilability($this->input->post('res_id'),array('extra_delivery_time'=>$this->input->post('time')));
+		
+		
+		if($updateLocalityTime)
+		{
+			$response =array('success'=>1,'message'=>"Additional delivery time added successfully.");
+		}else{
+			$response =array('success'=>0,'message'=>"Additional delivery time not added. Please try again!");
+		}
+		echo json_encode($response);exit;
+	}
+
+	/**
+	 * [getRestaurantDishes To get names of dishes for restaurant]
+	 * @author Hardik Ghadshi
+	 * @Created Date   2019-11-07T13:06:25+0530
+	 * @return  [type] [description]
+	 */
+	function getRestaurantDishes(){
+
+		$restaurantId = $this->input->post('restaurant_id');
+		$result = $this->Restaurant_model->getRestaurantsDishes($restaurantId);
+		echo json_encode($result);
 	}
 }

@@ -64,7 +64,9 @@
                                         <div class="day_tab" res_id="<?php echo $res_id; ?>">
                                             <div class="allData<?php echo $key; ?>">
                                                 <?php  if(isset($resData[$key]) && count($resData[$key])>0){
-                                                    foreach ($resData[$key] as $k1 => $v1) {  ?>
+                                                    foreach ($resData[$key] as $k1 => $v1) {  
+
+                                                        ?>
                                                     <div class="form-group addMoreTime add_main">
                                                         <div class="add_fild_row">
                                                             <div class="col-md-4 col-sm-5 col-xs-12">
@@ -85,7 +87,8 @@
                                                             <div class="col-md-4 col-sm-2 col-xs-12">
                                                                 <div class="add_btn">
                                                                     <button type="button"  class="btn btn-danger editTime" day="<?php echo $key; ?>" ><i class="fa fa-pencil"></i></button>
-                                                                    <button type="button"  class="btn btn-success saveTime" id="<?php echo $v1['time_id'] ?>" day="<?php echo $key; ?>" ><i class="fa fa-check"></i></button>
+                                                                    
+<button type="button"  class="btn btn-success saveTime" id="<?php echo $v1['time_id'] ?>" day="<?php echo $key; ?>" ><i class="fa fa-check"></i></button>
                                                                     <button type="button"  class="btn btn-primary addTime" day="<?php echo $key; ?>">+</button>
                                                                     <button type="button" class="btn btn-primary removeTime" day="<?php echo $key; ?>" data-toggle="modal" data-target="#deleteTime" data-backdrop="static" data-keyboard="false" title="Remove time"  id="<?php echo $v1['time_id'] ?>">-</button>
                                                                     <?php if($v1['is_approved'] !=1){ ?>

@@ -2,30 +2,28 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /*
-|--------------------------------------------------------------------------
-| Base Site URL
-|--------------------------------------------------------------------------
-|
-| URL to your CodeIgniter root. Typically this will be your base URL,
-| WITH a trailing slash:
-|
-|	http://example.com/
-|
-| WARNING: You MUST set this value!
-|
-| If it is not set, then CodeIgniter will try guess the protocol and path
-| your installation, but due to security concerns the hostname will be set
-| to $_SERVER['SERVER_ADDR'] if available, or localhost otherwise.
-| The auto-detection mechanism exists only for convenience during
-| development and MUST NOT be used in production!
-|
-| If you need to allow multiple domains, remember that this file is still
-| a PHP script and you can easily do that on your own.
-|
+	|--------------------------------------------------------------------------
+	| Base Site URL
+	|--------------------------------------------------------------------------
+	|
+	| URL to your CodeIgniter root. Typically this will be your base URL,
+	| WITH a trailing slash:
+	|
+	|	http://example.com/
+	|
+	| WARNING: You MUST set this value!
+	|
+	| If it is not set, then CodeIgniter will try guess the protocol and path
+	| your installation, but due to security concerns the hostname will be set
+	| to $_SERVER['SERVER_ADDR'] if available, or localhost otherwise.
+	| The auto-detection mechanism exists only for convenience during
+	| development and MUST NOT be used in production!
+	|
+	| If you need to allow multiple domains, remember that this file is still
+	| a PHP script and you can easily do that on your own.
 */
-
-$config['base_url'] = 'http://'.$_SERVER['HTTP_HOST'].'/MughalMahal/';
-
+// $config['base_url'] = 'http://'.$_SERVER['HTTP_HOST'].'/MughalMahal';
+$config['base_url'] = 'https://'.$_SERVER['HTTP_HOST'].'/';
 /*
 |--------------------------------------------------------------------------
 | Index File
@@ -597,7 +595,7 @@ $config['OrderStatus_ar'] 			= array("0"=>"طلب معلق","1"=>"تم الطل�
 $config['report_type'] 				= array("1" =>"Best Selling Area","2" =>"Most Selling Dishes","3" =>"Cancelled Orders","4" =>"Order per Hour","5" =>"Order per Day","6" =>"Order per Month","7" =>"Sales Report","8"=>"Summary","9"=>"Sales By Category");
 
 //types of paymnet
-$config['payment_type'] 			= array('1'=>'Online Order','2'=>'KNET Debit Card','3'=>'COD');
+$config['payment_type'] 			= array('1'=>'Credit Card','2'=>'KNET Debit Card','3'=>'COD','4'=>'Talabat Credit','5'=>'Loyalty Redemption','6'=>'Self cash','7'=>'Self KNET','8'=>'Self CC');
 
 //orderId range
 $config['order_range'] 				= 6;

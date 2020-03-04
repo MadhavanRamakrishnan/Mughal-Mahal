@@ -50,7 +50,7 @@ class Dashboard extends MY_Controller
 		$data['countOrders'] 	= count($data['orderCount']);
 		$data['countDrivers'] 	= $this->User_model->getDriverCount($resId);
 		$data['countVehicles'] 	= $this->User_model->getVehicleCount($resId);
-		$data['customerOrder'] 	= $this->User_model->getOrder($resId,$limit='5',$orderBy='DESC');
+		$data['customerOrder'] 	= $this->User_model->getOrder($resId,$limit='5',$orderBy='DESC',1);
 		//echo "<pre>";print_r($data['customerOrder']);exit;
 		$data['customers'] 		= $this->User_model->getCustomer($resId,$limit='5',$orderBy='DESC');
 		$this->load->view('Elements/header',$data);

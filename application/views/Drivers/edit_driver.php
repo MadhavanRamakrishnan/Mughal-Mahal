@@ -55,8 +55,8 @@
                              <div class="form-group">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        <label class="control-label">Email<i class="reustarred">*</i></label>
-                                        <input class="form-control" readonly name="email" id="email" placeholder="Enter Email"  type="text" value="<?php echo (set_value('email'))?set_value('email'):$driv_data[0]->email; ?>">
+                                        <label class="control-label">Email<i class="reustarred"></i></label>
+                                        <input class="form-control" name="email" id="email" placeholder="Enter Email"  type="text" value="<?php echo (set_value('email'))?set_value('email'):$driv_data[0]->email; ?>">
                                         <div class="color-red"><?php echo form_error('email'); ?></div>
                                     </div>
                                 </div>
@@ -84,11 +84,20 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <label class="control-label">Password<i class="reustarred">*</i></label>
+                                        <input class="form-control" name="driver_password" id="driver_password" placeholder="Enter Password"  type="text" value="<?php echo (set_value('driver_password'))?set_value('driver_password'):$driv_data[0]->driver_password; ?>" >
+                                        <div class="color-red"><?php echo form_error('driver_password'); ?></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label class="control-label">Restaurant Branch<i class="reustarred">*</i> </label>
                                 <select class="form-control chosen-select" name="branch" id="branch">
                                      <?php 
                                         if(set_value('branch')){$branch=set_value('branch');}
-                                        else if($driv_data[0]->fk_restaurant_id){ $branch=$driv_data[0]->fk_restaurant_id; }
+                                        else if($driv_data[0]->rid){ $branch=$driv_data[0]->rid; }
                                         else {$branch="";} 
 
                                         if($userdata[0]->role_id ==$this->admin_Role || $userdata[0]->role_id ==$this->sales_Role){?>

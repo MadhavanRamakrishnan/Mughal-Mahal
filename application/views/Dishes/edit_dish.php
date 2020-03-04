@@ -62,7 +62,7 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <label class="control-label">Dish Name<i class="reustarred">*</i></label>
-                                    <input class="form-control" name="dish_name" id="dish_name" placeholder="Enter Dish Name"  type="text" value="<?php echo (set_value('dish_name'))?set_value('dish_name'):$dish_data[0]->product_en_name; ?>">
+                                    <input class="form-control" name="dish_name" id="dish_name" placeholder="Enter Dish Name"  type="text" value="<?php echo (set_value('dish_name'))?set_value('dish_name'):stripslashes($dish_data[0]->product_en_name); ?>">
                                     <div class="color-red"><?php echo form_error('dish_name'); ?></div>
                                 </div>
                             </div>
@@ -97,7 +97,7 @@
                                 </div>
                                 <div class="col-lg-6 m-t-30" >
                                     <div class="thumbnail edit-thumbnail">
-                                        <img src="<?php echo base_url().'assets/images/front-end/dishes/'.$dish_data[0]->dish_image; ?>" class="img-responsive" id="changeimages" style="text-align: center;margin: 0 auto;">
+                                        <img src="<?php echo base_url().'assets/images/front-endold/dishes/'.$dish_data[0]->dish_image; ?>" class="img-responsive" id="changeimages" style="text-align: center;margin: 0 auto;">
                                     </div>
                                 </div>
                             </div>

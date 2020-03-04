@@ -13,10 +13,34 @@ class MY_Controller extends CI_Controller
 {
 	function __construct(){
 		parent::__construct();
-		$this->load->model(array('Menu_model','User_model','Restaurant_model'));
+		$this->load->model(array('Menu_model','User_model','Restaurant_model','Webservice_customer_model'));
 		$this->admin_Role   =$this->config->item("super_admin_role");
 		$this->owener_Role  =$this->config->item("restaurant_owner_role");
 		$this->sales_Role   =$this->config->item("sales_role");
+
+		/*This is for backend where customer search works at that time cookie has been stored, when you are at another page cookie should be destroyed */
+
+		/*echo "1  ".$this->uri->segment(1).PHP_EOL;
+		echo "2  ".$this->uri->segment(2).PHP_EOL;
+		echo "3  ".$this->uri->segment(3).PHP_EOL;exit();*/
+		/*print_r($this->router->fetch_class());
+		print_r($this->router->fetch_method());*/
+		if($this->router->fetch_class() != 'Customers' && $this->router->fetch_method() == 'index'){
+			delete_cookie('filter');
+		}
+		elseif ($this->router->fetch_class() != 'Customers') {
+			delete_cookie('filter');
+		}
+		elseif ($this->router->fetch_class() == 'Customers' && ($this->router->fetch_method() != 'index' && $this->router->fetch_method() != 'filterDataGet')) {
+			delete_cookie('filter');
+		}
+/*		if(($this->router->fetch_class() != 'Customers' && $this->router->fetch_method() == 'index') 
+			|| ($this->router->fetch_class() != 'Customers') 
+			|| ($this->router->fetch_class() == 'Customers' && $this->router->fetch_method() != 'index')) 
+		{
+			
+		}*/
+
 	}
 	function checkLogin(){
 		if($this->session->userdata('current_user')==''){
@@ -58,6 +82,7 @@ class MY_Controller extends CI_Controller
 		}
 		return $response;
 	}
+
 	/**
 	 * Description : Check role base access for any type of user and depend on this show menu
 	 * Created By : Vaibhav Mehta
@@ -207,13 +232,17 @@ class MY_Controller extends CI_Controller
 	function sendPushNotificationUsingFirebaseToDriver($userId, $orderId)
 	{
 		//$ch = curl_init("https://fcm.googleapis.com/fcm/send");
-	    $url = "https://fcm.googleapis.com/fcm/send";
+	
 
 	    $userMetaData 	= $this->Webservice_customer_model->getUserMetaData($userId);
-
+	    $token1=array();
+	    $token=array();
 	    for($i = 0; $i < sizeof($userMetaData); $i++){
-	    	if($userMetaData[$i]->device_token){
+	    	if($userMetaData[$i]->device_token && $userMetaData[$i]->device_type == 1){
 		    	$token[] = $userMetaData[$i]->device_token;
+	    	}
+	    	elseif ($userMetaData[$i]->device_token && $userMetaData[$i]->device_type == 2) {
+	    		$token1[] = $userMetaData[$i]->device_token;
 	    	}
 	    }
 
@@ -234,15 +263,25 @@ class MY_Controller extends CI_Controller
 
 	    $notification = array('title' =>$title, 'body' => $body, 'sound' => 'default');
 
-	    $arrayToSend = array('registration_ids' => $token, 'notification' => $notification,'priority'=>'high','data'=>$mainData);
+	    $arrayToSendAndroid = array('registration_ids' => $token,'priority'=>'high','data'=>$mainData);
+	    $arrayToSendIos = array('registration_ids' => $token1, 'notification' => $notification,'priority'=>'high','data'=>$mainData);
 
-	    //Generating JSON encoded string form the above array.
-	    $json = json_encode($arrayToSend);
+	    $androidPush 	= $this->pushNotification($arrayToSendAndroid);
+	    $iosPush 		= $this->pushNotification($arrayToSendIos);
+
+	 
+	}
+
+	function pushNotification($token){
+
+		$url = "https://fcm.googleapis.com/fcm/send";
+		//Generating JSON encoded string form the above array.
+	    $json = json_encode($token);
 
 	    //Setup headers:
 	    $headers = array();
 	    $headers[] = 'Content-Type: application/json';
-	    $headers[] = 'Authorization: key= AAAAZDOJtn0:APA91bEYPFszLDyCsSRmzjswhvwLojqdccy0EZav26hqskeR9FLgWKk4GIBATU_PZ84fHhKBP6GIZ6vd6tzK31x7x-9EIq-V1KZc4aXa3hcRU9RJ0HwbLcEGTeEvJqZ-3d-v0thoM9SM'; //Server key here
+	    $headers[] = 'Authorization: key= AAAAMVBwi-Q:APA91bFqvlggHdx0YOOMTUia1YpKzb8kDUaVELmR9iFUaRNV8c4VtJbf9kJmAoodxkrZkhMogl6EqOESwkW3vlIWNvVXBu7p1gBr52UMWypO8etpf2GSlrw9R0htzvdC6X0ErhRZupZK'; //Server key here
 
 	    //Setup curl, add headers and post parameters.
 	    $ch = curl_init();
@@ -258,6 +297,8 @@ class MY_Controller extends CI_Controller
 	    //Close request
 	    curl_close($ch);
 	    // echo $response;
+	    
+	    return $response;
 	}
 
 	/**

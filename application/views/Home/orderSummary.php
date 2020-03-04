@@ -1,5 +1,11 @@
+<style type="text/css">
+ /* #removeaddress .modal-body,#removeaddress #myModalLabel{text-align: center; color: #666;}
+  #removeaddress .btn-success{    background-color: #00AE4A;}*/
+  .deleteAddress{color:red;}
+</style>
 <script type="text/javascript">
     jQuery(document).ready(function(){
+          jQuery(".addressPopup").colorbox({inline:true, width:"90%" ,height:"90%" });
           jQuery(".addressPopup").colorbox({inline:true, width:"90%" ,height:"90%" });
 
 
@@ -53,7 +59,7 @@
                             foreach ($finalDishData as $key => $value) { 
 
                               ?>
-                                <tr class="<?php echo ($value['locality']== $resId)?'':'not_allow'; ?>">                          
+                                <tr class="<?= ($value['locality']== $resId)?'':'not_allow'; ?>">                          
                                   <td><?= $value['dish_name'] ?><span><?= trim($value['choice_name'].$value['instruction']) ?></span></td>
                                   <td><?= number_format((float)$value['subtotal'], 3, '.', '') ?> KD</td>
                                   <td><?= $value['dish_count'] ?></td>                            
@@ -77,16 +83,25 @@
                       if(count($addressDetail)>0){
                         
                         $check = (isset($_COOKIE['restaurant_id']))?$_COOKIE['restaurant_id']:"";
+                        $fullAddress = "";
                          foreach ($addressDetail as $key => $value) {
-                           
+                            $fullAddress =($value->appartment_no !="" || $value->appartment_no !=null)?$value->appartment_no.",":"";
+                            $fullAddress .=($value->floor!="" || $value->floor!=null)?"Floor -".$value->floor.",":"";
+                            $fullAddress .=($value->block!="" || $value->block!=null)?"Block -".$value->block.",":"";
+                            $fullAddress .=($value->building !="" ||$value->building !=null)?"Building -".$value->building.",":"";
+                            $fullAddress .=($value->street !="")?$value->street.',':'';
+                            $fullAddress .=($value->avenue !="" || $value->avenue !=null)?$value->avenue.',':'';
+                            $fullAddress .=($value->address1!="")?$value->address1:""; 
                           ?>
                         
-                        <li class="address<?php echo $value->address_id; ?>">
-
-                          <input type="radio" id="address<?php echo $value->address_id; ?>" <?= ($resId == $value->locality_id)?"checked":""; ?> class="custAddress" loca="<?php echo $value->locality_id; ?>" loca_val="<?php echo $value->name; ?>" name="address-radio" value="<?php echo $value->address_id ?>" >
-                          <label  for="address<?php echo $value->address_id; ?>"><span><?php echo $value->customer_name ?></span> <?php echo $value->address1 ?></label>
-                          <div class="edit_address">
-                            <a href="#address" class="addressModel" aria-label="open"   onclick="editAddressData(<?php echo $value->address_id; ?><?php echo ($check == $value->address_id)?',1':''; ?>)"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                        <li class="address<?= $value->address_id; ?>">
+                          <input type="radio" id="address<?= $value->address_id; ?>" <?= ($resId == $value->locality_id)?"checked":""; ?> class="custAddress" loca="<?= $value->locality_id; ?>" loca_val="<?= $value->name; ?>" name="address-radio" value="<?= $value->address_id ?>" >
+                          <label for="address<?= $value->address_id; ?>" style="width: 85%">
+                            <span><font size="3" color="#00AE4A"><?= ($value->address_type == 1 ? "Home" : ($value->address_type == 2 ? "Office" : ucfirst($value->other_address)) ) ?></font> &nbsp;<font size="1"> <?= $fullAddress ?></font></span>
+                          </label>
+                          <div class="edit_address" style="width: 15%">
+                            <a href="#removeaddress" class="minusDishpopUp" style="color:red;float: right;"  onclick="deleteAddressData(<?= $value->address_id; ?>)"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                            <a href="#address" class="addressModel" aria-label="open" style="float: right;margin-right: 5px;"  onclick="editAddressData(<?= $value->address_id; ?><?= ($check == $value->address_id)?',1':''; ?>)"><i class="fa fa-pencil" aria-hidden="true"></i></a> 
                           </div>
 
                         </li>  
@@ -96,7 +111,7 @@
                     
                   </ul>
                   <div class="add_address">
-                    <a href="#address" class="addressModel" aria-label="open" onclick="document.getElementById('addressadd').reset();document.getElementById('address_id').value = '';">+ Add Address</a>
+                    <a href="#address" class="addressModel" aria-label="open" onclick="document.getElementById('addressadd').reset();document.getElementById('address_id').value = '';document.getElementById('addemail').value = '<?= $userdata[0]->email ?>';">+ Add Address</a>
                   
                    <!-- popup content ends -->
                   </div>
@@ -145,12 +160,12 @@
                   <div class="col-lg-4 col-md-4 col-sm-5 col-xs-12">
                     <div class="order_sammary">
                       <ul>
-                        <li><?php  echo $this->lang->line('message_Subtotal'); ?><span class="order_subtotal">KD <?php echo $subtotal; ?></span></li>
-                        <li><?php  echo $this->lang->line('message_DeliveryFee'); ?><span class="order_charge">KD <?php echo $del_charge; ?></span></li>
-                        <li><?php  echo $this->lang->line('message_Total')." ".$this->lang->line('message_Amount'); ?> <span class="order_total">KD <?php echo $total; ?></span></li>
+                        <li><?php  echo $this->lang->line('message_Subtotal'); ?><span class="order_subtotal">KD <?= $subtotal; ?></span></li>
+                        <li><?php  echo $this->lang->line('message_DeliveryFee'); ?><span class="order_charge">KD <?= $del_charge; ?></span></li>
+                        <li><?php  echo $this->lang->line('message_Total')." ".$this->lang->line('message_Amount'); ?> <span class="order_total">KD <?= $total; ?></span></li>
                       </ul>
                       <div class="btn_order">
-                        <button class="placeorder"total="<?php echo $total;  ?>" remDish="<?php echo $removeDishTotal;  ?>">Place Order</button>
+                        <button class="placeorder"total="<?= $total;  ?>" remDish="<?= $removeDishTotal;  ?>">Place Order</button>
                       </div>
                     </div>
                   </div>
@@ -164,5 +179,6 @@
     </div>
 </div>
 <input type="hidden" id="address_id" value="">
+
 <script type="text/javascript" src="<?= base_url() ?>assets/front-end/js/custom/orderSummary.js"></script>
 

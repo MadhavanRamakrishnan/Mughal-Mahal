@@ -103,7 +103,7 @@
 					$data['image_error']=$error['error'];
 				}
 				else{
-					$categoryData['category_name']	= trim($this->input->post('category_name'));
+					$categoryData['category_name']	= addslashes(trim($this->input->post('category_name')));
 					$categoryData['created_date']	= date("Y-m-d H:i:s");
 
 					$result = $this->Category_model->addCategory($categoryData);
@@ -183,7 +183,7 @@
 						$data['image_error']=$error['error'];
 					}
 					else{
-						$categoryData['category_name']	= trim($this->input->post('category_name'));
+						$categoryData['category_name']	= addslashes(trim($this->input->post('category_name')));
 						$categoryData['created_date']	= date("Y-m-d H:i:s");
 						
 						$result = $this->Category_model->editCategory($categoryData,$id);
@@ -241,7 +241,7 @@
 		
 		$result = $this->Category_model->editCategory($CatDetail,$catId);
 		if($result>0){
-			$response = array("success"=>"1","message"=>"Category details delete successfully");
+			$response = array("success"=>"1","message"=>"Category details deleted successfully");
 		}	
 		else{
 			$response = array("success"=>"0","message"=>"Something went wrong while delete category details");

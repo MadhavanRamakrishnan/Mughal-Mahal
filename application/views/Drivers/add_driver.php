@@ -55,7 +55,7 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        <label class="control-label">Email<i class="reustarred">*</i></label>
+                                        <label class="control-label">Email<!-- <i class="reustarred">*</i> --></label>
                                         <input class="form-control" name="email" id="email" placeholder="Enter Email"  type="text" value="<?php echo (set_value('email'))?set_value('email'):""; ?>">
                                         <div class="color-red"><?php echo form_error('email'); ?></div>
                                     </div>
@@ -82,6 +82,16 @@
                                         </div>
                                         
                                         <div class="color-red"><?php echo form_error('contact_no'); ?></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <label class="control-label">Password<i class="reustarred">*</i></label>
+                                        <input class="form-control" name="driver_password" id="driver_password" placeholder="Enter Password"  type="text" value="<?php echo (set_value('driver_password'))?set_value('driver_password'):""; ?>" >
+                                        
+                                        <div class="color-red"><?php echo form_error('driver_password'); ?></div>
                                     </div>
                                 </div>
                             </div>

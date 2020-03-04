@@ -85,11 +85,14 @@ class Login_model extends CI_Model
 	{
 		if($user_role !=""){
 			$this->db->where('role_id',$user_role);
-		}else{
-			$this->db->where('role_id !=','5');
 		}
 		$this->db->where("security_token",$securityToken);
 		$this->db->update("tbl_users",$userData);
 		return $this->db->affected_rows();
 	}
+
+	public function clearAppLogCron(){
+		$this->db->empty_table('tbl_api_log'); 
+    }
 }
+

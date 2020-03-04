@@ -51,6 +51,9 @@
 		$submenu   			= $this->submenu;
 		$submenuArray 		= array();
 
+		$resId               = $this->getRestaurantForRoleBaseAccess();
+		$data['resId']   	 = $resId;
+
 		foreach($submenu as $key=>$value)
 		{
 			$submenuArray[$value->parent_page_id][] = $value;
@@ -58,6 +61,8 @@
 		$data['submenu']   	 = $submenuArray;
 		$data['restaurants'] = $this->Restaurant_model->getAllRestaurantDetails();
 		$data['type']        =$this->config->item('report_type');
+
+		$endDate = date('Y-m-d H:i:s');
 		
 		//pagination
 		$totalRow 					= $this->Reports_model->getOrderDataCount(1,'','','');
@@ -82,7 +87,7 @@
 		}
 
 		$offset=($page - 1) * $config["per_page"];
-		$orderData 			= $this->Reports_model->getOrderData(1,$config["per_page"],$offset,'');
+		$orderData 			= $this->Reports_model->getOrderData(1,$config["per_page"],$offset,'',$endDate);
 
 		$data['orderData']	= $orderData;
 		$data['offset'] 	= $offset + 1;	
@@ -101,7 +106,7 @@
 	 */
 	function getReportData($option =""){
 		$resId               = $this->getRestaurantForRoleBaseAccess();
-	 	
+
 	 	if(is_numeric($option) || $option ==""){
 	 		$type      =($_GET['type'])?$_GET['type']:"";
 	 		$payment   =($_GET['payment_type'])?$_GET['payment_type']:"";
@@ -117,11 +122,13 @@
 		 	$endDate   =$export->endDate;
 		 	$restaurant=($resId != '')?$resId:$export->restaurant;
 	 	}
+	 	
 		$type_val  =$this->config->item('report_type')[$type];
 	 	$startDate =($startDate !="")?date('Y-m-d H:i:s',strtotime($startDate.' 00:00:00')):"";
 	 	$endDate   =($endDate != "")?date('Y-m-d H:i:s',strtotime($endDate.' 23:59:59')):"";
-
 	 	//pagination
+	 // echo $startDate;
+	 // echo $endDate;
 		$totalRow 					= $this->Reports_model->getOrderDataCount($type,'','',$startDate,$endDate,$restaurant,$payment);
 
 		$config["base_url"] 		= site_url('Reports/getReportData');
@@ -149,11 +156,12 @@
 
 		$offset=($page - 1) * $config["per_page"];
 		if(is_numeric($option) || $option ==""){
+
 			$orderData 		= $this->Reports_model->getOrderData($type,$config["per_page"],$offset,$startDate,$endDate,$restaurant,$payment);
 		}else{
 			$orderData 		= $this->Reports_model->getOrderData($type,"","",$startDate,$endDate,$restaurant,$payment);
 		}
-
+	
 		$data['offset'] 	= $offset + 1;	
 		$str_links 			= $this->pagination->create_links();
 		$response["links"] 		= explode('&nbsp;',$str_links );
@@ -174,6 +182,7 @@
 		 				$orderData[$key]->OrderTime =date('d M Y  h:i:s a',strtotime($value->OrderTime));
 		 				$orderData[$key]->Payment   =$this->config->item('payment_type')[$value->Payment];
 		 				$orderData[$key]->Mobile    =($value->Mobile !='')?" (+965) ".$value->Mobile:'';
+		 				$orderData[$key]->Status    =($value->Status==7)?"Successful":"Disputed";;
 		 			}
 
 		 		}
@@ -189,6 +198,7 @@
 	 		echo json_encode($response);exit;
 	 	}else{
 	 		$this->exportReport($type_val,$orderData);
+	 		delete_cookie('export'); 
 	 		unlink($path.$fileName) or die("Unable to open file!");
 	 		
 	 	}
@@ -240,7 +250,6 @@
 		$offset=($page - 1) * $config["per_page"];
 		$orderData 			= $this->Reports_model->getOrderData(7,$config["per_page"],$offset,'','',$resId);
 		
-		
 		$data['offset'] 	= $offset + 1;	
 		$str_links 			= $this->pagination->create_links();
 		$data["links"]   	= explode('&nbsp;',$str_links );
@@ -252,6 +261,7 @@
 				$orderData[$key]->Amount    =number_format($value->Amount,3, '.', '')." KD";
 				$orderData[$key]->OrderTime =date('d M Y  h:i:s a',strtotime($value->OrderTime));
 				$orderData[$key]->Payment   =$this->config->item('payment_type')[$value->Payment];
+				$orderData[$key]->Status    =($value->Status==7)?"Successful":"Disputed";
 			}
 		}
 		$data['orderData']   =$orderData;
@@ -267,6 +277,7 @@
 	 * Created date 	: 05-05-2018 03:15PM
 	 */
 	 function exportReport($type_val,$data){
+	 		// echo "<pre>";print_r($data);die;
 		    $path           =$this->config->item('root_path').'assets/Export/Report/';
 		    $fileName       = $type_val.'-data-'.time().'.csv';
 			$f = fopen($path.$fileName, "w");
@@ -499,5 +510,122 @@
 	 	}else{
 	 		echo json_encode($response);exit;
 	 	}
+	}
+
+	/**
+	 * [driverReport description]
+	 * Description:
+	 * @author: Manisha Kanazariya
+	 * @CreatedDate:2019-07-22T13:34:23+0530
+	 */
+	function driverReport()
+	{
+		if($this->input->post("ajaxData")==null){
+			$data['userdata']	= $this->session->userdata('current_user');
+			$data['menu']   	= $this->menu;
+			$submenu   			= $this->submenu;
+			$submenuArray 		= array();
+			$resId              = $this->getRestaurantForRoleBaseAccess();
+			foreach($submenu as $key=>$value)
+			{
+				$submenuArray[$value->parent_page_id][] = $value;
+			}
+			$data['submenu']   	 = $submenuArray;
+			$data['resId']   	 = $resId;
+			$data['restaurants'] = $this->Restaurant_model->getAllRestaurantDetails($resId);
+			$data['drivers']     = $this->Reports_model->getRestaurantDrivers($resId);
+		}
+		
+		$driverId    =($this->input->post("driverId"))?$this->input->post("driverId"):null;
+		$resId       =($this->input->post("resID"))?$this->input->post("resID"):null;
+		$startDate   =($this->input->post("startDate"))?$this->input->post("startDate"):null;
+		$endDate     =($this->input->post("endDate"))?$this->input->post("endDate"):null;
+		$paymentType =($this->input->post("paymentType"))?$this->input->post("paymentType"):null;
+   
+   		$totalOrders                =$this->Reports_model->countDriverOrders($driverId,$resId,$startDate,$endDate,$paymentType);
+   		// print_r($totalOrders);
+		$config["base_url"] 		= site_url('Reports/driverReport');
+		$config["total_rows"] 		= $totalOrders->total;
+		$config["per_page"] 		= 20;
+		$config['use_page_numbers'] = TRUE;
+		$config['cur_tag_open']		= '&nbsp;<a class="active">';
+		$config['cur_tag_close']	= '</a>';
+		$config['next_link'] 		= 'Next';
+		$config['prev_link'] 		= 'Previous';
+		
+		$this->pagination->initialize($config);
+
+		if($this->uri->segment(3)){
+			$page = ($this->uri->segment(3)) ;
+		}
+		else{
+			$page = 1;
+		}
+
+		$offset             =($page - 1) * $config["per_page"];
+		$repData            = $this->Reports_model->getDriverOrders($config["per_page"],$offset,$driverId,$resId,$startDate,$endDate,$paymentType);
+		$strLinks 			= $this->pagination->create_links();
+		
+
+		if($this->input->post("ajaxData")==null){
+			$data['repData']    = $repData;
+			$data['offset'] 	= $offset + 1;	
+			$data["links"] 		= explode('&nbsp;',$strLinks);
+			$data["totalOrders"]= $totalOrders->total;
+			$data["totalAmount"]= number_format($totalOrders->amount,3,'.','')." KD";
+			// print_r($data);
+		}else{
+			if(count($repData)>0){
+
+				foreach ($repData as $key => $value) {
+					$value->delivered_time =date('d M Y',strtotime($value->delivered_time));
+					$value->order_type     =$this->config->item('payment_type')[$value->order_type];
+					$value->order_status   =$this->config->item('OrderStatus')[$value->order_status];
+				}
+
+				$message['repData']    =$repData;
+				$message['offset'] 	   = $offset + 1;	
+				$message['links']      =explode('&nbsp;',$strLinks);
+				$message["totalOrders"]= $totalOrders->total;
+				$message["totalAmount"]= number_format($totalOrders->amount,3,'.','')." KD";
+				$response =array("success"=>"1","data"=>$message);
+
+			}else{
+				$response =array("success"=>"0","data"=>"Orders Not Found!");
+			}
+			echo json_encode($response);exit;
+		}
+
+		$data['type']        =$this->config->item('payment_type');
+		$this->load->view('Elements/header',$data);
+		$this->load->view('Reports/driverReport',$data);
+		$this->load->view('Elements/footer');
+	}
+
+	function exportDriverReport()
+	{
+		$export    =json_decode($_COOKIE['exportDriverReport']);
+		$driverId    =($export->driverId)?$export->driverId:null;
+		$resId       =($export->resID)?$export->resID:null;
+		$startDate   =($export->startDate)?$export->startDate:null;
+		$endDate     =($export->endDate)?$export->endDate:null;
+		$paymentType =($export->paymentType)?$export->paymentType:null;
+		$orderData   =array();
+		$repData  =$this->Reports_model->getDriverOrders(null,null,$driverId,$resId,$startDate,$endDate,$paymentType);
+	
+		foreach ($repData as $key => $value) {
+			$orderData[$key]['Sr']          =$key+1;
+			$orderData[$key]['OrderId']     =$value->order_id;
+			$orderData[$key]['Driver']      =$value->first_name." ".$value->last_name;
+			$orderData[$key]['Amount']      =number_format($value->total_price,3, '.', '')." KD";;
+			$orderData[$key]['OrderTime']   =$value->delivered_time;
+			$orderData[$key]['Restaurant']  =$value->restaurant_name;
+			$orderData[$key]['PaymentType'] =$this->config->item('payment_type')[$value->order_type];
+			$orderData[$key]['OredreStatus']=($value->order_status==7)?"Successful":"Disputed";
+		}
+		$this->exportReport("DriverReport",$orderData);
+		delete_cookie('exportDriverReport'); 
+	 	unlink($path.$fileName) or die("Unable to open file!");
+
 	}
 }

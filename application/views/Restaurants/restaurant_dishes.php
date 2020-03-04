@@ -129,6 +129,25 @@
     </div>
 </div>
 
+<div id="hideDish" class="modal fade" role="dialog" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="text-align:center !important;">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4><label class="modal-title">Confirmation</label></h4>
+            </div>
+            <div class="modal-body" style="text-align:center !important;" >
+                 <h5 id="hideResDish_message_text">Are you sure to hide this dish?</h5>
+                 <span style="color: red; display: none;" id="errhideResDish"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="hideResDishBtn">Yes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/restaurantDetails.js"></script>
 <script type="text/javascript">
     var res_id          =$("#res_id").val();
@@ -137,6 +156,7 @@
     var deleteDishUrl   ="<?php echo site_url('Restaurants/deleteRestaurantDish'); ?>";
     var deleteChoiceUrl ="<?php echo site_url('Restaurants/deleteRestaurantDishChoice'); ?>";
     var setDishIdUrL    ="<?php echo site_url('Restaurants/setDishId'); ?>";
+    var hideShowDishUrl ="<?php echo site_url('Restaurants/hideShowDishUrl'); ?>";
 </script>
 
 

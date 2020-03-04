@@ -172,7 +172,7 @@
     		<div class="address_type">
     			<h3><?php  echo $this->lang->line('message_AddressType'); ?></h3>
     			<div class="cus_radio">
-	    			<ul>
+	    			<ul  style="display: flex;">
 		    			<li>
 		    				<input type="radio" id="home" name="address_type" value="1" checked>
 	    					<label for="home"><?php  echo $this->lang->line('message_Home'); ?></label>
@@ -186,7 +186,6 @@
 	    					<label for="other"><?php  echo $this->lang->line('message_Other'); ?></label>
 		    			</li>
 		    		</ul>
-
 		    	</div>
     		</div>
     	</div>

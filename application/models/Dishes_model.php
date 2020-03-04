@@ -28,13 +28,16 @@
 	 * @author Rashmi Nayani
 	 * Created date: 06/10/2017 7:15 PM
 	 */
-	function getAllDishes(){
+	function getAllDishes($limit=null,$offset=null){
 		$this->db->select('tbl_dishes.*,tbl_dish_category.category_name,tbl_dish_category.category_id');
 		$this->db->from('tbl_dishes');
 		$this->db->join('tbl_dish_category','tbl_dish_category.category_id = tbl_dishes.category_id','left');
-		/*$this->db->where('tbl_dishes.is_active','1');*/
-		
+		if($limit)
+		{
+			$this->db->limit($limit,$offset);
+		}
 		$query = $this->db->get();
+		//echo $this->db->last_query();
 		return $query->result();
 	}
 

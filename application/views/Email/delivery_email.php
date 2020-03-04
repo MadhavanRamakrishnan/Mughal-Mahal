@@ -549,7 +549,8 @@
                         <span style="text-decoration: none; color:#222222;width:100%; float: left; margin:10px 0; text-align: center;">If you have any feedback for Mughal Mahal or about your ordering experience, we’d love to hear from you – simply reply to this email and we’ll be in touch.
                         </span><br><br>
                         <span class="order_left">
-                          <p style="font-size:16px; font-weight:600; color:#00A651 !important; margin:0;">Order: #<?php echo $order_id;?></p>
+                          <!-- <p style="font-size:16px; font-weight:600; color:#00A651 !important; margin:0;">Order: #<?php echo $order_id;?></p> -->
+                          <p style="font-size:16px; font-weight:600; color:#00A651 !important; margin:0;">Order: #<?php echo $sequence_no;?></p>
                       </span>
                       <span class="order_right">
                           <p style="font-size:14px; text-align:right; margin:0;"><span>Date: <?php echo date("d-m-Y",strtotime($order_placed_time));?></span></p>
@@ -576,7 +577,19 @@
                 <?php for($i=0; $i < sizeof($dishes); $i++){?>
                   <tr style="padding:5px 0;">
                     <td class="mcnTextContent" valign="top" style="padding: 0 9px 0 9px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #080101;font-family: Helvetica;font-size: 16px;line-height: 150%;text-align: left;" >
-                        <?php echo $dishes[$i]['name'];?>
+                        <?php
+                        $info = $dishes[$i]['name'];
+                        // $dishArr = explode(" ", $$dishes[$i]['choice_name']);
+                        // print_r($dishArr);
+                        if($dishes[$i]['choice_name']) {
+
+                            $info .= ' ('.$dishes[$i]['choice_name'].')';
+                        }
+                        if($dishes[$i]['description']) {
+                            $info .= ' (Instruction :- '.$dishes[$i]['description'].')';
+                        } 
+                        echo $info;
+                        ?>
                     </td>
                     <td class="mcnTextContent" valign="top" style="padding: 0 9px 0 9px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #080101;font-family: Helvetica;font-size: 16px;line-height: 150%;text-align: center;" >
                         <?php echo $dishes[$i]['quantity'];?>
@@ -585,7 +598,7 @@
                         <?php echo number_format($dishes[$i]['amount'],3);?> KD
                     </td>
                 </tr>
-            <?php }?>
+            <?php } ?>
             <tr style="padding:5px 0;">
                 <td class="mcnTextContent" valign="top" style="padding: 0 9px 0 9px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #080101;font-family: Helvetica;font-size: 16px;line-height: 150%;text-align: left;" >Delivery Charge
                 </td>
@@ -633,9 +646,6 @@
 </tr>
 </tbody>
 </table>
-
-
-
 <table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnCaptionBlock" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
     <tbody class="mcnCaptionBlockOuter"  style="background-color: transparent !important;">
        <tr>

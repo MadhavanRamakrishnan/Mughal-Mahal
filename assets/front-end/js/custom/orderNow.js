@@ -18,8 +18,6 @@ function showDish(locality,search="")
             var lang     =coockie.lang;
             var category = "";
             var dishes   = "";
-
-            //show dish category
             $.each(obj.category,function(key,val)
             {
                 if(lang =="AR")
@@ -29,59 +27,62 @@ function showDish(locality,search="")
                 else{
                     categoryName =val.category_name;
                 }
-                category +='<a href="#tab'+val.category_id+'"><li rel="tab'+val.category_id+'">'+categoryName+'</li></a>';
-                
-                dishes +='<div id="tab'+val.category_id+'" class="tabClickcontent">';
-                dishes +='<h3 class="tab_drawer_heading" rel="tab'+val.category_id+'" >'+categoryName+'</h3>';
-                dishes +='<div  class="tab_content">';
-                if(obj.dishes[val.category_id])
+                if(obj.dishes[val.category_id].length > 0)
                 {
-                    $.each(obj.dishes[val.category_id],function(dk,dv)
+                    category +='<a href="#tab'+val.category_id+'"><li rel="tab'+val.category_id+'">'+categoryName+'</li></a>';
+                    
+                    dishes +='<div id="tab'+val.category_id+'" class="tabClickcontent">';
+                    dishes +='<h3 class="tab_drawer_heading" rel="tab'+val.category_id+'" >'+categoryName+'</h3>';
+                    dishes +='<div  class="tab_content">';
+                    if(obj.dishes[val.category_id])
                     {
-
-                        if(lang =="AR")
+                        $.each(obj.dishes[val.category_id],function(dk,dv)
                         {
-                            dishName    =dv.product_ar_name;
-                            description =dv.ar_description;
-                        }
-                        else
-                        {
-                            dishName    =dv.product_en_name;
-                            description =dv.en_description;
-                        }
 
-                        dishes +='<div class="productContent wow fadeIn" data-wow-duration="1s" data-wow-delay="0" style="visibility: visible; animation-duration: 2s; animation-name: fadeIn;">';
-                       
-                        dishes +='<a href="#" class="tooltip">';
-                        if(dv.dish_image){
-                          dishes +='<img src="'+dishImageUrl+dv.dish_image+'&w=302&h=226" alt="dishimaage" />';
-                          dishes +='<span><img src="'+dishImageUrl+dv.dish_image+'&w=302&h=226" alt="dishimaage" /></span>';
-                        }
-                        else{
-                            dishes +='<img src="'+dishImageUrl+dv.dish_image+'&w=302&h=226" alt="dishimaage" />'; 
-                            dishes +='<span><img src="'+dishImageUrl+dv.dish_image+'&w=302&h=226" alt="dishimaage" /></span>';  
-                        }
-                        dishes +='</a>';
+                           
+                            if(lang =="AR")
+                            {
+                                dishName    =dv.product_ar_name;
+                                description =dv.ar_description;
+                            }
+                            else
+                            {
+                                dishName    =dv.product_en_name;
+                                description =dv.en_description;
+                            }
 
-                        
-                        dishes +='<div class="productnamedescription">';
+                            dishes +='<div class="productContent wow fadeIn" data-wow-duration="1s" data-wow-delay="0" style="visibility: visible; animation-duration: 2s; animation-name: fadeIn;">';
+                           
+                            dishes +='<a href="javascript:void(0);" class="tooltip">';
+                            if(dv.dish_image){
+                              dishes +='<img src="'+dishImageUrl+dv.dish_image+'&w=302&h=226" alt="dishimaage" />';
+                              dishes +='<span><img src="'+dishImageUrl+dv.dish_image+'&w=302&h=226" alt="dishimaage" /></span>';
+                            }
+                            else{
+                                dishes +='<img src="'+dishImageUrl+dv.dish_image+'&w=302&h=226" alt="dishimaage" />'; 
+                                dishes +='<span><img src="'+dishImageUrl+dv.dish_image+'&w=302&h=226" alt="dishimaage" /></span>';  
+                            }
+                            dishes +='</a>';
 
-                        dishes +='<h3 id="'+dv.product_id+'" >'+dishName+'</h3>';
-                        if(description!=''){
-                          dishes +='<p>'+description+'</p>';
-                        }
+                            
+                            dishes +='<div class="productnamedescription">';
 
-                        dishes +='</div>';
+                            dishes +='<h3 id="'+dv.product_id+'" >'+dishName+'</h3>';
+                            if(description!=''){
+                              dishes +='<p>'+description+'</p>';
+                            }
 
-                        if(dv.price > 0){
-                            dishes +='<a id="iframe" href="#data" class="orderPopup addChoice" dishId="'+dv.product_id+'">'+apply+' '+parseFloat(dv.price).toFixed(3)+' KD</a>';
-                        }else{
-                            dishes +='<a id="iframe" href="#data" class="orderPopup addChoice" dishId="'+dv.product_id+'">'+price_on_selection+'</a>';
-                        }
-                        /*dishes += '<span>*'+termCondition+'</span>';*/
-                        dishes +='</div>';
-                        
-                    })
+                            dishes +='</div>';
+
+                            if(dv.price > 0){
+                                dishes +='<a id="iframe" href="#data" class="orderPopup addChoice" dishId="'+dv.product_id+'">'+apply+' '+parseFloat(dv.price).toFixed(3)+' KD</a>';
+                            }else{
+                                dishes +='<a id="iframe" href="#data" class="orderPopup addChoice" dishId="'+dv.product_id+'">'+price_on_selection+'</a>';
+                            }
+                            dishes +='</div>';
+                            
+                        })
+                    }
                 }
                 
 
@@ -103,15 +104,6 @@ function showDish(locality,search="")
             });
 
 
-
-           /* jQuery('ul.tabs a').click(function(e) {
-              e.preventDefault();
-              $('li').removeClass('activeLi');
-              $(this).find('li').addClass('activeLi');
-            });*/
-
-
-
             if (jQuery(window).width() > 800) {
               var stickySidebar3 = new StickySidebar('.tabs_wrapper', {
                   topSpacing: 100,
@@ -128,24 +120,6 @@ function showDish(locality,search="")
                   });
               }
 
-
-            /* smooth scroll tab 1*/
-              
-            /*  jQuery('ul.tabs a[href^="#"]').click(function(e) {
-                  jQuery('html,body').animate({ scrollTop: (jQuery(this.hash).offset().top-100)}, 1000);   
-                  return false;
-                  e.preventDefault();
-                });
-
-                jQuery('ul.tabs a').click(function(e) {
-                   e.preventDefault();
-                    $('li').removeClass('activeLi');
-                    $(this).find('li').addClass('activeLi');
-                 });*/
-
-
-            /* smooth scroll tab ends*/
-             /* smooth scroll tab 2*/
             jQuery(document).ready(function() {
                      jQuery('ul.tabs a[href^="#"]').bind('click', function(e) {
                             e.preventDefault(); // prevent hard jump, the default behavior
@@ -166,12 +140,12 @@ function showDish(locality,search="")
             });
 
             $(window).scroll(function() {
-                            $('.tabs li.activeLi').removeClass('activeLi');
+                            // $('.tabs li.activeLi').removeClass('activeLi');
                             var scrollDistance = $(window).scrollTop();
                             $('.tabClickcontent').each(function(i) {
                                     if ($(this).position().top <= scrollDistance) {
-                                            $('.tabs li.active').removeClass('active');
-                                            $('.tabs li').eq(i).addClass('active');
+                                            // $('.tabs li.active').removeClass('active');
+                                            // $('.tabs li').eq(i).addClass('active');
                                     }
                             });
             }).scroll();
@@ -187,15 +161,15 @@ function showDish(locality,search="")
 //search dishj functionality
 $(document).on("keyup",'#searchBox',function(){
     var search =this.value;
-    showDish(1,search);
+    var coockie  =getCookie();
+    var locality =coockie.locality_id;
+    showDish(locality,search);
 })
 
 //function for set side cart data 
 function showCart()
 {
-    //var data        =JSON.stringify([{"id":1,"dishId":"225","choiceOfOne":["2"],"Multiplechoice":[],"dishcount":"1"},{"id":2,"dishId":"226","choiceOfOne":["14","3"],"Multiplechoice":[],"dishcount":"1"},{"id":3,"dishId":"445","choiceOfOne":["4"],"Multiplechoice":[],"dishcount":"1"}]);
-    
-    //document.cookie = "dishDetail="+data+"; expires=" + lastday + "; path=/";
+   
     $.ajax({
         type:'post',
         url:getdishdetails,
@@ -407,8 +381,38 @@ function priceChange(price){
     }else{
         radioBtnPrice2 = 0;
     }
+    if(($("input[name='category3']:checked"). attr("price") != 0) && (typeof $("input[name='category3']:checked"). attr("price") != "undefined")){   
+        radioBtnPrice3 = $("input[name='category3']:checked"). attr("price");
+    }else{
+        radioBtnPrice3 = 0;
+    }
+    if(($("input[name='category4']:checked"). attr("price") != 0) && (typeof $("input[name='category4']:checked"). attr("price") != "undefined")){   
+        radioBtnPrice4 = $("input[name='category4']:checked"). attr("price");
+    }else{
+        radioBtnPrice4 = 0;
+    }
+    if(($("input[name='category5']:checked"). attr("price") != 0) && (typeof $("input[name='category5']:checked"). attr("price") != "undefined")){   
+        radioBtnPrice5 = $("input[name='category5']:checked"). attr("price");
+    }else{
+        radioBtnPrice5 = 0;
+    }
+    if(($("input[name='category6']:checked"). attr("price") != 0) && (typeof $("input[name='category6']:checked"). attr("price") != "undefined")){   
+        radioBtnPrice6 = $("input[name='category6']:checked"). attr("price");
+    }else{
+        radioBtnPrice6 = 0;
+    }
+    if(($("input[name='category7']:checked"). attr("price") != 0) && (typeof $("input[name='category7']:checked"). attr("price") != "undefined")){   
+        radioBtnPrice7 = $("input[name='category7']:checked"). attr("price");
+    }else{
+        radioBtnPrice7 = 0;
+    }
+    if(($("input[name='category8']:checked"). attr("price") != 0) && (typeof $("input[name='category8']:checked"). attr("price") != "undefined")){   
+        radioBtnPrice8 = $("input[name='category8']:checked"). attr("price");
+    }else{
+        radioBtnPrice8 = 0;
+    }
 
-    var radioBtnPrice = parseFloat(radioBtnPrice1) + parseFloat(radioBtnPrice2);
+    var radioBtnPrice = parseFloat(radioBtnPrice1) + parseFloat(radioBtnPrice2) + parseFloat(radioBtnPrice3) + parseFloat(radioBtnPrice4) + parseFloat(radioBtnPrice5) + parseFloat(radioBtnPrice6) + parseFloat(radioBtnPrice7) + parseFloat(radioBtnPrice8);
 
     //If left radio button has no price and direct product price given
     if(radioBtnPrice == 0 && ($('#addOnPrice').val() == '')){
@@ -573,9 +577,11 @@ $(document).on("click",".addChoice",function(){
                     formHtml += '<input type="hidden" name="dish_id" id="dish_id" value="'+obj.dish_details.product_id+'"">';
                     
                 for (var i = 1; i <= Object.keys(obj.dish_details.choiceCategory).length; i++) {
-                    formHtml += "<h3><i class='alerticon"+i+" fa fa-info-circle'></i><i class='successicon"+i+" fa fa-check-circle'></i> "+obj.dish_details.choiceCategory[i].category_name+" <span>required</span></h3>";
 
                     if(obj.dish_details.choiceCategory[i].is_multiple == 0){
+
+                        formHtml += "<h3><i class='alerticon"+i+" fa fa-info-circle'></i><i class='successicon"+i+" fa fa-check-circle'></i> "+obj.dish_details.choiceCategory[i].category_name+" <span>required</span></h3>";
+
                         var catId = obj.dish_details.choiceCategory[i].category_id;
                         for(var j = 0; j < obj.dish_details.choiceCategory[i].choice['length']; j++)
                         {
@@ -587,6 +593,9 @@ $(document).on("click",".addChoice",function(){
                                 }
                         }
                     }else{
+
+                        formHtml += "<h3><i class='alerticon"+i+" fa fa-info-circle'></i><i class='successicon"+i+" fa fa-check-circle'></i> "+obj.dish_details.choiceCategory[i].category_name+" </h3>";
+                        
                         for(var j = 0; j < obj.dish_details.choiceCategory[i].choice['length']; j++)
                         {
                             formHtml += "<label class='checkbox_custom'>"+obj.dish_details.choiceCategory[i].choice[j].choice_name+"<input type='checkbox' id='check_"+i+"' class='chociecheck' name='check_"+i+"' onchange='priceChange("+parseFloat(obj.dish_details.choiceCategory[i].choice[j].price).toFixed(3)+")' price="+parseFloat(obj.dish_details.choiceCategory[i].choice[j].price).toFixed(3)+" value='"+obj.dish_details.choiceCategory[i].choice[j].choice_id+"'><span>"+parseFloat(obj.dish_details.choiceCategory[i].choice[j].price).toFixed(3)+"KD</span><span class='checkmark'></span></label><br>";
@@ -600,6 +609,22 @@ $(document).on("click",".addChoice",function(){
                 formHtml += '<input type="hidden" name="dishCount" id="dishCount" value="1">';
 
                 $("#dish_choices_form").html(formHtml);
+
+                for (var i = 1; i <= Object.keys(obj.dish_details.choiceCategory).length; i++) {
+                    var alertStyles = {
+                        color:"red",
+                        "font-size":"20px",
+                        "display":"none"
+                    };
+                    $(".alerticon"+i).css(alertStyles);
+
+                    var successStyles = {
+                        color:"green",
+                        "font-size":"20px",
+                        "display":"none"
+                    }
+                    $(".successicon"+i).css(successStyles);
+                }
             }
         }
     });
@@ -626,10 +651,10 @@ function formsubmit(res_id)
                 $(".alerticon"+i).hide();
                 $(".successicon"+i).show();
             }
-            if(!fromdata.includes("check_"+i) && $("#check_"+i).length > 0){
+            /*if(!fromdata.includes("check_"+i) && $("#check_"+i).length > 0){
                 $(".alerticon"+i).show();
                 return false;
-            }
+            }*/
             if(fromdata.includes("check_"+i) && $("#check_"+i).length > 0){
                 $(".alerticon"+i).hide();
                 $(".successicon"+i).show();
@@ -669,19 +694,18 @@ function formsubmit(res_id)
       j++;
     }
 
-    if(data[i].includes('category1'))
+    if(data[i].includes('category'))
       {
         choice = data[i].split("=");
         choiceofone.push(choice[1]);
       }
 
 
-      if(data[i].includes('category2'))
+      /*if(data[i].includes('category2'))
       {
         choice = data[i].split("=");
          choiceofone.push(choice[1]);
-      }
-     
+      }*/  
   }
 
   // if(choiceofone.length>0 && choiceofone[0]!='category1'){
@@ -726,11 +750,6 @@ function formsubmit(res_id)
 
   if(dishid[1]!='' && (choiceofone.length > 0 || choiceofmultiple.length > 0))
   {
-    
-    
-     
-
-
     for (var i = 0; i < disharr.length; i++) {
 
       singDifference = $(choiceofone).not(disharr[i].choiceOfOne).get();

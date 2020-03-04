@@ -26,12 +26,12 @@
                 <div class="panel-body">
                    
                         <div class="row">
-                            <div class="col-md-3"><label>Restaurant:</label></div>
-                            <div class="col-md-3"><label>Payment:</label></div>
-                            <div class="col-md-3"><label>From:</label></div>
-                            <div class="col-md-3"><label>To:</label></div>
+                            <div class="col-md-3"><label>Restaurant</label></div>
+                            <div class="col-md-3"><label>Payment Status</label></div>
+                            <div class="col-md-3"><label>From</label></div>
+                            <div class="col-md-3"><label>to</label></div>
                         </div>
-                        <div class="row">
+                        <div class="row filterRowOfRow">
                             <div class="col-md-3 res_div">
                                 <input type="hidden" id="report_type" value="7">
                                 <select class="form-control"  id="restaurant" <?php echo ($resId !="")?"disabled":""; ?>>
@@ -57,7 +57,7 @@
                                 <input type="text" class="datepicker form-control" placeholder="Start Date" name="startDate"  id="startDate">
                             </div>
                             <div class="col-md-3">
-                                <input type="text" class="datepicker form-control" placeholder="Start Date" name="endDate"  id="endDate">
+                                <input type="text" class="datepicker form-control" placeholder="End Date" name="endDate"  id="endDate">
                             </div>
                             
                         </div>
@@ -84,6 +84,7 @@
                             <th>Payment</th>
                             <th>AreaName</th>
                             <th>Restaurant</th>
+                            <th>Status</th>
                         </thead>
                         <tbody>
                             <?php if(count($orderData)>0){
@@ -98,6 +99,7 @@
                                 <td><?php echo $value->Payment; ?></td>
                                 <td><?php echo $value->AreaName; ?></td>
                                 <td><?php echo $value->Restaurant; ?></td>
+                                <td><?php echo $value->Status; ?></td>
                                 </tr>
                             <?php }
                                 } ?>
@@ -119,12 +121,31 @@
 <script type="text/javascript">
     var getReport ="<?php echo base_url('Reports/getReport'); ?>";
     var getReportdata ="<?php echo base_url('Reports/getReportData/'); ?>";
+
+    var userRole = "<?php echo $userdata[0]->role_id;?>";
+
     $(document).ready(function(){
+
+        minimumDate = '';
+
+        if(userRole == 2){
+            /*minimumDate = '-1m';
+            maximumDate = '+1m';*/
+
+            var d = new Date();
+            var currMonth = d.getMonth();
+            var currYear = d.getFullYear();
+            var startDate = new Date(currYear, currMonth-1, 1);
+            minimumDate = startDate;
+            var endDate = new Date(currYear, currMonth-1, 1);
+        }
+
        $('#startDate,#endDate').datepicker({
             autoclose: true,
             changeYear: true,
             endDate: '+0d',
-            todayHighlight: true
+            todayHighlight: true,
+            startDate: minimumDate
        });
        $('#startDate').datepicker().on('changeDate', function (e) {
             var minDate = new Date(e.date.valueOf());

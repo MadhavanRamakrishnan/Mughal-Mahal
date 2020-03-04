@@ -21,33 +21,36 @@ class Home_model extends CI_Model
 	public function getLocality($id='')
 	{
 		$column =($_COOKIE['lang']=="AR")?'name_ar':'name';
-		$this->db->select("locality_id,delivered_time,delivery_charge,min_order_amount,restaurant_id,".$column." as name,lat,lon");
+		$this->db->select("tbl_locality.locality_id,tbl_locality.delivered_time,tbl_locality.delivery_charge,tbl_locality.min_order_amount,tbl_locality.restaurant_id,".$column." as name,tbl_locality.lat,tbl_locality.lon");
+		$this->db->join('tbl_restaurants','tbl_locality.restaurant_id = tbl_restaurants.restaurant_id', 'INNER');
+		// $this->db->select("locality_id,delivered_time,delivery_charge,min_order_amount,restaurant_id,".$column." as name,lat,lon");
 		if($id != "")
 		{
-			$this->db->where('locality_id',$id);
+			$this->db->where('tbl_locality.locality_id',$id);
 		}
+		$this->db->where('tbl_restaurants.is_availability',1);
 		$query = $this->db->get('tbl_locality');
-//print_r($query);exit;
-	//	echo $this->db->last_query();exit;
-//print_r($query->result());exit;
+
 		return $query->result();
 	}
 
-	public function dishCategory($locality="",$search=null)
+	public function dishCategory($resId="",$search=null)
 	{
 		$column =($_COOKIE['lang']=="AR")?'product_ar_name':'product_en_name';
-		$this->db->select('tbl_dish_category.*,tbl_locality.locality_id');
-		$this->db->join('tbl_restaurant_dishes','tbl_restaurant_dishes.fk_restaurant_id=tbl_locality.restaurant_id','right');
+		$this->db->select('tbl_dish_category.*');
 		$this->db->join('tbl_dishes','tbl_dishes.product_id =tbl_restaurant_dishes.fk_dish_id','left');
 		$this->db->join('tbl_dish_category','tbl_dish_category.category_id =tbl_dishes.category_id','left');
 		if($search)
 		{
 			$this->db->like('tbl_dishes.'.$column,$search);
 		}
-		$this->db->where('tbl_locality.locality_id',$locality);
+		$this->db->where('tbl_restaurant_dishes.fk_restaurant_id',$resId);
+		$this->db->where('tbl_restaurant_dishes.is_show',1);
 		$this->db->where('tbl_dish_category.is_active', 1);
+		$this->db->order_by('tbl_dish_category.priority', 'asc');
+		$this->db->order_by('tbl_dish_category.category_id', 'asc');
 		$this->db->distinct();
-		$query = $this->db->get('tbl_locality');
+		$query = $this->db->get('tbl_restaurant_dishes');
 		return $query->result();
 
 	}
@@ -57,22 +60,23 @@ class Home_model extends CI_Model
 	 * @author: Manisha Kanazariya
 	 * @CreatedDate:2019-01-01T16:32:26+0530
 	 */
-	public function getDishData($categoryId,$locality,$search=null)
+	public function getDishData($categoryId,$resId,$search=null)
 	{
 		$column =($_COOKIE['lang']=="AR")?'product_ar_name':'product_en_name';
-		$this->db->select('tbl_dishes.*');
-		$this->db->join('tbl_restaurant_dishes','tbl_restaurant_dishes.fk_restaurant_id=tbl_locality.restaurant_id','right');
+		$this->db->select('tbl_dishes.*,tbl_restaurant_dishes.is_show,tbl_restaurant_dishes.fk_dish_id,tbl_restaurant_dishes.fk_restaurant_id');
 		$this->db->join('tbl_dishes','tbl_dishes.product_id =tbl_restaurant_dishes.fk_dish_id','left');
 		$this->db->join('tbl_dish_category','tbl_dish_category.category_id =tbl_dishes.category_id','left');
-
 		$this->db->where('tbl_dish_category.category_id',$categoryId);
-		$this->db->where('tbl_locality.locality_id',$locality);
+		$this->db->where('tbl_restaurant_dishes.fk_restaurant_id',$resId);
+		$this->db->where('tbl_restaurant_dishes.is_show',1);
 		$this->db->where('tbl_dishes.is_active','1');
+
+		//$this->db->order_by('tbl_dish_category.priority','desc');
 		if($search)
 		{
 			$this->db->like('tbl_dishes.'.$column,$search);
 		}
-		$query = $this->db->get('tbl_locality');
+		$query = $this->db->get('tbl_restaurant_dishes');
 		return $query->result();
 	}
 
@@ -242,7 +246,7 @@ class Home_model extends CI_Model
 	}
 
 	function allMyorderStatus($user_id,$order_id=""){
-		$this->db->select("order_id,order_status as status,user_id,delivered_time,expected_delivery_time");
+		$this->db->select("order_id,order_status as status,user_id,delivered_time,expected_delivery_time,order_placed_time");
 		$this->db->where('user_id',$user_id);
 		if($order_id !=""){
 			$this->db->where('order_id',$order_id);
@@ -257,7 +261,7 @@ class Home_model extends CI_Model
 	 * Created Date: 4/07/18 03:30 PM 
 	*/
 	function getRestaurantDetail($locality_id,$day =""){
-		$this->db->select('rs.restaurant_id,rs.restaurant_name,rs.restaurant_name_ar,rs.banner_image,rs.address,rs.email,rs.contact_no,rs.delivery_contact_no,tbl_locality.min_order_amount,tbl_locality.delivered_time,tbl_locality.delivery_charge');
+		$this->db->select('rs.restaurant_id,rs.restaurant_name,rs.restaurant_name_ar,rs.banner_image,rs.address,rs.email,rs.contact_no,rs.delivery_contact_no,rs.is_availability,tbl_locality.min_order_amount,tbl_locality.delivered_time,tbl_locality.delivery_charge');
 		$this->db->join('tbl_locality','tbl_locality.restaurant_id =rs.restaurant_id','left');
 		
 		$this->db->where('tbl_locality.locality_id',$locality_id);
@@ -281,8 +285,8 @@ class Home_model extends CI_Model
 	 */
 
 	function getOrderDetails($oid)
-	{
-		$this->db->select("ord.order_id,ord.user_id,ord.restaurant_id,ord.total_price,ord.expected_delivery_time as expected_del_time,ord.delivered_time,ord.order_status,ord.reason,ord.selected_delivery_address,ord.delivered_by,ord.delivery_charges,od.order_detail_id,od.amount,od.quantity,dish.*,choice.*");
+	{ 
+		$this->db->select("ord.order_id,ord.user_id,ord.restaurant_id,ord.total_price,ord.expected_delivery_time as expected_del_time,ord.delivered_time,ord.order_status,ord.reason,ord.selected_delivery_address,ord.delivered_by,ord.delivery_charges,od.order_detail_id,od.amount,od.description,od.quantity,dish.*,choice.*,ord.sequence_no,ord.special_instruction");
 		$this->db->from('tbl_orders as ord'); 
 		$this->db->join('tbl_order_details as od','od.order_id=ord.order_id','left');
 		$this->db->join('tbl_dishes as dish','dish.product_id=od.product_id','left');
@@ -291,6 +295,7 @@ class Home_model extends CI_Model
 		$this->db->join('tbl_choice_category as choice_cat','choice_cat.choice_category_id=choice.fk_choice_category_id','left');
 
 		$this->db->where("ord.order_id",$oid);
+		$this->db->where("ord.order_status >","0");
 		$query = $this->db->get();
 		
 		return $query->result();
@@ -515,4 +520,82 @@ class Home_model extends CI_Model
 		return $query->row();
 	}
 	
+	function getRestaurantByLocality($locality){
+		$this->db->select("restaurant_id");
+		$this->db->where("locality_id",$locality);
+		$query =$this->db->get("tbl_locality");
+		return $query->row();
+	}
+
+	/**
+	 * [changeOrderStatus To change Order status from front-end]
+	 * @author Hardik Ghadshi
+	 * @Created Date   2020-01-25T18:25:33+0530
+	 * @param   [type] $orderId                 [description]
+	 * @return  [type]                          [description]
+	 */
+	function changeOrderStatus($orderId, $data){
+
+		$this->db->where('order_id', $orderId);
+		$this->db->update('tbl_orders', $data);
+
+		return $this->db->affected_rows();
+	}
+
+	/**
+	 * [getLocalityData To get locality data from id]
+	 * @author Hardik Ghadshi
+	 * @Created Date   2020-01-31T17:58:02+0530
+	 * @param   [type] $localityId              [description]
+	 * @return  [type]                          [description]
+	 */
+	function getLocalityData($localityId){
+
+		$this->db->where('locality_id', $localityId);
+		$query = $this->db->get('tbl_locality');
+
+		return $query->row();
+	}
+
+	/**
+	 * [getLatestSequenceNumber To get latest sequence number from order table]
+	 * @author Hardik Ghadshi
+	 * @Created Date   2020-02-18T16:59:03+0530
+	 * @return  [type] [description]
+	 */
+	function getLatestSequenceNumber(){
+
+		$this->db->select('sequence_no');
+		$this->db->where('order_status >=', 1);
+		$this->db->order_by('sequence_no','DESC');
+		$this->db->limit('1');
+		$query = $this->db->get('tbl_orders');
+		return $query->row();
+	}
+
+	/**
+	 * [getOrderIdFromSequenceNo To get order id from order table]
+	 * @author Hardik Ghadshi
+	 * @Created Date   2020-02-21
+	 * @return  [$sequenceNo] [description]
+	 */
+	function getOrderIdFromSequenceNo($sequenceNo){
+
+		$this->db->where('sequence_no', $sequenceNo);
+		$query = $this->db->get('tbl_orders');
+		return $query->row();
+	}
+
+	/**
+	 * [getSequenceNoFromOrderId To get order id from order table]
+	 * @author Hardik Ghadshi
+	 * @Created Date   2020-02-21
+	 * @return  [$sequenceNo] [description]
+	 */
+	function getSequenceNoFromOrderId($orderId){
+
+		$this->db->where('order_id', $orderId);
+		$query = $this->db->get('tbl_orders');
+		return $query->row();
+	}
 }

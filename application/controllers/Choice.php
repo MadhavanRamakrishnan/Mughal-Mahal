@@ -63,7 +63,7 @@ class Choice extends MY_Controller
 	        }
 	        else{
 	        	
-	            $categoryData['choice_category_name	']	= trim($this->input->post('cat_name'));
+	            $categoryData['choice_category_name	']	= addslashes(trim($this->input->post('cat_name')));
 	            $categoryData['created_date']			= date("Y-m-d H:i:s");
 
 	            $result = $this->Choice_model->addChoiceCategory($categoryData);
@@ -99,7 +99,7 @@ class Choice extends MY_Controller
 		        }
 		        else{
 		        	
-		            $categoryData['choice_category_name']	= trim($_POST['cat_name']);
+		            $categoryData['choice_category_name']	= addslashes(trim($_POST['cat_name']));
 		            $categoryData['updated_date']			= date("Y-m-d H:i:s");
 
 		            $result = $this->Choice_model->editChoiceCategory($categoryData,$id);
@@ -151,7 +151,7 @@ class Choice extends MY_Controller
 			$response = array("success"=>"1","message"=>"Category details delete successfully");
 		}	
 		else{
-			$response = array("success"=>"0","message"=>"Something went wrong while delete category details");
+			$response = array("success"=>"0","message"=>"Something went wrong while deleted category details");
 		}
 		echo json_encode($response);
 		exit;
@@ -166,10 +166,10 @@ class Choice extends MY_Controller
 		$result = $this->Choice_model->editChoice($CatDetail,$Id);
 		if($result>0){
 			//$this->session->set_flashdata('success_msg', "Category details delete successfully");
-			$response = array("success"=>"1","message"=>"Choice details delete successfully");
+			$response = array("success"=>"1","message"=>"Category details delete successfully");
 		}	
 		else{
-			$response = array("success"=>"0","message"=>"Something went wrong while delete category details");
+			$response = array("success"=>"0","message"=>"Something went wrong while deleted category details");
 		}
 		echo json_encode($response);
 		exit;
@@ -209,7 +209,7 @@ class Choice extends MY_Controller
         	$response['message'] ='';
 	        	
     		$choiceData['fk_choice_category_id'] = $_POST['cat_name'];
-    		$choiceData['choice_name']           = $_POST['choice_name'];
+    		$choiceData['choice_name']           = addslashes($_POST['choice_name']);
     		$choiceData['choice_name_ar']           = $_POST['choice__ar_name'];
     		$choiceData['created_date']			 = date("Y-m-d H:i:s");
     		
@@ -240,13 +240,12 @@ class Choice extends MY_Controller
         	$response['message'] ='';
         	
 	        	
-    		$choiceData['choice_name']           = $_POST['choice_name'];
+    		$choiceData['choice_name']           = addslashes($_POST['choice_name']);
     		$choiceData['choice_name_ar']        = $_POST['choice__ar_name'];
     		$choiceData['fk_choice_category_id'] = $_POST['cat_name'];
     		$choiceData['updated_date']			 = date("Y-m-d H:i:s");
     		
         	$result = $this->Choice_model->editChoice($choiceData,$id);
-        	
 
     	  	if (sizeof($result)>0) {
             	  $response['success'] ='1';

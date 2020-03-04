@@ -129,6 +129,8 @@ function deleteDriverDetail(id){
 
       if(obj.success==1)  {
         $('#confirmationModal').modal('hide');
+        var table = $('#basic-datatable').DataTable();
+        table.row( $('#driver_details_'+id).closest('tr') ).remove().draw();
         $("#driver_details_"+id).remove();
 
         $("#success_message").text(obj.message);

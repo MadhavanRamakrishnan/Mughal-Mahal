@@ -12,7 +12,7 @@ function showDish(locality,search="")
             var lang     =coockie.lang;
             var category = "";
             var dishes   = "";
-            //show dish category
+            console.log(obj);
             $.each(obj.category,function(key,val)
             {
                 if(lang =="AR")
@@ -153,7 +153,7 @@ function showCart()
 
             if(obj.length >0)
             {
-                console.log(obj);
+               
                 $.each(obj,function(k,v){
                     html   +='<div class="rightTwo">';
                     html   +='<div class="left">';

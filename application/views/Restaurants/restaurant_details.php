@@ -48,19 +48,36 @@
                                                 <label>Headline :</label>
                                                 <span class="custName"><?php echo ($restaurants->headline)?trim($restaurants->headline):'N/A'; ?></span>
                                               </div>
+                                              <?php if($restaurants->address){ ?>
+                                                <div class="form-group">
+                                                    <label>Address :</label>
+                                                    <span class="delAddress">
+                                                        <?= ($restaurants->address)?trim($restaurants->address).'<br>':''; ?>
+                                                    </span>
+                                                </div>
+                                              <?php } ?>
 
                                               <div class="form-group">
-                                                  <label>Address :</label>
-                                                  <span class="delAddress">
-                                                      <?php echo ($restaurants->address)?trim($restaurants->address).'<br>':''; ?>
-                                                    
-                                                  </span>
+                                                  <div class="row">
+                                                    <div class="col-lg-6 col-md-6 col-xs-12"><label>Additional Delivery Time: </label></div> 
+                                                    <div class="col-lg-6 col-md-6 col-xs-12" style="text-align: left;">
+                                                      <select onChange="setAdditionalDeliveryTime(<?= $rId ?>)" id="additionalDeliveryTime" class="form-control">
+                                                          <?php foreach ($deliveryTimes as $key) { ?>
+                                                              <option value="<?= $key ?>" <?= ($key ==$restaurants->extra_delivery_time)?'selected':''; ?> ><?= $key ?></option>
+                                                          <?php  } ?>
+                                                      </select>
+                                                    </div> 
+                                                    <span class="col-lg-12 col-md-12 col-xs-12 additionalDeliveryTime" style="color:green;display:none">
+                                                    </span>
+                                                    <span class="col-lg-12 col-md-12 col-xs-12 additionalDeliveryTimeerror" style="color:red;display:none">
+                                                    </span>
+                                                  </div>
                                               </div>
-                                               
                                             </div>
                                         </div>
                                     </div>
                                 </li> 
+
                                 <li>
                                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <div class="panel panel-success">
@@ -144,8 +161,9 @@
 </div>
 <script type="text/javascript">
   var res_id       =$("#res_id").val();
-  var changeAvailability         = "<?php echo site_url('Restaurants/changeAvailability')?>";
-  var IsRamadhanMonthdata        = "<?php echo site_url('Restaurants/IsRamadhanMonthdata')?>";
+  var changeAvailability            = "<?= site_url('Restaurants/changeAvailability') ?>";
+  var IsRamadhanMonthdata           = "<?= site_url('Restaurants/IsRamadhanMonthdata') ?>";
+  var setAdditionalDeliveryTimeUrl  = "<?= site_url('Restaurants/setAdditionalDeliveryTime') ?>";
   $(function() {
      $("#switch-button-2").bootstrapToggle({
       on: 'Yes',

@@ -48,8 +48,32 @@
 			$submenuArray[$value->parent_page_id][] = $value;
 		}
 		$data['submenu']   	= $submenuArray;
+		
+		// $config 					= array();
+		// $config["base_url"] 		= site_url('Dishes/dishList');
+		// $config["total_rows"] 		= $this->Dishes_model->dishesCount();
+		// $config["per_page"] 		= 5;
+		// $config['use_page_numbers'] = TRUE;
+		// $config['num_links'] 		= 5;
+		// $config['cur_tag_open'] 	= '&nbsp;<a class="active">';
+		// $config['cur_tag_close'] 	= '</a>';
+		// $config['next_link'] 		= 'Next';
+		// $config['prev_link'] 		= 'Previous';
+		// $this->pagination->initialize($config);
 
+		// if($this->uri->segment(3)){
+		// 	$page = ($this->uri->segment(3)) ;
+		// }
+		// else{
+		// 	$page = 1;
+		// }
+		// $offset					= ($page - 1) * $config["per_page"];
+		// $data['dishlist']		= $this->Dishes_model->getAllDishes($config["per_page"],$offset);
 		$data['dishlist']		= $this->Dishes_model->getAllDishes();
+		// $data['offset'] 		= $offset + 1;		
+		// $str_links 				= $this->pagination->create_links();	
+		// $data["links"] 			= explode('&nbsp;',$str_links );
+
 		$this->load->view('Elements/header',$data);
 		$this->load->view('Dishes/index');
 		$this->load->view('Elements/footer');
@@ -133,7 +157,7 @@
 				
 			}
 			else{
-				$config['upload_path']   		= './assets/images/front-end/dishes'; 
+				$config['upload_path']   		= './assets/images/front-endold/dishes'; 
 				$config['allowed_types']        = 'gif|jpg|png|jpeg|GIF|JPG|PNG|JPEG';
 				$config['max_size']             = 5120;
 				
@@ -151,7 +175,7 @@
 				}
 				else{
 					$dishData['category_id']	= trim($this->input->post('category_id'));
-					$dishData['product_en_name']= trim($this->input->post('dish_name'));
+					$dishData['product_en_name']= addslashes(trim($this->input->post('dish_name')));
 					$dishData['product_ar_name']= trim($this->input->post('ar_dish_name'));
 					$dishData['en_description']	= trim($this->input->post('description'));
 					$dishData['ar_description']	= trim($this->input->post('ar_description'));
@@ -207,7 +231,7 @@
 				else{
 					if($_FILES['image']['name'] != ""){
 
-						$config['upload_path']   		= './assets/images/front-end/dishes'; 
+						$config['upload_path']   		= './assets/images/front-endold/dishes'; 
 						$config['allowed_types']        = 'gif|jpg|png|jpeg|GIF|JPG|PNG|JPEG';
 						$config['max_size']             = 5120;
 						
@@ -219,7 +243,7 @@
 							$dataupload 	   			= array('upload_data' => $this->upload->data());
 							$dishData['dish_image'] = $dataupload['upload_data']['file_name'];
 							if($data['dish_data'][0]->dish_image){
-								$img = "./assets/images/front-end/dishes".$data['dish_data'][0]->dish_image;
+								$img = "./assets/images/front-endold/dishes".$data['dish_data'][0]->dish_image;
 								unlink($img);						
 							}	
 						}
@@ -235,6 +259,7 @@
 					else{
 						$dishData['category_id']	= trim($this->input->post('category_id'));
 						$dishData['product_en_name']= trim($this->input->post('dish_name'));
+						$dishData['product_en_name']= addslashes(trim($this->input->post('dish_name')));
 						$dishData['product_ar_name']= trim($this->input->post('product_ar_name'));
 						$dishData['en_description']	= trim($this->input->post('description'));
 						$dishData['ar_description']	= trim($this->input->post('ar_description'));

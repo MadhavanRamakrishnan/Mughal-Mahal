@@ -1,6 +1,6 @@
 
 
-<?php $successMsg=$this->session->flashdata('success_msg'); ?>
+<?php /*echo "<pre>";print_r($orderDetail); die;*/ $successMsg=$this->session->flashdata('success_msg'); ?>
     
 <div class="alert alert-success alert-dismissible" id="success_notification" style="display:<?php echo ($successMsg)?"block":"none"; ?>">
     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
@@ -20,193 +20,205 @@
     $panelColor     = $this->config->item('panelColor');
     $labelColor     = $this->config->item('labelColor');
     $orderType      = $this->config->item('orderType');
+    $paymentType      = $this->config->item('payment_type');
 ?>
 
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/plugins/datatables/jquery.dataTables.css" />
 <style type="text/css">
-	table thead tr th, .center,table tbody tr td{
-		text-align: center;
-	}
+    table thead tr th, .center,table tbody tr td{
+        text-align: center;
+    }
 </style>
-<div class="warper container-fluid">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="page-header">
-                <h1 style="width: auto;float: left;" class="pageTitle">Order Details</h1>
+    <div class="warper container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="page-header">
+                    <h1 style="width: auto;float: left;" class="pageTitle">Order Details</h1>
 
 
-                <a style="width: auto;float: right; margin-top: 15px; margin-left: 10px;" href="<?php echo site_url('Orders/index'); ?>" class="btn btn-success"><i class="fa fa-arrow-left"></i> Back to order</a>
-                <?php if($orderDetail['order_status']>=4 && $orderDetail['order_status'] <=5){ ?>
-                    <button id="track_order" style="width: auto;float: right; margin-top: 15px;" class="btn btn-primary"><i class="fa fa-map-marker"></i> Track order</button>
-                <?php } ?>
-            </div>
-    	</div>
-    </div>
+                    <a style="width: auto;float: right; margin-top: 15px; margin-left: 10px;" href="<?php echo site_url('Orders/index'); ?>" class="btn btn-success"><i class="fa fa-arrow-left"></i> Back to order</a>
 
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="border-box">
-                <div class="col-lg-4">
-                    <div class="panel <?php echo $panelColor[$orderDetail['order_status']]; ?>">
-                        <div class="panel-heading">
-                            Order # - <?php echo str_pad($orderDetail['order_id'],"6","0",STR_PAD_LEFT); ?>
-                            
-                        </div>
-                        <div class="panel-body">
-                            <div class="form-group">
-                                <label>Branch Name:</label>
-                                <span><?php echo $orderDetail['restaurant_name'] ?></span>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Order Placed Time :</label>
-                                <span>
-                                    <?php $date = date_create($orderDetail['order_placed_time']);
-                                        $formatted_date =  date_format($date,"M d Y H:i");
-                                    echo $formatted_date; ?>
-                                </span>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Delivery Time : </label>
-                                <span>
-                                    <?php 
-                                        echo ($orderDetail['delivered_time'] !=null)?date_format(date_create($orderDetail['delivered_time']),'M d Y H:i'):"";
-                                    ?>
-                                </span>
-                            </div>
-                            <?php if(isset($orderDetail['d_first_name'])) { ?>
-                            <div class="form-group">
-                                <label>Assinged To:</label> 
-                                <span class="driverName driverName<?php echo $orderDetail['order_id']; ?>">
-
-                                    <?php echo ($orderDetail['order_status']>3)?$orderDetail['d_first_name'].' '.$orderDetail['d_last_name']:''; ?>
-                                </span>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Driver Contact:</label> 
-                                <span class="driverContact driverContact<?php echo $orderDetail['order_id']; ?>">
-                                     <?php echo ($orderDetail['order_status']>3 )?$orderDetail['d_contact_no']:''; ?>
-                                </span>
-                            </div>
-                           <?php } ?>
-                            <div class="form-group form_btn">
-                                
-                                <?php
-                                    if($orderDetail['order_status'] == 1){ ?>
-                                     <a class="btn btn-green btn-sm btn-pdn confirmOrder" data-toggle="modal" data-target="#confirmOrderModal" title="Confirm Order" oId="<?php echo $orderDetail['order_id'] ?>"><i class="fa fa-check"></i></a>
-                                    <?php }
-                                    if($orderDetail['order_status'] == 8){?>
-
-                                        <a id="replaceOrdId" data-toggle="modal" data-target="#confirmationReplace" data-backdrop="static" data-keyboard="false" title="Discard Order" oid="<?php echo $orderDetail['order_id']; ?>" onclick="setOrderId(<?php echo $orderDetail['order_id']; ?>)">
-                                           <label class="pending label label-collect form-control">Replace</label>
-                                        </a>
-
-                                        <a id="refundOrdId" data-toggle="modal" data-target="#confirmationRefund" data-backdrop="static" data-keyboard="false" title="Discard Order" oid="<?php echo $orderDetail['order_id']; ?>" onclick="refunrOrders(<?php echo $orderDetail['order_id']; ?>)">
-                                           <label class="pending label label-success  form-control">Refund</label>
-                                        </a>
-
-                                <?php }
-                                else if($orderDetail['order_status'] < 4){ ?>
-                                   
-                                    <a class="btn btn-danger btn-sm btn-pdn"  data-toggle="modal" data-target="#confirmationModal1" data-backdrop="static" data-keyboard="false" title="Discard Order" oid="<?php echo $orderDetail['order_id']; ?>" onclick="deleteOrder(<?php echo $orderDetail['order_id']; ?>)">
-                                        <i class="fa fa-trash"></i>
-                                    </a>
-
-                                <?php } ?>
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="panel <?php echo $panelColor[$orderDetail['order_status']]; ?>">
-                        <div class="panel-heading">Customer Details</div>
-                        <div class="panel-body">
-                            <div class="form-group">
-                                <label>Customer Name:</label>
-                                <span><?php echo $orderDetail['customer_name']; ?></span>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Contact No : </label>
-                                <span><?php echo ($orderDetail['customer_contact_no'] !='')?" (+965) ".$orderDetail['customer_contact_no']:''; ?></span>
-                            </div>
-                            <div class="form-group">
-                                <label>Email :</label>
-                                <span><?php echo $orderDetail['customer_email'] ?></span>
-                            </div>
-                            <div class="form-group">
-                                <label>Delivery Address :</label> 
-                                <span>
-                                    <?php echo $orderDetail['delivery_address']; ?><br>
-                                </span>
-                            </div>
-
-
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="panel <?php echo $panelColor[$orderDetail['order_status']]; ?>">
-                        <div class="panel-heading">Order Details</div>
-                        <div class="panel-body">
-                            <div class="form-group change_status">
-                                <label>Status:</label>
-                                <span class="label <?php echo $labelColor[$orderDetail['order_status']]; ?>"><?php echo $OrderStatus[$orderDetail['order_status']]; ?></span>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Payment Type :</label> 
-                                <span class="label label-primary"><?php echo $orderType[$orderDetail['order_type']]; ?></span>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Gross Amount :</label>
-                                <span><?php echo number_format(($orderDetail['total_price']-$orderDetail['delivery_charges']),3,'.','').' KD'; ?></span>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Delivery Charges :</label>
-                                <span><?php echo number_format($orderDetail['delivery_charges'],3,'.','').' KD'; ?></span>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Total Amount :</label>
-                                <span><?php echo number_format($orderDetail['total_price'],3,'.','').' KD'; ?></span>
-                            </div>
-                            <?php 
-                                if($orderDetail['order_status'] == 8 || $orderDetail['order_status'] == 13 || $orderDetail['order_status'] ==14){ ?>
-                                <div class="form-group">
-                                    <label>Reason:</label>
-                                    <span><?php echo $orderDetail['reason']; ?></span>
-                                </div>
-                                <?php }
-                             ?>
-                        </div>
-                    </div>
+                    <!-- <a style="width: auto;float: right; margin-top: 15px; margin-left: 10px;" href="<?php echo site_url('Orders/exportOrderDetails/').$orderDetail['order_id']; ?>" class="btn btn-primary">Export</a> -->
+                    <a style="width: auto;float: right; margin-top: 15px; margin-left: 10px;" onclick="window.open('<?php echo site_url('Orders/exportOrderDetails/').$orderDetail['order_id']; ?>', '_blank', 'location=yes,height=570,width=850,scrollbars=yes,status=yes');" class="btn btn-primary">Export</a>
+                    <?php if($orderDetail['order_status']>=4 && $orderDetail['order_status'] <=5){ ?>
+                        <button id="track_order" style="width: auto;float: right; margin-top: 15px;" class="btn btn-primary"><i class="fa fa-map-marker"></i> Track order</button>
+                    <?php } ?>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-12" id="track_order_map" style="display: none;">
-             <div class="panel <?php echo $panelColor[$orderDetail['order_status']]; ?>">
-                <div class="panel-heading">Track Order</div>            
-                    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="border-box">
+                    <div class="col-lg-4">
+                        <div class="panel <?php echo $panelColor[$orderDetail['order_status']]; ?>">
+                            <div class="panel-heading">
+                                <!-- Order # - <?php echo str_pad($orderDetail['order_id'],"6","0",STR_PAD_LEFT); ?> -->
+                                Order # - <?php echo str_pad($orderDetail['sequence_no'],"6","0",STR_PAD_LEFT); ?>
+                                
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label>Branch Name:</label>
+                                    <span><?php echo $orderDetail['restaurant_name'] ?></span>
+                                </div>
 
-                        <div  id="map" style="height:500px;">
+                                <div class="form-group">
+                                    <label>Order Placed Time :</label>
+                                    <span>
+                                        <?php $date = date_create($orderDetail['order_placed_time']);
+                                            $formatted_date =  date_format($date,"M d Y H:i");
+                                        echo $formatted_date; ?>
+                                    </span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Delivery Time : </label>
+                                    <span>
+                                        <?php 
+                                            echo ($orderDetail['delivered_time'] !=null)?date_format(date_create($orderDetail['delivered_time']),'M d Y H:i'):"";
+                                        ?>
+                                    </span>
+                                </div>
+                                <?php if(isset($orderDetail['d_first_name'])) { ?>
+                                <div class="form-group">
+                                    <label>Assinged To:</label> 
+                                    <span class="driverName driverName<?php echo $orderDetail['order_id']; ?>">
+
+                                        <?php echo ($orderDetail['order_status']>3)?$orderDetail['d_first_name'].' '.$orderDetail['d_last_name']:''; ?>
+                                    </span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Driver Contact:</label> 
+                                    <span class="driverContact driverContact<?php echo $orderDetail['order_id']; ?>">
+                                         <?php echo ($orderDetail['order_status']>3 )?$orderDetail['d_contact_no']:''; ?>
+                                    </span>
+                                </div>
+                               <?php } ?>
+                                <div class="form-group form_btn">
+                                    
+                                    <?php
+                                        if($orderDetail['order_status'] == 1){ ?>
+                                         <a class="btn btn-green btn-sm btn-pdn confirmOrder" data-toggle="modal" data-target="#confirmOrderModal" title="Confirm Order" oId="<?php echo $orderDetail['order_id'] ?>"><i class="fa fa-check"></i></a>
+                                        <?php }
+                                        if($orderDetail['order_status'] == 8){?>
+
+                                            <a id="replaceOrdId" data-toggle="modal" data-target="#confirmationReplace" data-backdrop="static" data-keyboard="false" title="Discard Order" oid="<?php echo $orderDetail['order_id']; ?>" onclick="setOrderId(<?php echo $orderDetail['order_id']; ?>)">
+                                               <label class="pending label label-collect form-control">Replace</label>
+                                            </a>
+
+                                            <a id="refundOrdId" data-toggle="modal" data-target="#confirmationRefund" data-backdrop="static" data-keyboard="false" title="Discard Order" oid="<?php echo $orderDetail['order_id']; ?>" onclick="refunrOrders(<?php echo $orderDetail['order_id']; ?>)">
+                                               <label class="pending label label-success  form-control">Refund</label>
+                                            </a>
+
+                                    <?php }
+                                    else if($orderDetail['order_status'] < 4){ ?>
+                                       
+                                        <a class="btn btn-danger btn-sm btn-pdn"  data-toggle="modal" data-target="#confirmationModal1" data-backdrop="static" data-keyboard="false" title="Discard Order" oid="<?php echo $orderDetail['order_id']; ?>" onclick="deleteOrder(<?php echo $orderDetail['order_id']; ?>)">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+
+                                    <?php } ?>
+                                    
+                                </div>
+                            </div>
                         </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="panel <?php echo $panelColor[$orderDetail['order_status']]; ?>">
+                            <div class="panel-heading">Customer Details</div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label>Customer Name:</label>
+                                    <span><?php echo $orderDetail['customer_name']; ?></span>
+                                </div>
 
+                                <div class="form-group">
+                                    <label>Contact No : </label>
+                                    <span><?php echo ($orderDetail['customer_contact_no'] !='')?" (+965) ".$orderDetail['customer_contact_no']:''; ?></span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email :</label>
+                                    <span><?php echo $orderDetail['customer_email'] ?></span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Delivery Address :</label> 
+                                    <span style="word-wrap: break-word;">
+                                        <?= ($orderDetail['area'] !="")?"Area - ".$orderDetail['area'].",&nbsp":""; ?>
+                                        <?= ($orderDetail['block']!="")?"Block -".$orderDetail['block'].",&nbsp":""; ?>
+                                        <?= ($orderDetail['street'] !="")?"Street -".$orderDetail['street'].',&nbsp':''; ?>
+                                        <?= ($orderDetail['avenue']!="")?"Avenue -".$orderDetail['avenue'].',&nbsp':''; ?>
+                                        <?= ($orderDetail['building']!="")?"Building -".$orderDetail['building'].",&nbsp":"" ?>
+                                        <?= ($orderDetail['floor']!="")?"Floor -".$orderDetail['floor'].",&nbsp":"";  ?>
+                                        <?= ($orderDetail['appartment_no'] !="")?"Apartment No - ".$orderDetail['appartment_no'].",&nbsp":""; ?>
+                                        <?= ($orderDetail['delivery_address']!="")?"Delivery Address -".$orderDetail['delivery_address']:""; ?>
+                                        <br>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="panel <?php echo $panelColor[$orderDetail['order_status']]; ?>">
+                            <div class="panel-heading">Order Details</div>
+                            <div class="panel-body">
+                                <div class="form-group change_status">
+                                    <label>Status:</label>
+                                    <span class="label <?php echo $labelColor[$orderDetail['order_status']]; ?>"><?php echo $OrderStatus[$orderDetail['order_status']]; ?></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Payment Type :</label> 
+                                    <span class="label label-primary"><?php echo $paymentType[$orderDetail['order_type']]; ?></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Gross Amount :</label>
+                                    <span><?php echo number_format(($orderDetail['total_price']-$orderDetail['delivery_charges']),3,'.','').' KD'; ?></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Delivery Charges :</label>
+                                    <span><?php echo number_format($orderDetail['delivery_charges'],3,'.','').' KD'; ?></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Total Amount :</label>
+                                    <span><?php echo number_format($orderDetail['total_price'],3,'.','').' KD'; ?></span>
+                                </div>
+                                <?php 
+                                    if($orderDetail['order_status'] == 8 || $orderDetail['order_status'] == 13 || $orderDetail['order_status'] ==14){ ?>
+                                    <div class="form-group">
+                                        <label>Reason:</label>
+                                        <span><?php echo $orderDetail['reason']; ?></span>
+                                    </div>
+                                    <?php }
+                                ?>
+                                <div class="form-group">
+                                    <label>Special Request:</label>&nbsp;
+                                    <span class="label label-primary"><?php echo (!empty($orderDetail['special_instruction']) && $orderDetail['special_instruction'] != null ? $orderDetail['special_instruction'] : "-"); ?></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12" id="track_order_map" style="display: none;">
+                <div class="panel <?php echo $panelColor[$orderDetail['order_status']]; ?>">
+                    <div class="panel-heading">Track Order</div>            
+                    <div class="panel-body">
+                        <div  id="map" style="height:500px;"></div>
                         <button id="routebtn" style="display: none;">Route</button>
                     </div>
                 </div>
-             </div>
+            </div>
         </div>
 
         <div class="col-lg-12">
             <div class="panel <?php echo $panelColor[$orderDetail['order_status']]; ?>">
-            <div class="panel-heading">Dish Details</div>            
+                <div class="panel-heading">Dish Details</div>            
                     <div class="panel-body">
                         <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
                             <thead>
@@ -279,7 +291,7 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -420,18 +432,21 @@ if($host=="18.216.199.131"){
 
 <script>
     
-   var lat ="<?php echo $orderDetail['customer_latitude'] ?>";
-   var lon ="<?php echo $orderDetail['customer_longitude'] ?>";
-   
+   var lat ="<?= $orderDetail['customer_latitude'] ?>";
+   var lon ="<?= $orderDetail['customer_longitude'] ?>";
+   var driverName =" <?= ($orderDetail['order_status']>3)?$orderDetail['d_first_name'].' '.$orderDetail['d_last_name']:''?>";
    
 </script>
-<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4b-QnyfODx2VYNWhPMtJQsamBnd61w7I=places&callback=mapLocation"></script>
+<!-- <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4b-QnyfODx2VYNWhPMtJQsamBnd61w7I=places&callback=mapLocation"></script> -->
+
 <script type="text/javascript" src="<?=$host; ?>:3333/socket.io/socket.io.js"></script>
 <script type="text/javascript">
-
-    var driverId = "<?= $orderDetail['driver_id']; ?>";
-    driverLat = '';
-    driverLon = '';
+    var driverId = "<?= (isset($orderDetail['driver_id']))?$orderDetail['driver_id']:''; ?>";
+    var driverLat = '';
+    var driverLon = '';
+     window['initialize'] = () => {
+               mapLocation();
+            }
     jQuery(function ($) {
 
         var socket = io.connect('<?=$host; ?>'+':3333');
@@ -468,7 +483,6 @@ if($host=="18.216.199.131"){
 
 
 function mapLocation() {
-    
     var directionsDisplay;
     var directionsService = new google.maps.DirectionsService();
     var map;
@@ -497,6 +511,9 @@ function mapLocation() {
         var start = new google.maps.LatLng(lat, lon);
         var end = new google.maps.LatLng(driverLat, driverLon);
 
+        console.log("start:"+start);
+        console.log("start:"+end);
+
         var bounds = new google.maps.LatLngBounds();
         bounds.extend(start);
         bounds.extend(end);
@@ -509,23 +526,37 @@ function mapLocation() {
 
         
 
-        /*var marker = new google.maps.Marker({
-            position: start,
-            map: map
-        });
-
-        var marker = new google.maps.Marker({
-            position: end,
-            map: map,
-            icon: '<?= base_url('assets/images/front-end/marker_small.png');?>'
-        });*/
-
         directionsService.route(request, function (response, status) {
+            console.log(google.maps.DirectionsStatus);
+            console.log("status"+status);
             if (status == google.maps.DirectionsStatus.OK) {
                 directionsDisplay.setDirections(response);
                 directionsDisplay.setMap(map);
+                directionsDisplay.setOptions( { suppressMarkers: true } );
+
+                var markers = new Array();
+                var iconCounter = 0;
+                var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(driverLat,driverLon),
+                    map: map,
+                    title:"Driver:"+driverName,
+                    icon: {                             
+                        url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"                              
+                    }
+                  }); 
+
+                var markers = new Array();
+                var iconCounter = 0;
+                var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(lat,lon),
+                    map: map,
+                    icon: {                             
+                        url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"                              
+                    }
+                  });  
+
             } else {
-                //alert("Directions Request from " + start.toUrlValue(6) + " to " + end.toUrlValue(6) + " failed: " + status);
+                alert("Directions Request from " + start.toUrlValue(6) + " to " + end.toUrlValue(6) + " failed: " + status);
             }
         });
     }
@@ -535,3 +566,4 @@ function mapLocation() {
 
 
 </script>
+<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDCRut52YvoPjefyPGTNeL4A6LZ9tJD5tk&libraries=places&callback=mapLocation"></script>

@@ -50,10 +50,10 @@
                       
                     <tr class="odd gradeX" id="choice_details_<?php echo $value->choice_id; ?>">
                         <td><?php echo ($value->choice_category_name && $value->is_active=='1')?$value->choice_category_name:'N/A'; ?></td>
-                        <td><?php echo ($value->choice_name)?$value->choice_name:'N/A'; ?></td> 
+                        <td><?php echo ($value->choice_name)?stripslashes($value->choice_name):'N/A'; ?></td> 
                         <td><?php echo ($value->choice_name_ar)?$value->choice_name_ar:'N/A'; ?></td> 
                         <td class="center">
-                            <a class="editButtons" data-toggle="modal" data-target="#modalEditChoice" cat_id="<?php echo $value->fk_choice_category_id; ?>" ch_name="<?php echo $value->choice_name ; ?>" ch_ar_name="<?php echo $value->choice_name_ar ; ?>" ch_id="<?php echo $value->choice_id; ?>" data-backdrop="static"       data-keyboard="false"><i class="fa fa-edit"> </i></a>
+                            <a class="editButtons" data-toggle="modal" data-target="#modalEditChoice" cat_id="<?php echo $value->fk_choice_category_id; ?>" ch_name="<?php echo stripslashes($value->choice_name) ; ?>" ch_ar_name="<?php echo $value->choice_name_ar ; ?>" ch_id="<?php echo $value->choice_id; ?>" data-backdrop="static"       data-keyboard="false"><i class="fa fa-edit"> </i></a>
                            |
                            <a title="Delete" data-toggle="modal" data-target="#confirmationModal" data-backdrop="static" data-keyboard="false" onclick="deleteChoice(<?php echo $value->choice_id; ?>)"  id="delete"><i class="fa fa-trash"> </i></a>
                        </td>
@@ -176,7 +176,6 @@
 <script type="text/javascript">
 
     function deleteChoice(id){
-       
         $('#deleteMsg').text('Are you sure to delete choice details?');
         $("#delete_btn").unbind().click(function(){
 
@@ -189,10 +188,12 @@
                           var obj = JSON.parse(response);
 
                           if(obj.success==1)  {
+                            var table = $('#basic-datatable').DataTable();
                             $('#confirmationModal').modal('hide');
+                            table.row( $('#choice_details_'+id).closest('tr') ).remove().draw();
+                            // $('#choice_details_'+id).closest('tr').remove();
                             $("#choice_details_"+id).remove();
-          
-                           $("#success_message").text(obj.message);
+                            $("#success_message").text(obj.message);
                             $("#success_notification").show();
                             setTimeout(function(){ $("#success_notification").hide(); },5000);
                           }
@@ -209,9 +210,9 @@
 
      $("#add_choice").click(function(e){
    
-          var cat_name        =$("#cat_name").val();
-          var choice_name     =$("#choice_name").val();
-          var choice__ar_name =$("#choice__ar_name").val();
+          var cat_name        =$.trim($("#cat_name").val());
+          var choice_name     =$.trim($("#choice_name").val());
+          var choice__ar_name =$.trim($("#choice__ar_name").val());
           
           if(cat_name == ""){
               $(".cat_name").text('Please Select Category');
@@ -261,10 +262,10 @@
 
           e.preventDefault();
 
-          var cat_name            = $("#edit_cat_name").val();
-          var choice_name         = $("#edit_choice_name").val();
-          var choice__ar_name     = $("#edit_choice_ar_name").val();
-          var id                  = $("#ch_id").val();
+          var cat_name            = $.trim($("#edit_cat_name").val());
+          var choice_name         = $.trim($("#edit_choice_name").val());
+          var choice__ar_name     = $.trim($("#edit_choice_ar_name").val());
+          var id                  = $.trim($("#ch_id").val());
        
           if(cat_name == ""){
               $(".edit_cat_name").text('Please Select Category');

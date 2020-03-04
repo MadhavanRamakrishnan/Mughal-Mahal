@@ -19,19 +19,19 @@
 			$this->db->where("tbl_restaurants.restaurant_id",$resId);
 		}
 
-		$this->db->select('tbl_users.*,tbl_language.lang_name,tbl_restaurants.restaurant_name,tbl_vehicles.brand,tbl_vehicles.model,tbl_restaurants.restaurant_id as rid');
-		$this->db->from('tbl_users');
-		$this->db->join('tbl_restaurants','tbl_restaurants.restaurant_id=tbl_users.fk_restaurant_id','left');
-		$this->db->join('tbl_language','tbl_language.language_id=tbl_users.language_id','left');
-		$this->db->join('tbl_vehicles','tbl_vehicles.vehicle_id=tbl_users.fk_vehicle_id','left');
-		$this->db->where('tbl_users.role_id',$driverRole);
-		$this->db->where('tbl_users.is_active','1');
-		$this->db->where('tbl_users.is_deleted','0');
-		$this->db->group_by('tbl_users.user_id');
+		$this->db->select('us.user_id,us.role_id,us.first_name,us.last_name,us.email,us.profile_photo,us.address,us.contact_no,us.vendor,us.is_active,us.is_deleted,us.driver_password,tbl_language.lang_name,tbl_restaurants.restaurant_name,tbl_vehicles.brand,tbl_vehicles.model,tbl_restaurants.restaurant_id as rid');
+		$this->db->join('tbl_restaurants','tbl_restaurants.restaurant_id=us.fk_restaurant_id','left');
+		$this->db->join('tbl_language','tbl_language.language_id=us.language_id','left');
+		$this->db->join('tbl_vehicles','tbl_vehicles.vehicle_id=us.fk_vehicle_id','left');
+		$this->db->where('us.role_id',$driverRole);
+		$this->db->where('us.is_active','1');
+		$this->db->where('us.is_deleted','0');
+		$this->db->group_by('us.user_id');
 		$this->db->order_by('first_name','asc');
 		if ($id) {
-			$this->db->where('tbl_users.user_id',$id);
+			$this->db->where('us.user_id',$id);
 		}
+		$this->db->from('tbl_users as us');
 		$query=$this->db->get();
 		return $query->result();
 	}

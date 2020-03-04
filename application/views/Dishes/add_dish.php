@@ -97,7 +97,7 @@
                                     <input class="" name="image" id="image" type="file">
                                 </div>
                             </div>
-                            <?php if(isset($image_error)){echo $image_error;} ?>
+                            <?php if(isset($image_error)){echo "<span style='color : red;'>".$image_error."</span>";} ?>
                            
                         </div>
                   

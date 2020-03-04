@@ -18,6 +18,24 @@ $(document).ready(function() {
     wow.init();*/
 }); 
   
+function deleteAddressData(addId){
+  $("#remove_address").unbind().click(function(){
+        $.ajax({
+           url:deleteCustomerAddress+"/"+addId,
+           type:"POST",
+           success:function(data){
+              var obj =$.parseJSON(data);
+              if(obj.success == 1){
+                location.reload();
+              }else{
+                $(this).parent().append("<span state='color:red;'>"+obj.message+"</span>");
+              }
+           }
+
+       })
+  });
+
+}
 
   // tabbed content
   // http://www.entheosweb.com/tutorials/css/tabs.asp
@@ -165,18 +183,26 @@ function setOrderSummary(locality, locality_val = "") {
 
 function addaddress() 
 {
-    var user_id = $("#user_id").val();
+    var user_id      = $("#user_id").val();
     var address_type = $('input[name=address_type]:checked').val();
-    var name = $('#customer_name').val();
-    var email = $('#addemail').val();
-    var phone = $('#contact_no').val();
-    var locality = $('#locality').val();
-    var editAdd = $('#editAdd').val();
+    var name         = $('#customer_name').val();
+    var email        = $('#addemail').val();
+    var phone        = $('#contact_no').val();
+    var locality     = $('#locality').val();
+    var editAdd      = $('#editAdd').val();
     var locality_val = $("#locality option:selected").text();
+    var street       = $('#street').val();
+    var building     = $('#building').val();
+    var appartmentNo = $('#apartment_no').val();
+    var block        = $('#block').val();
+    var avenue       = $('#avenue').val();
+    var floor        = $('#floor').val();
     var complete_add = $('#address_line1').val();
-    var lat = $('#lat').val();
-    var long = $('#long').val();
-    var address_id = $("#address_id").val();
+    var lat          = $('#lat').val();
+    var long         = $('#long').val();
+    var address_id   = $("#address_id").val();
+    var other_address= $("#other_address").val();
+
     var profile = "";
     if (name == '') {
         hideAddressError();
@@ -201,13 +227,40 @@ function addaddress()
         hideAddressError();
         $('.phone').show();
         $('.phone').text(phoneMinlenth);
-    } else if (complete_add == '') {
-
+    } else if (locality == '' || locality == 0 || locality == null) {
         hideAddressError();
-        $('.complete_add').show();
-        $('.complete_add').text(completeAdd);
+        $('.locality_error').show();
+        $('.locality_error').text("Please select locality");
+    } else if (address_type == 3 && other_address == '') {
+        hideAddressError();
+        $('.otherAddressReq').show();
+        $('.otherAddressReq').text(otherAddressReq);
+    }else if (street == '') {
+        hideAddressError();
+        $('.streetReq').show();
+        $('.streetReq').text(streetReq);
+    }
+     else if (building == '') {
+        hideAddressError();
+        $('.buildingReq').show();
+        $('.buildingReq').text(buildingReq);
 
-    } else {
+    }else if (appartmentNo == '') {
+        hideAddressError();
+        $('.appartmentReq').show();
+        $('.appartmentReq').text(appartmentReq);
+
+    }else if (block == '') {
+        hideAddressError();
+        $('.blockReq').show();
+        $('.blockReq').text(blockReq);
+
+    }else if (floor == '') {
+        hideAddressError();
+        $('.floorReq').show();
+        $('.floorReq').text(floorReq);
+
+    }else {
         var data = {
             user_id: user_id,
             address1: complete_add,
@@ -218,7 +271,14 @@ function addaddress()
             customer_latitude: lat,
             customer_longitude: long,
             locality_id: locality,
-            address_id: address_id
+            address_id: address_id,
+            other_address: other_address,
+            street      :street,
+            building    :building,
+            appartmentNo:appartmentNo,
+            block       :block,
+            avenue      :avenue,
+            floor       :floor
         }
         $.post(addDiliverAddress, data).done(function(response) {
             obj = $.parseJSON(response);
@@ -230,29 +290,29 @@ function addaddress()
                     document.cookie = "locality_id=" + locality_id + "; expires=" + lastday + "; path=/";
                     document.cookie = "delivery_address=" + address_id + "; expires=" + lastday + "; path=/";
                 }
-
-                if(address_id == ''){
-                    var html = '<li><input type="radio" id="address'+obj.data+'" checked class="custAddress" loca="'+locality+'" loca_val="'+locality_val+'" name="address-radio" value="'+obj.data+'" >';
-                    html += '<label  for="address'+obj.data+'"><span>'+name+'</span> '+complete_add+'</label>';
-                    html += '<div class="edit_address">';
-                    html += '<a href="#address" class="addressModel" aria-label="open"   onclick="editAddressData('+obj.data+')"><i class="fa fa-pencil" aria-hidden="true"></i></a>';
-                    html += '</div></li>';
-
-                    $(".all-address ul").append(html);
-                    $.fn.colorbox.close();
-                    jQuery(".addressModel").colorbox({ inline:true  , width:"50%" ,height:"100%",className: 'my-class',close: "Close" });
-                }else{
+                location.reload();
+                // var deleteAdd ='<a href="#removeaddress" class="minusDishpopUp" style="color:red"  onclick="deleteAddressData(<?= $value->address_id; ?>)"><i class="fa fa-trash" aria-hidden="true">';
+                // if(address_id == ''){
+                //     var html = '<li><input type="radio" id="address'+obj.data+'" checked class="custAddress" loca="'+locality+'" loca_val="'+locality_val+'" name="address-radio" value="'+obj.data+'" >';
+                //     html += '<label  for="address'+obj.data+'"><span>'+street+'</span></label>';
+                //     html += '<div class="edit_address">';
+                //     html += '<a href="#address" class="addressModel" aria-label="open" onclick="editAddressData('+obj.data+')"><i class="fa fa-pencil" aria-hidden="true"></i></a>';
+                //     html += '</div></li>';
+                //     $(".all-address ul").append(html);
+                //     $.fn.colorbox.close();
+                //     jQuery(".addressModel").colorbox({ inline:true  , width:"50%" ,height:"100%",className: 'my-class',close: "Close" });
+                // }else{
                     
-                    var html = '<input type="radio" id="address'+address_id+'" checked class="custAddress" loca="'+locality+'" loca_val="'+locality_val+'" name="address-radio" value="'+address_id+'" >';
-                    html += '<label  for="address'+address_id+'"><span>'+name+'</span> '+complete_add+'</label>';
-                    html += '<div class="edit_address">';
-                    html += '<a href="#address" class="addressModel" aria-label="open"   onclick="editAddressData('+address_id+')"><i class="fa fa-pencil" aria-hidden="true"></i></a>';
-                    html += '</div>';
+                //     var html = '<input type="radio" id="address'+address_id+'" checked class="custAddress" loca="'+locality+'" loca_val="'+locality_val+'" name="address-radio" value="'+address_id+'" >';
+                //     html += '<label  for="address'+address_id+'"><span>'+street+'</span></label>';
+                //     html += '<div class="edit_address">';
+                //     html += '<a href="#address" class="addressModel" aria-label="open" onclick="editAddressData('+address_id+')"><i class="fa fa-pencil" aria-hidden="true"></i></a>';
+                //     html += '</div>';
 
-                    $(".address"+address_id).html(html);
-                    $.colorbox.close();
-                    jQuery(".addressModel").colorbox({ inline:true  , width:"50%" ,height:"100%",className: 'my-class',close: "Close" });
-                }
+                //     $(".address"+address_id).html(html);
+                //     $.colorbox.close();
+                //     jQuery(".addressModel").colorbox({ inline:true  , width:"50%" ,height:"100%",className: 'my-class',close: "Close" });
+                // }
             }
         });
     }
@@ -334,6 +394,7 @@ function validateEmail(sEmail) {
 }
 
 function editAddressData(address_id, oSummary = "") {
+    $(".otherAddressReq").text('');
     getlocality();
     $.ajax({
         url: getCustomerAddress + "/" + address_id,
@@ -342,12 +403,20 @@ function editAddressData(address_id, oSummary = "") {
             var obj = $.parseJSON(data);
             if (obj.success == 1) {
                 $("#is_add_address").val(obj.message[0].address_id);
+                $("#address_id").val(address_id);
                 $("#customer_name").val(obj.message[0].customer_name);
                 $("#addemail").val(obj.message[0].email);
                 $("#contact_no").val(obj.message[0].contact_no);
                 $("#locality").val(obj.message[0].locality_id);
                 $("#lat").val(obj.message[0].customer_latitude);
                 $("#long").val(obj.message[0].customer_longitude);
+                $("#other_address").val(obj.message[0].other_address);
+                $("#street").val(obj.message[0].street);
+                $("#building").val(obj.message[0].building);
+                $("#apartment_no").val(obj.message[0].appartment_no);
+                $("#block").val(obj.message[0].block);
+                $("#avenue").val(obj.message[0].avenue);
+                $("#floor").val(obj.message[0].floor);
                 $("#address_line1").val(obj.message[0].address1);
                 if (oSummary != "") {
                     $("#editAdd").val(address_id);
@@ -355,10 +424,13 @@ function editAddressData(address_id, oSummary = "") {
                 initMap(obj.message[0].customer_latitude, obj.message[0].customer_longitude);
                 if (obj.message[0].address_type == "1") {
                     $("#home").prop("checked", true);
+                    $("#other_address").css('display', 'none');
                 } else if (obj.message[0].address_type == "2") {
                     $("#office").prop("checked", true);
+                    $("#other_address").css('display', 'none');
                 } else {
                     $("#other").prop("checked", true);
+                    $("#other_address").css('display', 'block');
                 }
             } else {}
         }
@@ -370,7 +442,7 @@ function initMap(lat=29.3518587,lon=47.9836915) {
       var uluru = new google.maps.LatLng(lat, lon);
       var myOptions;
       var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 8,
+          zoom: 17,
           gestureHandling: 'greedy',
           center: uluru,
           mapTypeId: google.maps.MapTypeId.ROADMAP

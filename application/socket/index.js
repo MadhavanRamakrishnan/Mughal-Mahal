@@ -35,7 +35,7 @@ io.sockets.on('connection', function (socket) {
 		 	//console.log("User exsits");
 		} else {
 			//callBack(true);
-			console.log('A driver connected with name '+data);
+			console.log('A driver connected with name aaa '+data);
 			socket.nickname  = data;
 			//users[socket.nickname] = socket;
 			//Creation of room with the name of driver
@@ -46,11 +46,10 @@ io.sockets.on('connection', function (socket) {
 
 	// socket send location event for sending the current location of driver
 	socket.on('send location' , function (data) {
-		console.log(data);
+		console.log("New location");
 		var obj = JSON.parse(data);
 		console.log(obj);
 		var did = obj.user_id;
-		console.log(did);
 		//var lat = obj.latitude;
 		//var lon = obj.longitude;
 		//Send drivers new location to all the customer who has joined the room
@@ -61,6 +60,7 @@ io.sockets.on('connection', function (socket) {
 	socket.on('new customer' , function (driver_id) {
 		//var obj = JSON.parse(data);
 		console.log('A customer connected to '+driver_id);
+		console.log(users);
 		if(driver_id in users) {
 		 	socket.join(driver_id);
 			socket.room = driver_id;

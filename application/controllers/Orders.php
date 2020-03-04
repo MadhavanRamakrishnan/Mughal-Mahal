@@ -8,6 +8,7 @@
 	 */
 
 	defined('BASEPATH') OR exit('No direct script access allowed');
+	
 
 	class Orders extends MY_Controller
 	{
@@ -31,6 +32,7 @@
 		$this->payment_type = $this->config->item('payment_type');
 		$this->OrderStatus  = $this->config->item('OrderStatus');
 		$this->labelColor   = $this->config->item('labelColor'); 
+		$this->load->library('pdf');
 
 
 	}
@@ -101,8 +103,9 @@
 		$data['offset'] 	    = $offset + 1;	
 		$str_links 			    = $this->pagination->create_links();
 		$data["links"] 		    = explode('&nbsp;',$str_links );
-		$data['totalNew']       = $this->Order_model->getOrderCount($resId);
-		$data['totalDisputed']  = $this->Order_model->getOrderCount($resId,8);
+		$data['totalNew']       = $this->Order_model->getOrderCount($resId)->total;
+		$data['totalDisputed']  = $this->Order_model->getOrderCount($resId,8)->total;
+		$data['order_category'] = $this->Order_model->getOrderTypes();
 		$this->load->view('Elements/header',$data);
 		$this->load->view('Orders/new_orders');
 		$this->load->view('Elements/footer');
@@ -129,11 +132,10 @@
 		$restaurant =($this->input->post('restaurant'))?$this->input->post('restaurant'):$resId;
 		$date       =($this->input->post('date'))?date('Y-m-d H:i:s',strtotime($this->input->post('date'))):"";
 		$date1      =($this->input->post('date1'))?date('Y-m-d H:i:s',strtotime(" +1day ".$this->input->post('date1'))):"";
-	
-		
+		$orderType  =($this->input->post('orderType'))?$this->input->post('orderType'):"";
 		$status     =($this->input->post('status'))?$this->input->post('status'):null;
 
-		$totalRow 					= $this->Order_model->getAllOrderCount($restaurant,$orderId,$phone,$date,$date1,$status);
+		$totalRow 					= $this->Order_model->getAllOrderCount($restaurant,$orderId,$phone,$date,$date1,$orderType,$status);
 		
 		$config["base_url"] 		= site_url('Orders/newOrders');
 		$config["total_rows"] 		= $totalRow;
@@ -156,7 +158,7 @@
 
 		$offset=($page - 1) * $config["per_page"];
 
-		$allOrders 			= $this->Order_model->getNewOrderDetails($restaurant,$config["per_page"],$offset,$orderId,$phone,$date,$date1,$status);
+		$allOrders 			= $this->Order_model->getNewOrderDetails($restaurant,$config["per_page"],$offset,$orderId,$phone,$date,$date1,$orderType,$status);
 		
 		foreach ($allOrders as $key => $value) {
 			$allOrders[$key]->name       =($value->name != null)?$value->name:'';
@@ -172,8 +174,10 @@
 			$allOrders[$key]->nextlbl    =($nextStatus <=14)?$this->labelColor[$nextStatus]:"";
 			$allOrders[$key]->lbl        =$this->labelColor[$value->status];
 			$allOrders[$key]->status_id  =$value->status;
+			$allOrders[$key]->type  	 =$value->type;
 			$allOrders[$key]->status     =$this->OrderStatus[$value->status];
 			$allOrders[$key]->time       =date('m/d/Y h:i:s a',strtotime($value->order_time));
+			$allOrders[$key]->sequence_no  	 =$value->sequence_no;
 		}
 		$data['Orders']	    = $allOrders;
 		$data['totalRow']	= $totalRow;
@@ -186,9 +190,9 @@
 
 	function getNewOrderCounts(){
 		$resId                      = $this->getRestaurantForRoleBaseAccess();
-		$response['total']          = $this->Order_model->getOrderCount($resId);
-		$response['totalNew']       = $this->Order_model->getOrderCount($resId,1);
-		$response['totalDisputed']  = $this->Order_model->getOrderCount($resId,8);
+		$response['total']          = $this->Order_model->getOrderCount($resId)->total;
+		$response['totalNew']       = $this->Order_model->getOrderCount($resId,1)->total;
+		$response['totalDisputed']  = $this->Order_model->getOrderCount($resId,8)->total;
 		echo json_encode($response); exit;
 	}
 
@@ -280,8 +284,13 @@
 		$orderDetail 	    = $this->Order_model->getOrderDetails($id);
 		$getDelAdd          = $this->Home_model->getDeliveryAdd($orderDetail[0]->selected_delivery_address);
 		$getResData         = $this->Home_model->getRestaurant($orderDetail[0]->restaurant_id);
-		//echo "<pre>";print_r($getDelAdd);exit;
+
+		$localityData = $this->Home_model->getLocalityData($getDelAdd[0]->locality_id);
+		$orderData['area'] = $localityData->name;
+
+		// echo "<pre>";print_r($getDelAdd);exit;
 		$orderData['order_id'] 			   = $id;
+		$orderData['sequence_no']		   = $orderDetail[0]->sequence_no;
 		$orderData['order_status'] 		   = $orderDetail[0]->order_status;
 		$orderData['order_placed_time']    = $orderDetail[0]->order_placed_time;
 		$orderData['delivered_time'] 	   = $orderDetail[0]->delivered_time;
@@ -289,26 +298,34 @@
 		$orderData['order_type'] 		   = $orderDetail[0]->order_type;
 		$orderData['delivery_charges'] 	   = $orderDetail[0]->delivery_charges;
 		$orderData['reason'] 			   = $orderDetail[0]->reason;
-
+		$orderData['special_instruction']  = $orderDetail[0]->special_instruction;
+		
 		//restaurant detail 
 		$orderData['restaurant_name']      = $getResData[0]->restaurant_name;
 
 		//order delivery address
-		$orderData['delivery_address'] 	   = $getDelAdd[0]->address1;
 		$orderData['customer_name'] 	   = $getDelAdd[0]->customer_name;
 		$orderData['customer_contact_no']  = $getDelAdd[0]->contact_no;
 		$orderData['customer_email'] 	   = $getDelAdd[0]->email;
 		$orderData['customer_latitude']    = $getDelAdd[0]->customer_latitude;
 		$orderData['customer_longitude']   = $getDelAdd[0]->customer_longitude;
+		$orderData['delivery_address'] 	   = $getDelAdd[0]->address1;
+		$orderData['street'] 	           = $getDelAdd[0]->street;
+		$orderData['building'] 	           = $getDelAdd[0]->building;
+		$orderData['appartment_no'] 	   = $getDelAdd[0]->appartment_no;
+		$orderData['block'] 	           = $getDelAdd[0]->block;
+		$orderData['avenue'] 	           = $getDelAdd[0]->avenue;
+		$orderData['floor'] 	           = $getDelAdd[0]->floor;
 		
 		$getDriverData= $this->Home_model->getDriver($orderDetail[0]->delivered_by);
 		if($orderData['order_status']>3 && count($getDriverData)>0)
-        {
+		{
         	 //order Driver details
-	       	$orderData['d_first_name'] 	   = $getDriverData[0]->first_name;
+			$orderData['d_first_name'] 	   = $getDriverData[0]->first_name;
 			$orderData['d_last_name'] 	   = $getDriverData[0]->last_name;
 			$orderData['d_contact_no'] 	   = "(+965)".$getDriverData[0]->contact_no;
-	        
+			$orderData['d_contact_no'] 	   = "(+965)".$getDriverData[0]->contact_no;
+			$orderData['driver_id'] 	   = $orderDetail[0]->delivered_by;
 		}
 
 		$oDetailId =0;
@@ -334,10 +351,10 @@
 				}
 
 				if($oDetailId != $value->order_detail_id)
-	            {
-	            	$oDetailId   =$value->order_detail_id;
+				{
+					$oDetailId   =$value->order_detail_id;
 					$orderData['dishes'][$oDetailId]['product_id']     = $value->product_id;
-					$orderData['dishes'][$oDetailId]['description']    = $value->description;
+					$orderData['dishes'][$oDetailId]['description']    = $value->comment;
 					$orderData['dishes'][$oDetailId]['price']          = $productDetails[0]->dish_price;
 					$orderData['dishes'][$oDetailId]['quantity']       = $value->quantity;
 					$orderData['dishes'][$oDetailId]['amount']         = $value->amount;
@@ -382,7 +399,7 @@
 	 */
 	function changeOrderStatus()
 	{
-		//print_r($this->userdata[0]->user_id);exit;
+		// print_r($this->userdata[0]->user_id);exit;
 		$uid 			= $this->userdata[0]->user_id;
 		$oid 			= $this->input->post('oid');
 		$os 			= $this->input->post('os');
@@ -419,16 +436,17 @@
 						$html .= '<span class="label '.$labelColor[$os+1].' changeOrder" oid="'.$oid.'" os="'.($os+1).'" data-toggle="modal" data-target="#cngStatusmodal" data-backdrop="static" data-keyboard="false" style="cursor: pointer;" title="Change Order Status">'.$OrderStatus[$os+1].'</span>';
 					}
 				}
-			
+
 				if($os==7)
 				{
 					$this->load->model('Webservice_driver_model');
 					$orderDetail = $this->Webservice_driver_model->getOrderDetailsForDeliveryEmail($oid);
-
+					
 					if(is_array($orderDetail) && count($orderDetail)>0){
 
 						foreach ($orderDetail as $key => $value) {
 
+							$orderDetails[$value->order_id]['sequence_no'] 				= $value->sequence_no;
 							$orderDetails[$value->order_id]['order_id'] 				= $value->order_id;
 							$orderDetails[$value->order_id]['order_status'] 			= $value->order_status;
 							$orderDetails[$value->order_id]['order_placed_time'] 		= $value->order_placed_time;
@@ -439,6 +457,12 @@
 							$orderDetails[$value->order_id]['restaurant_address'] 		= $value->res_address;
 							$orderDetails[$value->order_id]['restaurant_email'] 		= $value->res_email;
 							$orderDetails[$value->order_id]['restaurant_contact_no'] 	= $value->res_contact_no;
+							$orderDetails[$value->order_id]['appartment_no'] = $value->appartment_no;
+							$orderDetails[$value->order_id]['building'] = $value->building;
+							$orderDetails[$value->order_id]['block'] = $value->block;
+							$orderDetails[$value->order_id]['floor'] = $value->floor;
+							$orderDetails[$value->order_id]['street'] = $value->street;
+							$orderDetails[$value->order_id]['avenue'] = $value->avenue;
 							$orderDetails[$value->order_id]['delivery_address'] 		= $value->usr_address;
 							$orderDetails[$value->order_id]['customer_name'] 			= $value->customer_name;
 							$orderDetails[$value->order_id]['customer_contact_no'] 		= $value->usr_contact_no;
@@ -451,6 +475,17 @@
 							$orderDetails[$value->order_id]['user_email'] 					= $value->user_email;
 							$orderDetails[$value->order_id]['delivery_charges']			= $value->delivery_charges;
 
+							$orderchs = $this->Webservice_driver_model->getOrderDetailsForDeliveryChoiseEmail($oid, $value->product_id);
+
+							if($orderchs) {
+								$orderArr = [];
+								$del_choise = '';
+								foreach ($orderchs as $k => $val) {
+									$orderArr[] = $val->choice_name;
+									$del_choise = implode(', ', $orderArr);
+								}
+							}
+
 							$orderDetails[$value->order_id]['dishes'][$value->product_id]['product_id']  = $value->product_id;
 							$orderDetails[$value->order_id]['dishes'][$value->product_id]['quantity']  = $value->quantity;
 							$orderDetails[$value->order_id]['dishes'][$value->product_id]['amount']  = $value->amount;
@@ -458,10 +493,12 @@
 							$orderDetails[$value->order_id]['dishes'][$value->product_id]['discount_amount']  = $value->discount_amount;
 							$orderDetails[$value->order_id]['dishes'][$value->product_id]['name']  = $value->name;
 							$orderDetails[$value->order_id]['dishes'][$value->product_id]['price']  = $value->price;
+							$orderDetails[$value->order_id]['dishes'][$value->product_id]['description']  = $value->description;
+							$orderDetails[$value->order_id]['dishes'][$value->product_id]['choice_name']  = $del_choise;
 						}
 					}
-
 					$dishArray = array_values($orderDetails);
+
 					foreach ($dishArray as $dishkey => $dishvalue)
 					{
 						if($dishvalue['dishes'] && is_array($dishvalue['dishes']))
@@ -483,11 +520,18 @@
 						{
 							if($dishArray[0]['customer_email'] || $dishArray[0]['user_email'])
 							{
+								$dishArray[0]['sequence_no'] = $dishArray[0]['sequence_no'];
 								$dishArray[0]['order_id'] = $oid;
 								$dishArray[0]['order_placed_time'] = $dishArray[0]['order_placed_time'];
 								$dishArray[0]['total_price'] = $dishArray[0]['total_price'];
 								$dishArray[0]['delivery_charges'] = $dishArray[0]['delivery_charges'];
-								$dishArray[0]['delivery_address'] = $dishArray[0]['delivery_address'];
+								$address = $dishArray[0]['block']?', block-'.$dishArray[0]['block']:'';
+								$address .= $dishArray[0]['street']?', '.$dishArray[0]['street'].', ':'';
+								$address .= $dishArray[0]['avenue']?', '.$dishArray[0]['avenue'].', ':'';
+								$address .= $dishArray[0]['building']?', building- '.$dishArray[0]['building']:'';
+								$address .= $dishArray[0]['floor']?', floor- '.$dishArray[0]['floor']:'';
+								$address .= $dishArray[0]['appartment_no']?$dishArray[0]['appartment_no']:'';
+								$dishArray[0]['delivery_address'] = $address.$dishArray[0]['delivery_address'];
 
 								$dishArray[0]['username'] = $dishArray[0]['customer_name'];
 								$dishArray[0]['to_email'] = $dishArray[0]['customer_email'];
@@ -499,11 +543,18 @@
 						{
 							if($dishArray[0]['customer_email'])
 							{
+								$dishArray[0]['sequence_no'] = $dishArray[0]['sequence_no'];
 								$dishArray[0]['order_id'] = $oid;
 								$dishArray[0]['order_placed_time'] = $dishArray[0]['order_placed_time'];
 								$dishArray[0]['total_price'] = $dishArray[0]['total_price'];
 								$dishArray[0]['delivery_charges'] = $dishArray[0]['delivery_charges'];
-								$dishArray[0]['delivery_address'] = $dishArray[0]['delivery_address'];
+								$address = $dishArray[0]['block']?', block-'.$dishArray[0]['block']:'';
+								$address .= $dishArray[0]['street']?', '.$dishArray[0]['street'].', ':'';
+								$address .= $dishArray[0]['avenue']?', '.$dishArray[0]['avenue'].', ':'';
+								$address .= $dishArray[0]['building']?', building- '.$dishArray[0]['building']:'';
+								$address .= $dishArray[0]['floor']?', floor- '.$dishArray[0]['floor']:'';
+								$address .= $dishArray[0]['appartment_no']?$dishArray[0]['appartment_no']:'';
+								$dishArray[0]['delivery_address'] = $address.$dishArray[0]['delivery_address'];
 
 								$dishArray[0]['username'] = $dishArray[0]['user_first_name'].' '.$dishArray[0]['user_last_name'];
 								$dishArray[0]['to_email'] = $dishArray[0]['customer_email'];
@@ -513,6 +564,7 @@
 
 							if($dishArray[0]['user_email'])
 							{
+								$dishArray1[0]['sequence_no'] = $dishArray[0]['sequence_no'];
 								$dishArray1[0]['order_id'] = $oid;
 								$dishArray1[0]['order_placed_time'] = $dishArray[0]['order_placed_time'];
 								$dishArray[0]['total_price'] = $dishArray[0]['total_price'];
@@ -703,14 +755,15 @@
 	 */
 	function changeDriverAndOrderStatus()
 	{
-		//print_r($this->userdata[0]->user_id);exit;
-		$uid 			= $this->userdata[0]->user_id;
 		$oid 			= $this->input->post('oid');
+		$userId         = $this->Order_model->getOrderData($oid);
+		$uid 			= $userId[0]->user_id;
 		$os 			= $this->input->post('os');
 		$did 			= $this->input->post('did');
 		$OrderStatus    = $this->config->item('OrderStatus');
 		$panelColor     = $this->config->item('panelColor');
 		$labelColor     = $this->config->item('labelColor');
+		
 		if($oid && $os)
 		{
 			$updateOrder = array();
@@ -764,32 +817,32 @@
 
 	function ChangeRefundOrderStatus($ordreId){
 
-			$uid 	 =$this->userdata[0]->user_id;
+		$uid 	 =$this->userdata[0]->user_id;
 
-			if($ordreId)
+		if($ordreId)
+		{
+			$updateOrder = array();
+			$updateOrder['order_status'] 	= '9';
+			$updateOrder['updated_by'] 		= $uid;
+			$updateOrder['updated_date'] 	= date("Y-m-d H:i:s");
+
+			$update = $this->Order_model->updateOrder($ordreId,$updateOrder);
+
+			if($update)
 			{
-				$updateOrder = array();
-				$updateOrder['order_status'] 	= '9';
-				$updateOrder['updated_by'] 		= $uid;
-				$updateOrder['updated_date'] 	= date("Y-m-d H:i:s");
-				
-				$update = $this->Order_model->updateOrder($ordreId,$updateOrder);
-
-				if($update)
-				{
-					$response = array("success"=>"1","message"=>"Order has been refunded successfully.");
-				}
-				else
-				{
-					$response = array("success"=>"0","message"=>"Order can't be refunded, please try after sometime.");
-				}
+				$response = array("success"=>"1","message"=>"Order has been refunded successfully.");
 			}
 			else
 			{
-				$response = array("success"=>"0","message"=>"Please select the order to refunded.");
+				$response = array("success"=>"0","message"=>"Order can't be refunded, please try after sometime.");
 			}
+		}
+		else
+		{
+			$response = array("success"=>"0","message"=>"Please select the order to refunded.");
+		}
 
-			echo json_encode($response);exit;	
+		echo json_encode($response);exit;	
 	}
 	/**
 	 * function call to Replace order
@@ -798,72 +851,471 @@
 	 */
 	function replaceOrder(){
 
-			$uid 	 =$this->userdata[0]->user_id;
-			$ordreId =$this->input->post('orderId');
+		$uid 	 =$this->userdata[0]->user_id;
+		$ordreId =$this->input->post('orderId');
 
-			if($ordreId !='' )
-			{
-				$getOrderData        	=$this->Order_model->getOrderData($ordreId);
-				$newOrderData['user_id']       		 	  =$getOrderData[0]->user_id;        
-				$newOrderData['restaurant_id'] 		 	  =$getOrderData[0]->restaurant_id;        
-				$newOrderData['total_price']   		 	  =$getOrderData[0]->total_price;        
-				$newOrderData['order_placed_time']   	  =date('Y-m-d h:i:s');  
-				$newOrderData['delivered_time']   	      ="";  
-				$newOrderData['order_confirmed_time']  	  ="";  
-				$newOrderData['reason']  	              =$getOrderData[0]->reason;  
-				$newOrderData['order_type'] 			  =$getOrderData[0]->order_type;        
-				$newOrderData['order_status'] 			  ='1';        
-				$newOrderData['selected_delivery_address']=$getOrderData[0]->selected_delivery_address;        
-				$newOrderData['delivery_charges']         =$getOrderData[0]->delivery_charges;        
-				$newOrderData['is_active'] 				  =$getOrderData[0]->is_active;        
-				$newOrderData['order_refer_by']  		  =$ordreId;       
-				$newOrderData['created_by']  			  =$uid;       
-				$newOrderData['created_date']  			  =date('Y-m-d h:i:s'); 
+		if($ordreId !='' )
+		{
+			$getOrderData        	=$this->Order_model->getOrderData($ordreId);
+			$newOrderData['user_id']       		 	  =$getOrderData[0]->user_id;        
+			$newOrderData['restaurant_id'] 		 	  =$getOrderData[0]->restaurant_id;        
+			$newOrderData['total_price']   		 	  =$getOrderData[0]->total_price;        
+			$newOrderData['order_placed_time']   	  =date('Y-m-d h:i:s');  
+			$newOrderData['delivered_time']   	      ="";  
+			$newOrderData['order_confirmed_time']  	  ="";  
+			$newOrderData['reason']  	              =$getOrderData[0]->reason;  
+			$newOrderData['order_type'] 			  =$getOrderData[0]->order_type;        
+			$newOrderData['order_status'] 			  ='1';        
+			$newOrderData['selected_delivery_address']=$getOrderData[0]->selected_delivery_address;        
+			$newOrderData['delivery_charges']         =$getOrderData[0]->delivery_charges;        
+			$newOrderData['is_active'] 				  =$getOrderData[0]->is_active;        
+			$newOrderData['order_refer_by']  		  =$ordreId;       
+			$newOrderData['created_by']  			  =$uid;       
+			$newOrderData['created_date']  			  =date('Y-m-d h:i:s'); 
 				//echo "<pre>";print_r($newOrderData);exit;
-				$newOrder = $this->Order_model->addOrderData($newOrderData); 
-				if($newOrder>0){
-					$updateOldOrder =$this->Order_model->updateOrderDriver($ordreId,array('order_status'=>12));
-					$response = array("success"=>"1","message"=>"Order has been replaced successfully.");
-					$getOrderDetailsData 	=$this->Order_model->getOrderDetailsData($ordreId);
-					if(count($getOrderDetailsData) >0){
-						foreach ($getOrderDetailsData as $key => $value) {
-							$newOrderDetailsData['order_id']  	    =$newOrder;
-							$newOrderDetailsData['product_id']      =$value->product_id;
-							$newOrderDetailsData['quantity'] 		=$value->quantity;
-							$newOrderDetailsData['amount']          =$value->amount;
-							$newOrderDetailsData['discount_type']   =$value->discount_type;
-							$newOrderDetailsData['discount_amount'] =$value->discount_amount;
-							$newOrderDetailsData['is_active']       =$value->is_active;
-							$newOrderDetailsData['created_by']      =$uid; 
-							$newOrderDetailsData['created_date']    =date('Y-m-d h:i:s');  
-							
-							$addDishDetails=$this->Order_model->addOrderDetailsData($newOrderDetailsData);
-							if($addDishDetails >0){
-								$ord =$this->Order_model->getOrderDishDetail($value->order_detail_id);
-								if(!empty($ord)){
-									$OrderDishDetail =$ord;
-									$newOrderDishDetail['fk_order_detail_id'] =$addDishDetails;
-									$newOrderDishDetail['fk_order_id']  		=$newOrder;
-									$newOrderDishDetail['fk_dish_id'] 		=$ord[0]->fk_dish_id;
-									$newOrderDishDetail['fk_choice_id']       =$ord[0]->fk_choice_id;
-									$newOrderDishDetail['created_by']         =$uid; 
-									$newOrderDishDetail['created_date']       =date('Y-m-d h:i:s');   
-									$addOrderDishDetail =$this->Order_model->addOrderDishDetail($newOrderDishDetail); 
-								}
+			$newOrder = $this->Order_model->addOrderData($newOrderData); 
+			if($newOrder>0){
+				$updateOldOrder =$this->Order_model->updateOrderDriver($ordreId,array('order_status'=>12));
+				$response = array("success"=>"1","message"=>"Order has been replaced successfully.");
+				$getOrderDetailsData 	=$this->Order_model->getOrderDetailsData($ordreId);
+				if(count($getOrderDetailsData) >0){
+					foreach ($getOrderDetailsData as $key => $value) {
+						$newOrderDetailsData['order_id']  	    =$newOrder;
+						$newOrderDetailsData['product_id']      =$value->product_id;
+						$newOrderDetailsData['quantity'] 		=$value->quantity;
+						$newOrderDetailsData['amount']          =$value->amount;
+						$newOrderDetailsData['discount_type']   =$value->discount_type;
+						$newOrderDetailsData['discount_amount'] =$value->discount_amount;
+						$newOrderDetailsData['is_active']       =$value->is_active;
+						$newOrderDetailsData['created_by']      =$uid; 
+						$newOrderDetailsData['created_date']    =date('Y-m-d h:i:s');  
+
+						$addDishDetails=$this->Order_model->addOrderDetailsData($newOrderDetailsData);
+						if($addDishDetails >0){
+							$ord =$this->Order_model->getOrderDishDetail($value->order_detail_id);
+							if(!empty($ord)){
+								$OrderDishDetail =$ord;
+								$newOrderDishDetail['fk_order_detail_id'] =$addDishDetails;
+								$newOrderDishDetail['fk_order_id']  		=$newOrder;
+								$newOrderDishDetail['fk_dish_id'] 		=$ord[0]->fk_dish_id;
+								$newOrderDishDetail['fk_choice_id']       =$ord[0]->fk_choice_id;
+								$newOrderDishDetail['created_by']         =$uid; 
+								$newOrderDishDetail['created_date']       =date('Y-m-d h:i:s');   
+								$addOrderDishDetail =$this->Order_model->addOrderDishDetail($newOrderDishDetail); 
 							}
-							
 						}
-						
 
 					}
-				}else{
-					$response = array("success"=>"0","message"=>"Please select the order to replaced,please try again.");
-				}    
-				
-			}
+
+
+				}
+			}else{
+				$response = array("success"=>"0","message"=>"Please select the order to replaced,please try again.");
+			}    
+
+		}
 		
-			echo json_encode($response);exit;	
-			
+		echo json_encode($response);exit;	
+
 	}
 
+	/**
+	 * [orderTypeList Order type list]
+	 * @author Hardik Ghadshi
+	 * @Created Date   2019-11-04T12:49:40+0530
+	 * @return  [type] [description]
+	 */
+	function orderTypeList(){
+
+		$data['userdata']	= $this->session->userdata('current_user');
+		$data['menu']   	= $this->menu;
+		$data['submenu']   	= $this->submenu;
+
+		$data['result'] = $this->Order_model->getOrderTypes();
+
+		$this->load->view('Elements/header',$data);
+		$this->load->view('Ordertype/list_ordertype');
+		$this->load->view('Elements/footer');
+	}
+
+	/**
+	 * [addOrderType Add Order Type]
+	 * @author Hardik Ghadshi
+	 * @Created Date 2019-11-04T12:09:04+0530
+	 */
+	function addOrderType(){
+
+		$data['userdata']	= $this->session->userdata('current_user');
+
+		$orderType['type'] = $this->input->post('type_name');
+		$orderType['is_active'] = 1;
+		$orderType['created_by'] = $data['userdata'][0]->user_id;
+
+		$getCategory = $this->Order_model->getOrderTypes($orderType['type']);
+		if($getCategory)
+		{
+			$response = array("success"=>"0","message"=>"Order type already present!");
+		}
+		else
+		{
+			$result 	 = $this->Order_model->addOrderType($orderType);
+
+			if($result){
+
+				$response = array("success"=>"1","message"=>"Data added successfully","data" => $result);
+			}else{
+				$response = array("success"=>"0","message"=>"Something went wrong");
+			}
+		}
+
+		echo json_encode($response);
+	}
+
+	/**
+	 * [deleteOrderType Delete Order type]
+	 * @author Hardik Ghadshi
+	 * @Created Date   2019-11-04T17:23:26+0530
+	 * @return  [type] [description]
+	 */
+	function deleteOrderType(){
+
+		$data['userdata'] 	= $this->session->userdata('current_user');
+
+		$req['is_active'] 	= 0;
+		$req['updated_by'] 	= $data['userdata'][0]->user_id;
+		$req['id'] 			= $this->input->post('id');
+
+		$result = $this->Order_model->deleteOrderType($req);
+
+		if($result){
+
+			$response = array("success"=>"1","message"=>"Data removed successfully");
+		}else{
+			$response = array("success"=>"0","message"=>"Something went wrong");
+		}
+
+		echo json_encode($response);
+	}
+
+	/**
+	 * [addOrder Add Order from backend]
+	 * @author Hardik Ghadshi
+	 * @Created Date 2019-11-04T18:19:59+0530
+	 */
+	function addOrder(){
+
+		delete_cookie('dishDetail');
+
+		$data['userdata']	= $this->session->userdata('current_user');
+		$data['menu']   	= $this->menu;
+		$data['submenu']   	= $this->submenu;
+
+		$data['localitylist'] 	=$this->Restaurant_model->getlocality();
+		$data['order_category'] = $this->Order_model->getOrderTypes();
+		$restaurant 	= $this->Restaurant_model->getAllRestaurantDetails();
+		
+		for($i = 0; $i < sizeof($restaurant); $i++){
+
+			if(empty($data['restaurant'][$i])) $data['restaurant'][$i] = new stdClass();
+
+			$data['restaurant'][$i]->restaurant_id = $restaurant[$i]->restaurant_id;
+			$data['restaurant'][$i]->restaurant_name = $restaurant[$i]->restaurant_name;
+		}
+
+		$this->load->view('Elements/header',$data);
+		$this->load->view('Orders/add_order');
+		$this->load->view('Elements/footer');
+	}
+	/**
+	 * [saveOrder description]
+	 * @author Rajnee Patel
+	 * @Created Date   2019-11-11T18:08:17+0530
+	 * @return  [type] [description]
+	 */
+	function saveOrder()
+	{
+		$data['userdata'] 	= $this->session->userdata('current_user');
+		$userId 			= $data['userdata'][0]->user_id;
+
+		$orderDate 		= $this->input->post('orderDate');
+		$restaurant 	= $this->input->post('restaurant');
+		$orderType 		= $this->input->post('orderType');
+		$orderStatus 	= $this->input->post('orderStatus');
+		$locality 		= $this->input->post('locality');
+		$orderTypeId	= $this->input->post('orderTypeId');
+		$customerId 	= $this->input->post('user');
+
+		$orderDate = date("Y-m-d H:i:s", strtotime($orderDate));
+		$dishdata  = json_decode($this->input->post('dishDetail'));
+
+		$c          = 0;
+		$dishprice  = 0;
+		$totalprice = 0;
+		$ch         = array();
+
+		foreach ($dishdata as $key => $value1)
+		{
+			$dishDetail = $this->Webservice_customer_model->getCartDishDetail($value1->dishId,$_COOKIE['locality_id']);
+
+
+			if(count($dishDetail)>0)
+			{
+				$finalDishData[$c]['dishId']           = $value1->dishId;
+				$finalDishData[$c]['price']            = $dishDetail[0]->dish_price;
+				$dishprice                             = $dishDetail[0]->dish_price;
+				$finalDishData[$c]['dish_count']       = $value1->dishcount;
+				$finalDishData[$c]['delivery_charges'] = $dishDetail[0]->delivery_charge;
+				$finalDishData[$c]['description']	   = $value1->instruction;
+
+				$i=0;
+				$choices      =explode(',', $dishDetail[0]->choice_id);
+				$choice_price =explode(',', $dishDetail[0]->choice_price);
+				if(count($value1->choiceOfOne) >0)
+				{
+					foreach ($value1->choiceOfOne as $key => $value) {
+						$ch[]=$value;
+					}
+				}
+				
+				if(count($value1->Multiplechoice) != "")
+				{
+					foreach ($value1->Multiplechoice as $key => $value) {
+						$ch[]=$value;
+					}
+				}
+				if(count($ch)>0)
+				{
+
+					foreach ($ch as $chId=> $chVal) {
+						$dishchoice = $this->Home_model->getChoiceName($chVal);
+						if(count($dishchoice)>0){
+							$chk =array_search($chVal,$choices);
+							$finalDishData[$c]['choice'][$i]['choice_id']  =  $dishchoice[0]->choice_id;
+							$finalDishData[$c]['choice'][$i]['price']      = ($choice_price[$chk]!='0')?$choice_price[$chk]:0;
+							$dishprice = $dishprice + $choice_price[$chk];
+							$i++;
+						}
+
+					}
+				}
+
+				$finalDishData[$c]['totaldisheprice'] = $dishprice * $value1->dishcount;
+				$totalprice = $totalprice + $finalDishData[$c]['totaldisheprice'];
+				$c++;
+				$ch  =array();
+			}
+		}
+		
+		$getLocalityData  =$this->Webservice_customer_model->getLocalityData($this->input->post('address_id'));
+		$orderdata['user_id']           = $customerId;
+		$orderdata['restaurant_id']     = $restaurant;
+
+		if($orderTypeId == 2 || $orderTypeId == 3 || $orderTypeId == 5 || $orderTypeId == 6){
+			$orderdata['delivery_charges'] = 0;
+		}else{
+			$orderdata['delivery_charges']  = $finalDishData[0]['delivery_charges'];
+		}
+
+		$orderdata['total_price']       = $totalprice+$orderdata['delivery_charges'];
+		$orderdata['order_placed_time'] = $orderDate;
+		if(isset($getLocalityData) && count($getLocalityData)>0){
+			$timestamp = strtotime(date("Y-m-d H:i:s")) + 60*($getLocalityData[0]->delivered_time +$getLocalityData[0]->extra_delivery_time);
+		}else{
+			$timestamp = strtotime(date("Y-m-d H:i:s")) + 60*60;
+		}
+		$orderdata['expected_delivery_time']    = date('Y-m-d H:i:s', $timestamp);
+		$orderdata['order_type']        		= $orderType;
+		$orderdata['reason']            		= ($orderType == 1 || $orderType == 2)?'Payment not done':'';
+		$orderdata['order_status']      		= $orderStatus;
+		$orderdata['is_active']         		= 1;
+		$orderdata['selected_delivery_address'] = $locality;
+		$orderdata['created_by']        		= $userId;
+		$orderdata['created_date']      		= date("Y-m-d H:i:s");
+		$orderdata['order_category']      		= $orderTypeId;
+		$tableName1                     		= 'tbl_orders';
+
+		if($orderType != 1 && $orderType != 2){
+
+			$seqNo = $this->Home_model->getLatestSequenceNumber();
+			$orderdata['sequence_no'] = $seqNo->sequence_no + 1;
+		}
+		
+		$orderres = $this->Webservice_customer_model->insertData($tableName1,$orderdata);
+		foreach ($finalDishData as $key => $value)		{
+			$orderdetailsdata['order_id']        = $orderres;
+			$orderdetailsdata['product_id']      = $value['dishId'];
+			$orderdetailsdata['quantity']        = $value['dish_count'];
+			$orderdetailsdata['amount']          = $value['totaldisheprice'];
+			$orderdetailsdata['discount_type']   = 0;
+			$orderdetailsdata['discount_amount'] = 0;
+			$orderdetailsdata['is_complimentry'] = 0;
+			$orderdetailsdata['is_active']       = 1;
+			$orderdetailsdata['created_by']      = $userId;
+			$orderdetailsdata['created_date']    = date("Y-m-d H:i:s");
+			$orderdetailsdata['description']	 = $value['description'];
+			$table2                              = 'tbl_order_details';	
+			$orderdetailres = $this->Webservice_customer_model->insertData($table2,$orderdetailsdata);
+			$i=0;
+			if(isset($value['choice']) && count($value['choice'])>0){
+				foreach ($value['choice'] as $choicekey => $choicevalue) {
+					$orderchoicedata['fk_order_detail_id'] = $orderdetailres;
+					$orderchoicedata['fk_order_id'] = $orderres;
+					$orderchoicedata['fk_dish_id'] = $value['dishId'];
+					$orderchoicedata['fk_choice_id'] = $choicevalue['choice_id'];
+					$orderchoicedata['created_by'] = $userId;
+					$orderchoicedata['created_date'] = date("Y-m-d H:i:s");
+					$table3 = 'tbl_order_dish_choice';
+					$this->Webservice_customer_model->insertData($table3,$orderchoicedata);
+					$i++;
+				}
+			}
+		}
+
+		$getUserData =$this->Webservice_customer_model->getUserdetails($userId);
+		
+		$response['success'] = 1;
+
+		echo json_encode($response);exit;
+	}
+
+	public function exportOrderDetails($id,$print = '')
+	{
+		$data['userdata']	= $this->session->userdata('current_user');
+		$data['panelColor'] = $this->config->item('panelColor');
+		$data['menu']   	= $this->menu;
+		$submenu   			= $this->submenu;
+		$submenuArray 		= array();
+
+		//$orderIdData 		= $this->Home_model->getOrderIdFromSequenceNo($id);
+
+		$data['print'] = $print;
+
+		foreach($submenu as $key=>$value)
+		{
+			$submenuArray[$value->parent_page_id][] = $value;
+		}
+
+		$data['submenu']    = $submenuArray;
+		$orderDetail 	    = $this->Order_model->getOrderDetails($id);
+		$getDelAdd          = $this->Home_model->getDeliveryAdd($orderDetail[0]->selected_delivery_address);
+		$getResData         = $this->Home_model->getRestaurant($orderDetail[0]->restaurant_id);
+		//echo "<pre>";print_r($getDelAdd);exit;
+		$orderData['order_id'] 			   = $id;
+		$orderData['sequence_no'] 		   = $orderDetail[0]->sequence_no;
+		$orderData['order_status'] 		   = $orderDetail[0]->order_status;
+		$orderData['order_placed_time']    = $orderDetail[0]->order_placed_time;
+		$orderData['delivered_time'] 	   = $orderDetail[0]->delivered_time;
+		$orderData['total_price'] 		   = $orderDetail[0]->total_price;
+		$orderData['order_type'] 		   = $orderDetail[0]->order_type;
+		$orderData['delivery_charges'] 	   = $orderDetail[0]->delivery_charges;
+		$orderData['reason'] 			   = $orderDetail[0]->reason;
+
+		//restaurant detail 
+		$orderData['restaurant_name']      = $getResData[0]->restaurant_name;
+
+		//order delivery address
+		$orderData['customer_name'] 	   = $getDelAdd[0]->customer_name;
+		$orderData['customer_contact_no']  = $getDelAdd[0]->contact_no;
+		$orderData['customer_email'] 	   = $getDelAdd[0]->email;
+		$orderData['customer_latitude']    = $getDelAdd[0]->customer_latitude;
+		$orderData['customer_longitude']   = $getDelAdd[0]->customer_longitude;
+		$orderData['delivery_address'] 	   = $getDelAdd[0]->address1;
+		$orderData['street'] 	           = $getDelAdd[0]->street;
+		$orderData['building'] 	           = $getDelAdd[0]->building;
+		$orderData['appartment_no'] 	   = $getDelAdd[0]->appartment_no;
+		$orderData['block'] 	           = $getDelAdd[0]->block;
+		$orderData['avenue'] 	           = $getDelAdd[0]->avenue;
+		$orderData['floor'] 	           = $getDelAdd[0]->floor;
+		$orderData['locality_id'] 		   = $getDelAdd[0]->locality_id;
+
+		$localityData = $this->Home_model->getLocalityData($orderData['locality_id']);
+		$orderData['area'] = $localityData->name;
+		
+		$orderData['order_type_name'] = $this->config->item('payment_type'); 
+		
+		$getDriverData= $this->Home_model->getDriver($orderDetail[0]->delivered_by);
+		if($orderData['order_status']>3 && count($getDriverData)>0)
+		{
+        	 //order Driver details
+			$orderData['d_first_name'] 	   = $getDriverData[0]->first_name;
+			$orderData['d_last_name'] 	   = $getDriverData[0]->last_name;
+			$orderData['d_contact_no'] 	   = "(+965)".$getDriverData[0]->contact_no;
+			$orderData['d_contact_no'] 	   = "(+965)".$getDriverData[0]->contact_no;
+			$orderData['driver_id'] 	   = $orderDetail[0]->delivered_by;
+		}
+
+		$oDetailId =0;
+		if(count($orderDetail)>0)
+		{
+			foreach ($orderDetail as $key => $value) {
+
+				$ordId     =$value->order_id;
+				$choiceID  =$value->choice_id;
+
+				$productDetails = $this->Webservice_customer_model->getDishDetail($value->product_id,$value->restaurant_id);
+				if(count($productDetails)>0)
+				{
+					$dishChoices   =explode(',',$productDetails[0]->choice_id);
+					$choicesPrices =explode(',',$productDetails[0]->choice_price);
+					
+					$key          = array_search($choiceID,$dishChoices);
+					$choicePrice  =$choicesPrices[$key];	
+				}
+				else
+				{
+					$choicePrice="0";
+				}
+
+				if($oDetailId != $value->order_detail_id)
+				{
+					$oDetailId   =$value->order_detail_id;
+					$orderData['dishes'][$oDetailId]['product_id']     = $value->product_id;
+					$orderData['dishes'][$oDetailId]['description']    = $value->comment;
+					$orderData['dishes'][$oDetailId]['price']          = $productDetails[0]->dish_price;
+					$orderData['dishes'][$oDetailId]['quantity']       = $value->quantity;
+					$orderData['dishes'][$oDetailId]['amount']         = $value->amount;
+					$orderData['dishes'][$oDetailId]['discount_type']  = $value->discount_type;
+					$orderData['dishes'][$oDetailId]['product_en_name']= $value->product_en_name;
+					$orderData['dishes'][$oDetailId]['en_description'] = $value->en_description;
+
+					if ($value->choice_id != "") 
+					{
+						$orderData['dishes'][$oDetailId]['choice'][$choiceID]['choice_id'] = $choiceID;
+						$orderData['dishes'][$oDetailId]['choice'][$choiceID]['choice_price'] =$choicePrice;;
+						$orderData['dishes'][$oDetailId]['choice'][$choiceID]['choice_name'] = $value->choice_name;
+						$orderData['dishes'][$oDetailId]['choice'][$choiceID]['choice_description'] = $value->choice_description;
+						$orderData['dishes'][$oDetailId]['choice'][$choiceID]['choice_category_name'] = $value->choice_category_name;
+
+					}
+				}
+				else
+				{
+					if ($value->choice_id != "") 
+					{
+						$orderData['dishes'][$oDetailId]['choice'][$choiceID]['choice_id'] = $choiceID;
+						$orderData['dishes'][$oDetailId]['choice'][$choiceID]['choice_price'] = $choicePrice;
+						$orderData['dishes'][$oDetailId]['choice'][$choiceID]['choice_name'] = $value->choice_name;
+						$orderData['dishes'][$oDetailId]['choice'][$choiceID]['choice_description'] = $value->choice_description;
+						$orderData['dishes'][$oDetailId]['choice'][$choiceID]['choice_category_name'] = $value->choice_category_name;
+					}
+				}
+			}
+			
+			$data['orderDetail'] = $orderData;
+
+			$html = $this->load->view('Orders/export_order_details',$data); 
+
+			$this->load->library('pdf');
+		    $this->load->view('Orders/export_order_details',$data);
+		    $html = $this->output->get_output();
+		    //$this->pdf->loadHtml($html);
+		    $this->pdf->loadHtml($html);
+		    // $customPaper = array(0,0,570,570);
+		    //$this->pdf->set_paper($customPaper);
+		    $this->pdf->setPaper('A2','portrait');//landscape
+		    $this->pdf->render();
+		    $this->pdf->stream("order_details.pdf", array('Attachment'=>1));
+
+		}
+	}
 }

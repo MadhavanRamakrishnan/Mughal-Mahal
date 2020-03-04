@@ -2,7 +2,11 @@
   var linkName    = link_name;
   var newLinkName = link_name;
   var disLinkName = link_name;
-  var lastOrderId = '';
+  var lastOrderId = 0;
+  window['initialize'] = () => {
+    $("#notifySound").get(0).play();
+  }
+
   
   $(document).ready(function(){
       $('#date,#date1,#new_date,#new_date1,#dis_date,#dis_date1').datepicker({
@@ -39,7 +43,7 @@
             badgeNum.innerText = i;
             badgeNum.setAttribute('class','badge-num');
             var insertedElement = badge.insertBefore(badgeNum,badge.firstChild);    
-        },1000);
+        },2000);
     })(document);
     (function(d){
         var badge = document.getElementById('newDisputed');  
@@ -49,7 +53,7 @@
             badgeNum.innerText = i;
             badgeNum.setAttribute('class','badge-num');
             var insertedElement = badge.insertBefore(badgeNum,badge.firstChild);    
-        },1000);
+        },2000);
     })(document);
     
 
@@ -118,18 +122,15 @@
               $('.new_ordrers').find('tbody').html(html);
               $('.new_ord_pagi').html(links);
 
-              if(lastOrderId != ''){
-                if(obj.Orders.length > 0){
-                  if(lastOrderId != obj.Orders[0].order_id && obj.Orders[0].order_id > lastOrderId){
-                    if(/*lastOrderId == obj.Orders[0].order_id && */obj.Orders[0].status_id == "1"){
-                      var sound = document.getElementById("notifySound");
-                      sound.play();
-                    }
+              if(obj.Orders.length > 0){
+
+                if(lastOrderId != obj.Orders[0].order_id && obj.Orders[0].order_id > lastOrderId){
+                    $("#notifySound").get(0).play();
+                    // notifyMe(obj.Orders[0].order_id);
                   }
-                  lastOrderId = obj.Orders[0].order_id;
-                }
+                  
+                 lastOrderId = obj.Orders[0].order_id;
               }
-              
             }
             else if(datas.status =="8")
             {
@@ -152,7 +153,7 @@
       $('.new_orders').attr('total',obj.totalNew);
       $('.disputed_order').attr('total',obj.totalDisputed);
     })
-  },1000);
+  },2000);
   
   
 
@@ -163,6 +164,7 @@
           var orderId   =$('#new_order_id').val();
           var phone     =$('#new_phone').val();
           var restaurant=$('#new_restaurant').val();
+          var orderType =$('#new_order_type').val();
           var date      =$('#new_date').val();
           var date1     =$('#new_date1').val();
           var status    ="1";
@@ -172,6 +174,7 @@
           var orderId   =$('#dis_order_id').val();
           var phone     =$('#dis_phone').val();
           var restaurant=$('#dis_restaurant').val();
+          var orderType =$('#dis_order_type').val();
           var date      =$('#dis_date').val();
           var date1     =$('#dis_date1').val();
           var status    ="8";
@@ -180,11 +183,12 @@
         var orderId   =$('#order_id').val();
         var phone     =$('#phone').val();
         var restaurant=$('#restaurant').val();
+        var orderType =$('#order_type').val();
         var date      =$('#date').val();
         var date1     =$('#date1').val();
         var status    =$('#status').val();
     }
-    return datas     ={order_id:orderId,phone:phone,restaurant:restaurant,date:date,date1:date1,status:status};
+    return datas     ={order_id:orderId,phone:phone,restaurant:restaurant,date:date,date1:date1,status:status,orderType:orderType};
   }
 
 function showOrderData(orders,offset)
@@ -199,11 +203,13 @@ function showOrderData(orders,offset)
          html +=offset;                       
          html +="</td>";                       
          html +="<td>";                       
-         html +="<a href='"+ordDetailLink+"/"+Number(val.order_id)+"' >"+val.order_id+"</a></td>";                       
+         // html +="<a href='"+ordDetailLink+"/"+Number(val.order_id)+"' >"+val.order_id+"</a></td>";
+         html +="<a href='"+ordDetailLink+"/"+Number(val.order_id)+"' >"+val.sequence_no+"</a></td>"; //Replace order id with sequence number for user showing
          html +="<td>"+val.name+"</td>";                       
          html +="<td>"+val.contact_no+"</td>";                       
          html +="<td>"+val.restaurant_name+"</td>";
          html +="<td>"+val.area+"</td>";                       
+         html +="<td>"+((typeof val.type == undefined || val.type == null)?"MM App":val.type)+"</td>";                       
          html +="<td>"+val.time+"</td>";                       
          html +="<td>"+val.paymnet+"</td>";                       
          html +="<td>"+val.amount+"</td>";                       
@@ -219,6 +225,7 @@ function showOrderData(orders,offset)
              var sts =(val.status_id ==1)?val.status_vla:val.nxtstatus;
              html +=(val.status_id>1)?"&nbsp&nbsp<i class='fa fa-arrow-right'></i>":"";
              html +=" <span class='label "+lbl+" changeOrder "+cl+"' oid='"+Number(val.order_id)+"' os='"+nextst+"' data-toggle='modal' data-target='#cngStatusmodal' data-backdrop='static' data-keyboard='false' style='cursor: pointer;' title='Change Order Status'>"+sts+"</span>";
+             /*html +=' <span class="label '+lbl+' changeOrder '+cl+'" oid="'+Number(val.order_id)+'" os="'+nextst+'" style="cursor: pointer;" title="Change Order Status" onclick="getUpdateOrder(\''+nextst+'\','+Number(val.order_id)+')">"'+sts+'"</span>';*/
         }
         html +="</td>";   
         html +="</tr>";
@@ -226,32 +233,108 @@ function showOrderData(orders,offset)
     });
     return html;
 }
-var pagLink ="";
+
+$(document).on("click",".changeOrder",function()
+    {
+        var thisTd    =$(this).parent();
+        var oid     = $(this).attr("oid");
+        var os      = $(this).attr("os");
+        $('#statusMsg').text('Are you sure to change the order status?');
+        $("#cngOrder").unbind().click(function(){
+
+            $.ajax({
+                type        :      "POST",
+                data        :      {oid:oid,os:os},
+                url         :      changeOrderStatus,                
+                success     :      function(response)
+                {
+
+                    var obj = JSON.parse(response);
+                    if(obj.success==1)
+                    {
+                        $('#cngStatusmodal').modal('hide');
+                        thisTd.html(obj.data);
+                        $("#success_message").text(obj.message);
+                        $("#success_notification").show();
+                        var pagLink =link_name;
+                        getOrderData(pagLink,getSearchData(''));
+                        setTimeout(function(){ $("#success_notification").hide(); },5000);
+                    }
+                    else
+                    {
+                        $("#error_message").text(obj.message);
+                        $("#flasherror").show();
+                        setTimeout(function(){ $("#error_notification").hide(); },5000);
+                    }
+                }
+            });
+        });
+    });
+
+
+
+
 $(document).on('keyup','#order_id,#phone',function(){
-    var pagLink =linkName;
-   getOrderData(pagLink,getSearchData('all'));
+  linkName =link_name
+   getOrderData(link_name,getSearchData('all'));
 })
-$(document).on('change','#date,#date1,#status,#restaurant',function(){
-    var pagLink =linkName;
-    getOrderData(pagLink,getSearchData('all'));
+$(document).on('change','#date,#date1,#status,#restaurant,#order_type',function(){
+  linkName =link_name
+    getOrderData(link_name,getSearchData('all'));
 })
 
 
 $(document).on('keyup','#new_order_id,#new_phone',function(){
      newLinkName =link_name;
 })
-$(document).on('change','#new_date,#new_date1,#new_status,#new_restaurant',function(){
+$(document).on('change','#new_date,#new_date1,#new_status,#new_restaurant,#new_order_type',function(){
      newLinkName =link_name;
 })
 $(document).on('keyup','#dis_order_id,#dis_phone',function(){
      disLinkName =link_name;
 })
-$(document).on('change','#dis_date,#dis_date1,#dis_status,#dis_restaurant',function(){
+$(document).on('change','#dis_date,#dis_date1,#dis_status,#dis_restaurant,#dis_order_type',function(){
      disLinkName =link_name;
 })
 
 setInterval(function(){
    getOrderData(newLinkName,getSearchData('new'));
    getOrderData(disLinkName,getSearchData('dis'));
-   getOrderData(disLinkName,getSearchData('all'));
-},1000);
+   getOrderData(linkName,getSearchData('all'));
+},2000);
+
+function notifyMe(orderId) {
+  // Let's check if the browser supports notifications
+  if (!("Notification" in window)) {
+    alert("This browser does not support desktop notification");
+  }
+
+  // Let's check if the user is okay to get some notification
+  else if (Notification.permission === "granted") {
+    // If it's okay let's create a notification
+    var notification = new Notification("Hi there!");
+  }
+
+  // Otherwise, we need to ask the user for permission
+  // Note, Chrome does not implement the permission static property
+  // So we have to check for NOT 'denied' instead of 'default'
+  else if (Notification.permission !== 'denied') {
+    Notification.requestPermission(function (permission) {
+
+      // Whatever the user answers, we make sure we store the information
+      if(!('permission' in Notification)) {
+        Notification.permission = permission;
+      }
+
+      // If the user is okay, let's create a notification
+      if (permission === "granted") {
+        var notification = new Notification(`New order arrived`);
+      }
+    });
+  }/* else {
+    alert(`Permission is ${Notification.permission}`);
+  }*/
+
+  // At last, if the user already denied any notification, and you 
+  // want to be respectful there is no need to bother him any more.
+}

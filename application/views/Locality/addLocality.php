@@ -1,4 +1,16 @@
-    <style type="text/css">
+<!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDCRut52YvoPjefyPGTNeL4A6LZ9tJD5tk&libraries=places"></script>     -->
+<script type="text/javascript">
+  $(document).ready(function () {
+       google.maps.event.addDomListener(window, 'load', initialize);
+    });
+
+    function initialize() {
+        var input = document.getElementById('location');
+        var autocomplete = new google.maps.places.Autocomplete(input);
+    }
+    
+</script>
+<style type="text/css">
     .map{
        
         min-height: 373px;
@@ -65,7 +77,7 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="row">
-                                        <div class="col-lg-12">
+                                        <div class="col-lg-6">
                                             <label class="control-label">Delivery Time   </label><span class="minutes">   (Minutes)</span><i class="reustarred">*</i>
                                             <select class="form-control" name="delivered_time" id="delivered_time">
                                                 <option value="">Select delivery time</option>
@@ -75,6 +87,15 @@
                                             </select>
                                            
                                             <div class="color-red"><?php echo form_error('delivered_time'); ?></div>
+                                         </div>
+                                         <div class="col-lg-6">
+                                            <label class="control-label">Extra Delivery Time   </label><span class="minutes">   (Minutes)</span><i class="reustarred"></i>
+                                            <select class="form-control" name="extra_delivery_time" id="extra_delivery_time">
+                                                <option value="">Select extra delivery time</option>
+                                                <?php foreach ($deliveryTimes as $key) { ?>
+                                                    <option value="<?php echo $key ?>"><?php echo $key ?></option>
+                                                <?php  } ?>
+                                            </select>
                                          </div>
                                     </div>
                                 </div>

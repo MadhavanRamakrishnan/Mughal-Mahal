@@ -2,7 +2,7 @@
 <?php
 $OrderStatus = array("0"=>"Pending", "1"=>"Order Placed", "2"=>"Order Confirmed","3"=>"Cooking", "4"=>"Driver Collected The Order", "5"=>"Driver On The Way", "6"=>"Driver Near To You", "7"=>"Delivered","8"=>"Disputed","13"=>"Discarded by Customer","14"=>"Discarded By Admin");
 ?>
-<audio id="notifySound" preload="auto" type="audio/mpeg" src="<?= base_url();?>assets/sound/notifySound.mp3"></audio>
+
 <button id="tapButton" style="display: none;">Tap me</button>
 <div class="warper container-fluid">
 
@@ -78,7 +78,7 @@ $OrderStatus = array("0"=>"Pending", "1"=>"Order Placed", "2"=>"Order Confirmed"
                                     $name =$value->first_name.' '.$value->last_name;
                                  ?>
                                     <tr>
-                                      <td><?php echo $value->order_id; ?></td>
+                                      <td><?php echo $value->sequence_no; ?></td>
                                       <td><?php echo (strlen($name)>15)?substr($name,0,15)."...":$name?></td>
                                       <td><?php echo $value->total_price; ?></td>
                                        <td class="center">
@@ -96,7 +96,7 @@ $OrderStatus = array("0"=>"Pending", "1"=>"Order Placed", "2"=>"Order Confirmed"
                       </tbody>
                     </table>
                     <?php 
-                        if(count($countOrders) >= 5){
+                        if($countOrders >= 5){
                     ?>
                       <div style="margin-top">
                         <a href="<?php echo site_url('Orders/index'); ?>" ><button type="button" class="btn btn-primary m-t-30 f-right">See More</button></a>

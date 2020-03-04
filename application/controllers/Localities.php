@@ -40,13 +40,14 @@
 		$data['menu']   	= $this->menu;
 		$submenu   			= $this->submenu;
 		$submenuArray 		= array();
+		$resId              = $this->getRestaurantForRoleBaseAccess();
 
 		foreach($submenu as $key=>$value)
 		{
 			$submenuArray[$value->parent_page_id][] = $value;
 		}
 		$data['submenu']   		= $submenuArray;
-		$data['localitylist'] 	=$this->Restaurant_model->getlocality();
+		$data['localitylist'] 	=$this->Restaurant_model->getlocalitylistForAdminPanel($resId);
 		$this->load->view('Elements/header',$data);
 		$this->load->view('Locality/listLocalities');
 		$this->load->view('Elements/footer');
@@ -90,14 +91,15 @@
 			if ($this->form_validation->run() == FALSE){
 				
 			}else{
-				$localityData[0]['name']              =$this->input->post('name');
-				$localityData[0]['name_ar']           =$this->input->post('name_ar');
-				$localityData[0]['delivered_time']    =$this->input->post('delivered_time');
-				$localityData[0]['delivery_charge']   =$this->input->post('delivery_charge');
-				$localityData[0]['min_order_amount']  =$this->input->post('min_order_amount');
-				$localityData[0]['lat']               =$this->input->post('lat');
-				$localityData[0]['lon']               =$this->input->post('lon');
-				$localityData[0]['created_date']      =date('Y-m-d h:i:s');
+				$localityData[0]['name']                 =$this->input->post('name');
+				$localityData[0]['name_ar']              =$this->input->post('name_ar');
+				$localityData[0]['delivered_time']       =$this->input->post('delivered_time');
+				$localityData[0]['extra_delivery_time']  =$this->input->post('extra_delivery_time');
+				$localityData[0]['delivery_charge']      =$this->input->post('delivery_charge');
+				$localityData[0]['min_order_amount']     =$this->input->post('min_order_amount');
+				$localityData[0]['lat']                  =$this->input->post('lat');
+				$localityData[0]['lon']                  =$this->input->post('lon');
+				$localityData[0]['created_date']         =date('Y-m-d h:i:s');
 
 				$addLocality =$this->Restaurant_model->addLocality($localityData);
 				if (sizeof($addLocality)>0) {
@@ -155,13 +157,14 @@
 			if ($this->form_validation->run() == FALSE){
 				
 			}else{
-				$localityData['name']              =$this->input->post('name');
-				$localityData['name_ar']           =$this->input->post('name_ar');
-				$localityData['delivered_time']    =$this->input->post('delivered_time');
-				$localityData['delivery_charge']   =$this->input->post('delivery_charge');
-				$localityData['min_order_amount']  =$this->input->post('min_order_amount');
-				$localityData['lat']               =$this->input->post('lat');
-				$localityData['lon']               =$this->input->post('lon');
+				$localityData['name']                =$this->input->post('name');
+				$localityData['name_ar']             =$this->input->post('name_ar');
+				$localityData['delivered_time']      =$this->input->post('delivered_time');
+				$localityData['extra_delivery_time'] =$this->input->post('extra_delivery_time');
+				$localityData['delivery_charge']     =$this->input->post('delivery_charge');
+				$localityData['min_order_amount']    =$this->input->post('min_order_amount');
+				$localityData['lat']                 =$this->input->post('lat');
+				$localityData['lon']                 =$this->input->post('lon');
 
 				$localityData['created_date']      =date('Y-m-d h:i:s');
 

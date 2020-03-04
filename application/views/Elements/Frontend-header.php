@@ -4,7 +4,8 @@
    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <meta name="description" content="Best family restaurant for the best Indian buffet in Hawally">
-   <meta name="google-signin-client_id" content="823542492889-n17k4kteoi45l7q9kv2fltigsjopa8ob.apps.googleusercontent.com">
+   <!-- <meta name="google-signin-client_id" content="823542492889-n17k4kteoi45l7q9kv2fltigsjopa8ob.apps.googleusercontent.com"> -->
+   <meta name="google-signin-client_id" content="211802950628-t19693t361crs1ncel5klaf9uh3phni7.apps.googleusercontent.com">
 
    <title>Order Now | Mughal Mahal</title>
 
@@ -29,7 +30,7 @@
    <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/front-end/css/custom.css"/>
 
    <script src="<?= base_url() ?>assets/front-end/js/jquery.min.js"></script>
-   <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js" ></script>
+   <script src="https://code.jquery.com/ui/1.10.2/jquery-ui.js" ></script>
    <script src="<?= base_url() ?>assets/front-end/js/lightslider.min.js"></script>
    <!-- <script src="<?= base_url(); ?>assets/js/chosen/chosen.jquery.min.js"></script> -->
    <script type="text/javascript" src="<?= base_url() ?>assets/front-end/js/jquery.colorbox.js"></script> 
@@ -58,6 +59,17 @@
    <link rel="stylesheet" href="<?= base_url(); ?>assets/front-end/css/jquery-ui.css">
    <link href="<?= base_url() ?>assets/front-end/css/style2.css" rel="stylesheet" type="text/css"/>
    <script src="<?= base_url() ?>assets/front-end/js/custom/footer.js" type="text/javascript"></script>
+
+   <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159057794-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-159057794-1');
+    </script>
+
 </head>
 <body> 
   <script type="text/javascript">
@@ -117,7 +129,7 @@
         </ul>
       <ul class="langSwitch">
             <li>
-              <a href="<?php echo base_url();?>Home/myOrder">My Order</a>
+              <a href="<?php echo base_url();?>Home/myOrder" style="color: white;" >My Order</a>
             </li>
         </ul>
       <?php } ?>
@@ -199,14 +211,14 @@
 </div> 
 
 <div class="header">
-    <a href="http://18.216.199.131/" class="logoLink"><img src="<?= base_url() ?>assets/front-end/images/logo-with-bg.png" alt="Mughal Mahal" /></a>
+    <a href="<?= base_url() ?>" class="logoLink"><img src="<?= base_url() ?>assets/front-end/images/logo-with-bg.png" alt="Mughal Mahal" /></a>
     <div class="container">
         <div class="menuButtonOuter">
             <div class="menuButton"></div>
             <ul class="nav-menu" >
-                <li id="menu-item-11" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-home menu-item-11"><a href="http://18.216.199.131/"><?= $this->lang->line("message_Home") ?></a></li>
-                <li id="menu-item-12" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-12"><a href="http://18.216.199.131/about-us/"><?php  echo $this->lang->line('message_AboutUs'); ?></a></li>
-                <li id="menu-item-13" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13"><a href="http://18.216.199.131/contact-us/"><?php  echo $this->lang->line('message_ContactUs'); ?></a></li>
+                <li id="menu-item-11" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-home menu-item-11"><a href="<?= base_url() ?>"><?= $this->lang->line("message_Home") ?></a></li>
+                <li id="menu-item-12" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-12"><a href="http://www.mughalmahal.com/about-us/"><?php  echo $this->lang->line('message_AboutUs'); ?></a></li>
+                <li id="menu-item-13" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13"><a href="http://www.mughalmahal.com/contact-us/"><?php  echo $this->lang->line('message_ContactUs'); ?></a></li>
             </ul>
         </div>
     </div>

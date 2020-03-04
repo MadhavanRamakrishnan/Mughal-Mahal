@@ -16,13 +16,14 @@ var drivers = [];
 
 // socket connection all events
 io.sockets.on('connection', function (socket) {
-	 //console.log("connected");
+	 console.log("connected");
 	// connect driver and create room same as driver id
 	socket.on('new driver' , function (driver_id) {		
 		console.log("New driver"+driver_id);	
 		socket.nickname  = driver_id;
 		drivers[socket.nickname] = socket;
 		//Creation of room with the name of driver
+		console.log(drivers);
 		socket.join(driver_id);
 	});
 
@@ -41,7 +42,8 @@ io.sockets.on('connection', function (socket) {
 
 	// socket send location event for sending the current location of driver
 	socket.on('send location' , function (data) {
-		//console.log("Location update "+socket.nickname);
+		console.log("New location");
+		console.log(data);
 		io.sockets.to(socket.nickname).emit('new location from driver', data);
 		// io.sockets.emit('new location from driver', data);
 	});

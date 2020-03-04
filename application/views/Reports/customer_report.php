@@ -1,3 +1,4 @@
+
 <?php $successMsg=$this->session->flashdata('success_msg'); ?>
 
 <div class="alert alert-success alert-dismissible" id="success_notification" style="display:<?php echo ($successMsg)?"block":"none"; ?>">
@@ -54,7 +55,7 @@ table thead tr th,td{
                             <div class="col-md-6">
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row filterRowOfRow">
                             <div class="col-md-3">
                                 <input type="text" class="form-control" placeholder="Start Date" name="startDate" value="<?php echo $startDate; ?>" id="datepicker1">
                             </div>

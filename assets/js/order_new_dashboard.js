@@ -8,12 +8,6 @@ orderStatus[14] = "Discarded by Admin";
 
 var lastOrderId = '';
 
-setInterval(function(){ 
-	$.post(getNewOrderCounts,function(data){
-		var obj =$.parseJSON(data);
-		$(".totalOrders").text(obj.total);
-	})
-},1000);
 
 setInterval(function(){ 
 	$.post(getLatestOrderList,function(data){
@@ -42,7 +36,7 @@ setInterval(function(){
 		}
 		lastOrderId = obj[0].order_id;
 	})
-},1000);
+},40000);
 
 $(document).ready(function(){
 	$("#tapButton").click();

@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/plugins/datatables/jquery.dataTables.css" />
+<link rel="stylesheet" href="<?= base_url(); ?>assets/css/plugins/datatables/jquery.dataTables.css" />
 <style type="text/css">
 table thead tr th,table  tr td{
   text-align: center;
@@ -14,7 +14,7 @@ table thead tr th,table  tr td{
  <div class="row">
   <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12">
     <div class="page-header f-right m-b-10">
-      <a class="addButtons" href="<?php echo site_url('Localities/addLocality'); ?>"><button type="button" class="btn btn-info">Add Locality</button></a>
+      <a class="addButtons" href="<?= site_url('Localities/addLocality'); ?>"><button type="button" class="btn btn-info">Add Locality</button></a>
     </div>
     
   </div>
@@ -23,16 +23,16 @@ table thead tr th,table  tr td{
 <?php $successMsg=$this->session->flashdata('success_message'); ?>
 <?php $errorMsg=$this->session->flashdata('error_message'); ?>
 
-<div class="alert alert-success alert-dismissible" id="success_notification" style="display:<?php echo ($successMsg)?"block":"none"; ?>">
+<div class="alert alert-success alert-dismissible" id="success_notification" style="display:<?= ($successMsg)?"block":"none"; ?>">
   <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
   <h4><i class="icon fa fa-check"></i> Success!</h4>
-  <p id="success_message"><?php echo $successMsg; ?></p>
+  <p id="success_message"><?= $successMsg; ?></p>
 </div>
 
-<div class="alert alert-danger alert-dismissible" id="error_notification" style="display:<?php echo ($errorMsg)?"block":"none"; ?>">
+<div class="alert alert-danger alert-dismissible" id="error_notification" style="display:<?= ($errorMsg)?"block":"none"; ?>">
   <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
   <h4><i class="icon fa fa-warning"></i> Failed!</h4>
-  <p id="error_message"><?php echo $errorMsg; ?></p>
+  <p id="error_message"><?= $errorMsg; ?></p>
 </div>
 
 <div class="panel panel-default">
@@ -44,6 +44,7 @@ table thead tr th,table  tr td{
           <th>Arabic Name</th>
           <th>Restaurant Name</th>
           <th>Delivery Time (Minutes)</th>
+          <th>Extra Delivery Time (Minutes)</th>
           <th>Delivery Charge</th>
           <th>Minimum Amount for Order</th>
           <th>Action</th>
@@ -55,14 +56,15 @@ table thead tr th,table  tr td{
         foreach($localitylist as $key => $value){
          ?>
         
-          <tr class="odd gradeX" id="category_details_<?php echo $value->locality_id; ?>">
-          <td><?php echo $value->name; ?></td>
-          <td><?php echo $value->name_ar; ?></td>
-          <td><?php echo $value->restaurant_name; ?></td>
-          <td><?php echo $value->delivered_time; ?></td>
-          <td><?php echo $value->delivery_charge; ?></td>
-          <td><?php echo $value->min_order_amount; ?></td>
-          <td class="center"><a href="<?php echo site_url('Localities/editLocality/'.$value->locality_id); ?>"><i class="fa fa-edit"> </i></a> |<a title="Delete" data-toggle="modal" data-target="#deleteLocality" data-backdrop="static" data-keyboard="false" onclick="deleteLocality(<?php echo $value->locality_id; ?>)"  id="delete"><i class="fa fa-trash"> </i></a></td>
+          <tr class="odd gradeX" id="category_details_<?= $value->locality_id; ?>">
+          <td><?= $value->name; ?></td>
+          <td><?= $value->name_ar; ?></td>
+          <td><?= $value->restaurant_name; ?></td>
+          <td><?= $value->delivered_time; ?></td>
+          <td><?= $value->extra_delivery_time; ?></td>
+          <td><?= $value->delivery_charge; ?></td>
+          <td><?= $value->min_order_amount; ?></td>
+          <td class="center"><a href="<?= site_url('Localities/editLocality/'.$value->locality_id); ?>"><i class="fa fa-edit"> </i></a> |<a title="Delete" data-toggle="modal" data-target="#deleteLocality" data-backdrop="static" data-keyboard="false" onclick="deleteLocality(<?= $value->locality_id; ?>)"  id="delete"><i class="fa fa-trash"> </i></a></td>
         </tr>
         <?php } }?>
       </tbody>
@@ -100,7 +102,7 @@ table thead tr th,table  tr td{
         $.ajax({
             type        :      "POST",
             data        :      {id:id},
-            url         :      "<?php echo site_url('Localities/deleteLocality'); ?>",                
+            url         :      "<?= site_url('Localities/deleteLocality'); ?>",                
             success     :      function(response)
             {
                 location.reload();

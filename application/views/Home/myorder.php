@@ -22,7 +22,8 @@
 						<div class="order_top">
 							<div class="order_top_left">
 								<a href="<?php echo base_url('Home/orderDetails/'.$key); ?>">
-									<h3><?php echo $this->lang->line('message_Order')."#".($key)  ?> <span><?php 
+									<!-- <h3><?php echo $this->lang->line('message_Order')."#".($key)  ?> <span> -->
+									<h3><?php echo $this->lang->line('message_Order')."#".($value['sequence_no'])  ?> <span><?php 
 									echo $this->ORD_status[$value['order_status']]; ?></span></h3>
 								</a>
 								<ul>

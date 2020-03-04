@@ -347,9 +347,23 @@ $('.check-out').on('click',function(){
 });
 
 
+function displayOtherField()
+{
+  $(".otherAddressReq").text('');
+  var address_type = $('input[name=address_type]:checked').val();
+  if(address_type == "3" || address_type == 3)
+  {
+    $("#other_address").css('display','block');  
+  }
+  else 
+  {
+    $("#other_address").css('display','none');
+    $(".otherAddressReq").hide();
+  }
+}
 
 $('#addaddress').on('click',function(){
-  
+
  var user = {
     'customer_name':"'"+$('#username').val()+"'",
     'access_token':"'"+getCookie('access_token')+"'",
@@ -459,7 +473,7 @@ function getLatlong(latlongId=""){
      }
    });
   }else{
-    $("#locality").empty();
+    $("#locality").val('');
   }
 }
 
@@ -603,59 +617,40 @@ var delete_cookie = function(name) {
 
 
 
-function deleteAddressData(addId){
-  $("#remove_address").unbind().click(function(){
-        $.ajax({
-           url:deleteCustomerAddress+"/"+addId,
-           type:"POST",
-           success:function(data){
-              var obj =$.parseJSON(data);
-              if(obj.success == 1){
-                $("#removeaddress").modal('hide');
-                $(".custDilAddress"+addId).remove();
-              }else{
-                $(this).parent().append("<span state='color:red;'>"+obj.message+"</span>");
-              }
-           }
-
-       })
-  });
-
-}
 
 
-function editAddressData(address_id){
-  getlocality();
-  $.ajax({
-       url:getCustomerAddress+"/"+address_id,
-       type:"POST",
-       success:function(data){
+// function editAddressData(address_id){
+//   getlocality();
+//   $.ajax({
+//        url:getCustomerAddress+"/"+address_id,
+//        type:"POST",
+//        success:function(data){
 
-          var obj =$.parseJSON(data);
+//           var obj =$.parseJSON(data);
          
-          if(obj.success == 1){
-            $("#address_id").val(obj.message[0].address_id);
-            $("#customer_name").val(obj.message[0].customer_name);
-            $("#addemail").val(obj.message[0].email);
-            $("#contact_no").val(obj.message[0].contact_no);
-            $("#locality").val(obj.message[0].locality_id);
-            $("#lat").val(obj.message[0].customer_latitude);
-            $("#long").val(obj.message[0].customer_longitude);
-            $("#address_line1").val(obj.message[0].address1);
-            initMap(obj.message[0].customer_latitude,obj.message[0].customer_longitude);
-            if(obj.message[0].address_type =="1"){
-              $("#home").prop("checked",true);
-            }else if(obj.message[0].address_type =="2"){
-              $("#office").prop("checked",true);
-            }else{
-              $("#other").prop("checked",true);
-            }
-          }else{
-          }
-       }
+//           if(obj.success == 1){
+//             $("#address_id").val(obj.message[0].address_id);
+//             $("#customer_name").val(obj.message[0].customer_name);
+//             $("#addemail").val(obj.message[0].email);
+//             $("#contact_no").val(obj.message[0].contact_no);
+//             $("#locality").val(obj.message[0].locality_id);
+//             $("#lat").val(obj.message[0].customer_latitude);
+//             $("#long").val(obj.message[0].customer_longitude);
+//             $("#address_line1").val(obj.message[0].address1);
+//             initMap(obj.message[0].customer_latitude,obj.message[0].customer_longitude);
+//             if(obj.message[0].address_type =="1"){
+//               $("#home").prop("checked",true);
+//             }else if(obj.message[0].address_type =="2"){
+//               $("#office").prop("checked",true);
+//             }else{
+//               $("#other").prop("checked",true);
+//             }
+//           }else{
+//           }
+//        }
 
-   })
-}
+//    })
+// }
 /*$("#forgotPassword").click(function() {
     var email = $("#forgot_pass").find('#forgot_email').val();
     $.ajax({
@@ -928,19 +923,33 @@ $(document).on('click', '.res_rating', function() {
         $('.positive_res').hide();
         $('.negative_res').show();
     }
-    $("input[name='res_pot']").unbind().click(function() {
-        var reason = $(this).val();
-        if (reason == "Other") {
-            $(this).parent().parent().find('.other_reason').show();
-        } else {
-            $(this).parent().parent().find('.other_reason').hide();
-        }
+    $("input[name='res_pot[]']").unbind().click(function() {
+        // var reason = $(this).val();
+        $('input[name="res_pot[]"]:checked').each(function(i){
+          console.log($(this).val());
+          if ($(this).val() == "Other") {
+              $(this).parent().parent().find('.other_reason').show();
+          } else {
+              $(this).parent().parent().find('.other_reason').hide();
+          }
+        });
     })
     $('.addratebtn').unbind().click(function() {
-        var reason = $(this).parent().parent().find("input[name='res_pot']:checked").val();
+
+      var reason = '';
+      $('input[name="res_pot[]"]:checked').each(function(i){
+        console.log($(this).val());
+        if ($(this).val() == "Other") {
+            reason = reason + $(this).parent().parent().find('.other_reason').val();
+        } else {
+            reason = reason + $(this).val() + ',';
+        }
+      });
+
+        /*var reason = $(this).parent().parent().find("input[name='res_pot']:checked").val();
         if (reason == "Other") {
             reason = $(this).parent().parent().find('.other_reason').val();
-        }
+        }*/
         if (reason == "" || reason == undefined) {
             $(this).parent().parent().find('span').text(EnterOtherReason);
             return false;
@@ -982,20 +991,39 @@ $(document).on('click', '.driver_rating', function() {
         $('.positive_driv').hide();
         $('.negative_driv').show();
     }
-    $("input[name='res_pot']").unbind().click(function() {
-        var reason = $(this).val();
-        var reason = $(this).val();
+    $("input[name='res_pot[]']").unbind().click(function() {
+        /*var reason = $(this).val();
         if (reason == "Other") {
             $(this).parent().parent().find('.other_reason').show();
         } else {
             $(this).parent().parent().find('.other_reason').hide();
-        }
+        }*/
+
+        $('input[name="res_pot[]"]:checked').each(function(i){
+          console.log($(this).val());
+          if ($(this).val() == "Other") {
+              $(this).parent().parent().find('.other_reason').show();
+          } else {
+              $(this).parent().parent().find('.other_reason').hide();
+          }
+        });
     });
     $('.addratebtn').unbind().click(function() {
-        var reason = $(this).parent().parent().find("input[name='res_pot']:checked").val();
+
+      var reason = '';
+      $('input[name="res_pot[]"]:checked').each(function(i){
+        console.log($(this).val());
+        if ($(this).val() == "Other") {
+            reason = reason + $(this).parent().parent().find('.other_reason').val();
+        } else {
+            reason = reason + $(this).val() + ',';
+        }
+      });
+      
+        /*var reason = $(this).parent().parent().find("input[name='res_pot']:checked").val();
         if (reason == "Other") {
             reason = $(this).parent().parent().find('.other_reason').val();
-        }
+        }*/
         if (reason == "" || reason == undefined) {
             $(this).parent().parent().find('span').text(EnterOtherReason);
             return false;

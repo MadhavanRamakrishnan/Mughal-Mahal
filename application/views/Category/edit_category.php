@@ -37,7 +37,7 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <label class="control-label">Dish Category<i class="reustarred">*</i></label>
-                                    <input class="form-control" name="category_name" id="category_name" placeholder="Enter Dish Category Name"  type="text" value="<?php echo (set_value('category_name'))?set_value('category_name'):$category_data[0]->category_name; ?>">
+                                    <input class="form-control" name="category_name" id="category_name" placeholder="Enter Dish Category Name"  type="text" value="<?php echo (set_value('category_name'))?set_value('category_name'):stripslashes($category_data[0]->category_name); ?>">
                                     <div class="color-red"><?php echo form_error('category_name'); ?></div>
                                 </div>
                             </div>
@@ -48,6 +48,7 @@
                                 <div class="col-lg-6">
                                     <label class="control-label">Image</label>
                                     <input class="" name="image" id="image" type="file">
+                                    <?php if(isset($image_error)){echo "<span style='color: red;'".$image_error."</span>";} ?>
                                 </div>
                                 <div class="col-lg-6 m-t-30" >
                                     <?php
@@ -62,7 +63,6 @@
                                             <?php  } ?>
                                         </div>
                                     </div>
-                                    <?php if(isset($image_error)){echo $image_error;} ?>
 
                                 </div>
                                 

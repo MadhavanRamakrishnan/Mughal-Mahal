@@ -1,4 +1,6 @@
-
+<style type="text/css">
+   table > thead:first-child > tr > th:last-child{width:30%;}
+</style>
 <div class="warper container-fluid">
      <div id="loading-div-background" style="display:none">
         <div id="loading-div" class="ui-corner-all">
@@ -41,15 +43,15 @@
                                 <input type="text" class="datepicker form-control" placeholder="Start Date" name="startDate"  id="startDate">
                             </div>
                             <div class="col-md-3">
-                                <input type="text" class="datepicker form-control" placeholder="Start Date" name="endDate"  id="endDate">
+                                <input type="text" class="datepicker form-control" placeholder="End Date" name="endDate"  id="endDate">
                             </div>
                             <div class="col-md-3 res_div">
-                                <select class="form-control"  id="restaurant">
+                                <select class="form-control"  id="restaurant" <?php echo ($resId !="")?"disabled":""; ?>>
                                     <option value="">All Branches</option>
                                     <?php if(count($restaurants)>0){ 
                                         foreach ($restaurants as $key => $value) {
                                     ?>
-                                        <option value="<?php echo $value->restaurant_id; ?>"><?php echo $value->restaurant_name; ?></option>
+                                        <option value="<?php echo $value->restaurant_id; ?>" <?php echo ($resId == $value->restaurant_id)?"selected":""; ?> ><?php echo $value->restaurant_name; ?></option>
                                     <?php } 
                                 } ?>
                                 </select>

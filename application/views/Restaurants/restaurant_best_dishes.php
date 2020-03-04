@@ -15,6 +15,22 @@
                     <a style="margin-top: 30px; margin-left: 85px;" href="<?php echo site_url('Restaurants/restaurantDishes/'.$restaurants->restaurant_id); ?>" class="btn btn-success"><i class="fa fa-arrow-left"></i> Back to Dishes</a>
                 </div>
             </div>
+             <div class="col-md-12 col-lg-12" style="margin-top:10px;">
+                      <?php $successMsg=$this->session->flashdata('success_msg'); ?>
+                      
+                       <div class="alert alert-success alert-dismissible" id="success_notification" style="display:<?php echo ($successMsg)?"block":"none"; ?>">
+                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                            <h4><i class="icon fa fa-check"></i> Success!</h4>
+                            <p id="success_message"><?php echo $successMsg; ?></p>
+                        </div>
+
+                      <div class="alert alert-danger alert-dismissible" id="error_notification" style="display:none;">
+                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                        <h4><i class="icon fa fa-warning"></i> Failed!</h4>
+                        <p id="error_message"></p>
+                      </div>
+
+                    </div>
         </div>
       </div>
      
@@ -100,6 +116,7 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label class="control-label cat_name">Dish list<i class="reustarred">*</i>&nbsp&nbsp</label>
+                    <input type="hidden" id="resid" value="<?= $this->uri->segment(3); ?>">
                     <select class="form-control chosen-select" id="dishId">
                     
                         <option value="">Select Dish</option>
@@ -121,11 +138,76 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" src="<?= base_url(); ?>assets/js/restaurantBestDishes.js"></script>
+<!-- <script type="text/javascript" src="<?= base_url(); ?>assets/js/restaurantBestDishes.js"></script> -->
 <script type="text/javascript">
     var removeBestDishesUrl  ="<?php echo site_url('Restaurants/removeBestDish/'); ?>";
     var AddBestDishesUrl     ="<?php echo site_url('Restaurants/addBestDish/'); ?>";
     
+     $('#addBestDishBtn').click(function(){
+                    var vname = $("#dishId").val();
+                    var resid = $("#resid").val();
+                    $.ajax({
+                        url:AddBestDishesUrl,
+                        method:"post",
+                        data: {
+                            dishId:vname,
+                            resId:resid
+                        },
+                        success: function(data){
+                            var obj = JSON.parse(data);
+
+                            if(obj.success==1)  {
+                              $('#addDishModel').modal('hide');
+                              // $("#success_message").text(obj.message);
+                              // $("#success_notification").show();
+                              location.reload();
+                            }
+                            else{
+                              $('#addDishModel').modal('hide');
+                              $("#error_message").text(obj.message);
+                              $("#error_notification").show();
+                            }
+                        }
+                    });
+                });
+
+function deleteBestDish(id){
+
+  $("#removeBestDish").unbind().click(function(){
+
+     $.ajax({
+        url     : removeBestDishesUrl,
+        type    : "POST",
+        data    :  {
+                    dishId:id,
+                    resId: <?= $this->uri->segment(3); ?>
+                    },
+
+        success : function(response){
+                    var obj = JSON.parse(response);
+
+                    if(obj.success==1)  {
+                      $('#removeBestDishes').modal('hide');
+                      var table = $('#basic-datatable').DataTable();
+                    table.row( $('#dishRow'+id).closest('tr') ).remove().draw();
+                      $("#dishRow"+id).remove();
+                      $("#success_message").text(obj.message);
+                      $("#success_notification").show().delay(10000).fadeOut();
+                      location.reload();
+                    }
+                    else{
+                        $('#removeBestDishes').modal('hide');
+                      $("#error_message").text(obj.message);
+                      $("#error_notification").show().delay(5000).fadeOut();
+
+                    }
+                  }
+      });
+  });
+
+  
+}
+
 </script>
 
 

@@ -111,6 +111,8 @@ function deleteVehicleDetail(id){
 
                     if(obj.success==1)  {
                       $('#confirmationModal').modal('hide');
+                      var table = $('#basic-datatable').DataTable();
+                      table.row( $('#vehicle_details_'+id).closest('tr') ).remove().draw();
                       $("#vehicle_details_"+id).remove();
 
                        $("#success_message").text(obj.message);

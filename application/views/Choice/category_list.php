@@ -23,7 +23,7 @@
    <div class="row">
       <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12">
             <div class="page-header f-right m-b-10">
-            <a class="addButtons" data-toggle="modal" data-target="#modal-add-category"><button type="button" class="btn btn-info">Add Category</button></a>
+            <a class="addButtons" data-toggle="modal" data-target="#modal-add-category" onclick='$(".cat_name").hide();'><button type="button" class="btn btn-info">Add Category</button></a>
               </div>
                
         </div>
@@ -57,10 +57,10 @@
                 		foreach($categoryList as $key => $value){ ?>
                       
                     <tr class="odd gradeX" id="category_details_<?php echo $value->choice_category_id; ?>">
-                        <td><?php echo ($value->choice_category_name)?$value->choice_category_name:'N/A'; ?></td>
+                        <td><?php echo ($value->choice_category_name)?stripslashes($value->choice_category_name):'N/A'; ?></td>
                         <td class="center">
 
-                          <a class="addButtons" data-toggle="modal" data-target="#modal-edit-category" cat_name="<?php echo $value->choice_category_name; ?>" cat_id="<?php echo $value->choice_category_id; ?>" data-backdrop="static"       data-keyboard="false">
+                          <a class="addButtons" data-toggle="modal" data-target="#modal-edit-category" cat_name="<?php echo stripslashes($value->choice_category_name); ?>" cat_id="<?php echo $value->choice_category_id; ?>" data-backdrop="static"       data-keyboard="false" onclick="$('.edit_cat_name').hide();">
                               <i class="fa fa-edit"> </i>
                           </a> |
                           <a title="Delete" data-toggle="modal" data-target="#confirmationModal" data-backdrop="static" data-keyboard="false" onclick="deleteChoiceCategory(<?php echo $value->choice_category_id; ?>)"  id="delete">
@@ -140,6 +140,8 @@
 
                         if(obj.success== "1")  {
                           $('#confirmationModal').modal('hide');
+                          var table = $('#basic-datatable').DataTable();
+                          table.row( $('#category_details_'+id).closest('tr') ).remove().draw();
                           $("#category_details_"+id).remove();
                           $("#success_message").text(obj.message);
                           $("#success_notification").show();
@@ -180,6 +182,7 @@
                   else{
                     $("#loading-div-background").hide();
                     $('.cat_name').html(obj.message);
+                    $(".cat_name").show();
                   }
                     
             }
@@ -205,6 +208,7 @@
                   else{
                     $("#loading-div-background").hide();
                     $('.edit_cat_name').html(obj.message);
+                    $(".edit_cat_name").show();
                   }
                     
             }

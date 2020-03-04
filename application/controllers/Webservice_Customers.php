@@ -903,22 +903,15 @@ class Webservice_Customers extends MY_Controller{
 		}
 
 		$this->lang->load($langFile,$lang);
-		$message_normalUserLogin = $this->lang->line('message_normalUserLogin');		
-		$invalid_login 			 = $this->lang->line('invalid_login');		
-		$password_required 		 = $this->lang->line('message_PasswordReq');		
-		$email_required 		 = $this->lang->line('message_EmailReq');	
-		$default_language_required 	= $this->lang->line('default_language_required');
+		
 		$this->form_validation->set_rules('email','Email','valid_email', $email_require);
 		if(trim($this->input->post('email'))=="")
 		{
-			$response=array("response"=>"false","message"=>$email_required);
-		}/*else if($this->form_validation->run() == FALSE){
-
-			$response=array("response"=>"false","message"=>$this->lang->line('message_EnetrEmail1'));
-		}*/
+			$response=array("response"=>"false","message"=>$this->lang->line('message_EmailReq'));
+		}
 		else if(trim($this->input->post('password'))=="")
 		{
-			$response=array("success"=>"false","message"=>$password_required);	
+			$response=array("success"=>"false","message"=>$this->lang->line('message_PasswordReq'));	
 		}
 		else
 		{	
@@ -939,7 +932,7 @@ class Webservice_Customers extends MY_Controller{
 			}
 			else
 			{
-				$error 	= $invalid_login;
+				$error 	= $this->lang->line('invalid_login');
 			}
 
 			if($error)
@@ -970,11 +963,11 @@ class Webservice_Customers extends MY_Controller{
 					$userDetails['role_id'] 		= $data[0]->role;
 					$userDetails['access_token'] 	= $accessToken;
 
-					$response = array("response"=>"true","data"=>$userDetails,"message"=>$message_normalUserLogin,"webservice_name"=>"normalUserLogin");
+					$response = array("response"=>"true","data"=>$userDetails,"message"=>$this->lang->line('message_normalUserLogin'),"webservice_name"=>"normalUserLogin");
 				}
 				else
 				{
-					$response=array("success"=>"false","message"=>$invalid_login,"webservice_name"=>"normalUserLogin");
+					$response=array("success"=>"false","message"=>$this->lang->line('invalid_login'),"webservice_name"=>"normalUserLogin");
 				}
 			}			
 		}
@@ -1391,146 +1384,135 @@ class Webservice_Customers extends MY_Controller{
 			$lang 		= $this->default_language;
 			$langFile 	= $lang.'_lang';
 		}
-
 		$this->lang->load($langFile,$lang);
-		$message_addDeliveryAddress = $this->lang->line('message_addDeliveryAddress');
-		$default_language_required 	= $this->lang->line('default_language_required');
-		$token_mismatched 			= $this->lang->line('token_mismatched');
-		$userid_required 			= $this->lang->line('userid_required');
-		$token_required 			= $this->lang->line('token_required');
-		$address1_required 			= $this->lang->line('address1_required');
-		$latitude_required 			= $this->lang->line('latitude_required');
-		$longitude_required 		= $this->lang->line('longitude_required');
-		$address_type_required 		= $this->lang->line('address_type_required');
-		$cust_name_required 		= $this->lang->line('cust_name_required');
-		$phone_required 			= $this->lang->line('phone_required');
-		$account_deleted 			= $this->lang->line('account_deleted');
-		$error_email_format 		= $this->lang->line('error_email_format');
-		$contact_numeric 			= $this->lang->line('contact_numeric');
-		$address_add_fail 			= $this->lang->line('address_add_fail');
-		$locality_id_required		= $this->lang->line('locality_id_required');
 
 		if(trim($this->input->post('user_id'))==""){
 
-			$response = array("response"=>"false","message"=>$userid_required);
+			$response = array("response"=>"false","message"=>$this->lang->line('userid_required'));
 		}
 		else if(trim($this->input->post('access_token'))==""){
 
-			$response = array("response"=>"false","message"=>$token_required);
-		}
-		else if(trim($this->input->post('address_line1'))==""){
-
-			$response = array("response"=>"false","message"=>$address1_required);
+			$response = array("response"=>"false","message"=>$this->lang->line('token_required'));
 		}
 		else if(trim($this->input->post('address_type'))==""){
 
-			$response = array("response"=>"false","message"=>$address_type_required);
+			$response = array("response"=>"false","message"=> $this->lang->line('address_type_required'));
 		}
 		else if(trim($this->input->post('customer_name'))==""){
 
-			$response = array("response"=>"false","message"=>$cust_name_required);
+			$response = array("response"=>"false","message"=>$this->lang->line('cust_name_required'));
 		}
 		else if(trim($this->input->post('contact_no'))==""){
 
-			$response = array("response"=>"false","message"=>$phone_required);
+			$response = array("response"=>"false","message"=>$this->lang->line('phone_required'));
 		}
 		else if(trim($this->input->post('customer_latitude'))==""){
-			$response = array("response"=>"false","message"=>$latitude_required);
+			$response = array("response"=>"false","message"=>$this->lang->line('latitude_required'));
 			exit("in");
 		}
 		else if(trim($this->input->post('customer_longitude'))==""){
-			$response = array("response"=>"false","message"=>$longitude_required);
+			$response = array("response"=>"false","message"=>$this->lang->line('longitude_required'));
 		}
 		else if(trim($this->input->post('locality_id'))==""){
-			$response = array("response"=>"false","message"=>$locality_id_required);
+			$response = array("response"=>"false","message"=>$this->lang->line('locality_id_required'));
 		}
 		else if(trim($this->input->post('default_language'))==""){
-			$response = array("response"=>"false","message"=>$default_language_required);
+			$response = array("response"=>"false","message"=>$this->lang->line('default_language_required'));
+		}
+		else if(trim($this->input->post('street'))==""){
+			$response = array("response"=>"false","message"=>$this->lang->line('street_req'));
+		}
+		else if(trim($this->input->post('building'))==""){
+			$response = array("response"=>"false","message"=>$this->lang->line('building_req'));
+		}
+		else if(trim($this->input->post('appartment_no'))==""){
+			$response = array("response"=>"false","message"=>$this->lang->line('appartment_req'));
+		}
+		else if(trim($this->input->post('block'))==""){
+			$response = array("response"=>"false","message"=>$this->lang->line('block_req'));
+		}
+		else if(trim($this->input->post('floor'))==""){
+			$response = array("response"=>"false","message"=>$this->lang->line('floor_req'));
+		}
+		else if(trim($this->input->post('address_type') == "3") && trim($this->input->post('other_address')) == ""){
+			$response = array("response"=>"false","message"=>$this->lang->line('other_address_req'));
+			
 		}
 		else
 		{
 			$userId 		= trim($this->input->post('user_id'));
 			$accessToken 	= trim($this->input->post("access_token"));
-			$addressLine1 	= trim($this->input->post("address_line1"));
-			$addressType 	= trim($this->input->post("address_type"));
-			$customerName 	= trim($this->input->post("customer_name"));
-			$contactNo 		= trim($this->input->post("contact_no"));
-			$latitude 		= trim($this->input->post("customer_latitude"));
-			$longitude 		= trim($this->input->post("customer_longitude"));
-			$locality_id	= trim($this->input->post("locality_id"));
-			$addressLine2 	= ($this->input->post('address_line2')) ? trim($this->input->post('address_line2')) : '';
-			$email 			= ($this->input->post('email')) ? trim($this->input->post('email')) : '';
-			//$state 			= ($this->input->post('state')) ? trim($this->input->post('state')) : '';
-			//$city 			= ($this->input->post('city')) ? trim($this->input->post('city')) : '';
-			//$zipcode 		= ($this->input->post('zipcode')) ? trim($this->input->post('zipcode')) : '';
-			
 			$token 			= $this->checkAccessToken($userId,$accessToken);
+			$email          = trim($this->input->post('email'));
 			if($accessToken===$token){
 				$account = $this->Webservice_customer_model->chkAccountDelete($userId);
 				if(is_array($account) && count($account)>0){
 
-					$response = array("response"=>"false","message"=>$account_deleted,"account_status"=>"inactive","webservice_name"=>"addDeliveryAddress");
+					$response = array("response"=>"false","message"=>$this->lang->line('account_deleted'),"account_status"=>"inactive","webservice_name"=>"addDeliveryAddress");
 				}
 				else{
-					if(trim($this->input->post('email'))!= ''){
+					if($email != ''){
 
 						if (!filter_var($email,FILTER_VALIDATE_EMAIL)){
 
 						    $error = $error_email_format;
 						}
 					}
-					if(is_numeric($contactNo) == false){
+					if(is_numeric(trim($this->input->post("contact_no"))) == false){
 
-						 $error = $contact_numeric;
+						 $error = $this->lang->line('error_email_format');
 						
 					}
 					if($error){
 						$response = array("response"=>"false","webservice_name"=>"addDeliveryAddress","message"=>$error);
 					}
 					else{
-						$deliveryData['user_id'] 		= $userId;
-						$deliveryData['customer_name'] 	= $customerName;
-						$deliveryData['address1'] 		= $addressLine1;
-						//$deliveryData['address2'] 		= $addressLine2;
-						$deliveryData['address_type'] 	= $addressType;
-						$deliveryData['email'] 			= $email;
-						$deliveryData['contact_no'] 	= $contactNo;
-						/*$deliveryData['state'] 			= $state;
-						$deliveryData['city'] 			= $city;*/
-						/*$deliveryData['zipcode'] 		= $zipcode;*/
-						$deliveryData['customer_latitude'] 	= $latitude;
-						$deliveryData['customer_longitude']	= $longitude;
-						$deliveryData['locality_id']	= $locality_id;
-						$deliveryData['created_by'] 	= $userId;
-						$deliveryData['created_date'] 	= date("Y-m-d H:i:s");
-						$tableName1 					= 'tbl_customer_delivery_address';
+						$deliveryData['user_id'] 		    = $userId;
+						$deliveryData['customer_name']      = trim($this->input->post("customer_name"));
+						$deliveryData['address_type'] 	    = trim($this->input->post("address_type"));
+						$deliveryData['email'] 			    = $email;
+						$deliveryData['contact_no'] 	    = trim($this->input->post("contact_no"));
+						$deliveryData['locality_id']	    = trim($this->input->post("locality_id"));
+						$deliveryData['customer_latitude'] 	= trim($this->input->post("customer_latitude"));
+						$deliveryData['customer_longitude']	= trim($this->input->post("customer_longitude"));
+						$deliveryData['street']	            = trim($this->input->post("street"));
+						$deliveryData['building']	        = trim($this->input->post("building"));
+						$deliveryData['appartment_no']	    = trim($this->input->post("appartment_no"));
+						$deliveryData['block']	            = trim($this->input->post("block"));
+						$deliveryData['avenue']	            = trim($this->input->post("avenue"));
+						$deliveryData['floor']	            = trim($this->input->post("floor"));
+						$deliveryData['address1'] 		    = trim($this->input->post("address_line1"));
+						$deliveryData['other_address'] 		= trim($this->input->post("other_address"));
+						$deliveryData['created_by'] 	    = $userId;
+						$deliveryData['created_date'] 	    = date("Y-m-d H:i:s");
+						$tableName1 					    = 'tbl_customer_delivery_address';
 						
 						$res = $this->Webservice_customer_model->insertData($tableName1,$deliveryData);
 						if($res){
 							$deliveryData['address_id'] 	= $res;
-							$response=array("response"=>"true","data"=>$deliveryData,"message"=>$message_addDeliveryAddress,"webservice_name"=>"addDeliveryAddress");
+							$response=array("response"=>"true","data"=>$deliveryData,"message"=>$this->lang->line('message_addDeliveryAddress'),"webservice_name"=>"addDeliveryAddress");
 						}
 						else{
-							$response=array("response"=>"false","message"=>$address_add_fail,"webservice_name"=>"addDeliveryAddress");	
+							$response=array("response"=>"false","message"=>$this->lang->line('address_add_fail'),"webservice_name"=>"addDeliveryAddress");	
 						}
 					}
 				}
 			}
 			else{
 
-				$response = array("response"=>"false","access"=>"false","message"=>$token_mismatched,"webservice_name"=>"addDeliveryAddress");
+				$response = array("response"=>"false","access"=>"false","message"=>$this->lang->line('token_mismatched'),"webservice_name"=>"addDeliveryAddress");
 			}
 		}
 		$this->evaluateExecutionTime($startTime,'getProductDetails',$this->input->post());
-		echo json_encode($response);
-		exit;
+		echo json_encode($response);exit;
 	}
 
 	/**
 	 * Description : edit customer product delivery address details
 	 * Created by : Rashmi Nayani
 	 * Created Date: 13/05/17 03:50 PM 
-	*/ 
+	**/
+
 	function editDeliveryAddress(){
 		$startTime = $this->benchmark->mark('code_start');
 		$lange 		= trim($this->input->post("default_language"));
@@ -1546,78 +1528,67 @@ class Webservice_Customers extends MY_Controller{
 		}
 
 		$this->lang->load($langFile,$lang);
-		$message_editDeliveryAddress = $this->lang->line('message_editDeliveryAddress');
-		$default_language_required 	= $this->lang->line('default_language_required');
-		$token_mismatched 			= $this->lang->line('token_mismatched');
-		$userid_required 			= $this->lang->line('userid_required');
-		$token_required 			= $this->lang->line('token_required');
-		$address_type_required 		= $this->lang->line('address_type_required');
-		$address1_required 			= $this->lang->line('address1_required');
-		$addressid_required 		= $this->lang->line('addressid_required');
-		$phone_required 			= $this->lang->line('phone_required');
-		$account_deleted 			= $this->lang->line('account_deleted');
-		$error_email_format 		= $this->lang->line('error_email_format');
-		$contact_numeric 			= $this->lang->line('contact_numeric');
-		$address_update_fail 		= $this->lang->line('address_update_fail');
-		$latitude_required 			= $this->lang->line('latitude_required');
-		$longitude_required 		= $this->lang->line('longitude_required');
 		$locality_id_required 		= $this->lang->line('locality_id_required');
 
 		if(trim($this->input->post('user_id'))==""){
-			$response = array("response"=>"false","message"=>$userid_required);
+			$response = array("response"=>"false","message"=>$this->lang->line('userid_required'));
 		}
 		else if(trim($this->input->post('access_token'))==""){
-			$response = array("response"=>"false","message"=>$token_required);
+			$response = array("response"=>"false","message"=>$this->lang->line('token_required'));
 		}
 		else if(trim($this->input->post('address_id'))==""){
-			$response = array("response"=>"false","message"=>$addressid_required);
-		}
-		else if(trim($this->input->post('address_line1'))==""){
-			$response = array("response"=>"false","message"=>$address1_required);
+			$response = array("response"=>"false","message"=>$this->lang->line('addressid_required'));
 		}
 		else if(trim($this->input->post('address_type'))==""){
 
-			$response = array("response"=>"false","message"=>$address_type_required);
+			$response = array("response"=>"false","message"=>$this->lang->line('address_type_required'));
 		}
 		else if(trim($this->input->post('contact_no'))==""){
-			$response = array("response"=>"false","message"=>$phone_required);
+			$response = array("response"=>"false","message"=>$this->lang->line('phone_required'));
 		}
 		else if(trim($this->input->post('customer_latitude'))==""){
-			$response = array("response"=>"false","message"=>$latitude_required);
+			$response = array("response"=>"false","message"=>$this->lang->line('latitude_required'));
 		}
 		else if(trim($this->input->post('customer_longitude'))==""){
-			$response = array("response"=>"false","message"=>$longitude_required);
+			$response = array("response"=>"false","message"=>$this->lang->line('longitude_required'));
 		}
 		else if(trim($this->input->post('locality_id'))==""){
-			$response = array("response"=>"false","message"=>$locality_id_required);
+			$response = array("response"=>"false","message"=>$this->lang->line('locality_id_required'));
 		}
 		else if(trim($this->input->post('default_language'))==""){
-			$response = array("response"=>"false","message"=>$default_language_required);
+			$response = array("response"=>"false","message"=>$this->lang->line('default_language_required'));
+		}else if(trim($this->input->post('street'))==""){
+			$response = array("response"=>"false","message"=>$this->lang->line('street_req'));
+		}
+		else if(trim($this->input->post('building'))==""){
+			$response = array("response"=>"false","message"=>$this->lang->line('building_req'));
+		}
+		else if(trim($this->input->post('appartment_no'))==""){
+			$response = array("response"=>"false","message"=>$this->lang->line('appartment_req'));
+		}
+		else if(trim($this->input->post('block'))==""){
+			$response = array("response"=>"false","message"=>$this->lang->line('block_req'));
+		}
+		else if(trim($this->input->post('floor'))==""){
+			$response = array("response"=>"false","message"=>$this->lang->line('floor_req'));
+		}
+		else if(trim($this->input->post('address_type') == "3") && trim($this->input->post('other_address')) == "")
+		{
+			$response = array("response"=>"false","message"=>$this->lang->line('other_address_req'));
 		}
 		else{
 
 			$userId 		= trim($this->input->post('user_id'));
 			$addressId 		= trim($this->input->post('address_id'));
 			$accessToken 	= trim($this->input->post("access_token"));
-			$addressLine1 	= trim($this->input->post("address_line1"));
-			$addressType 	= trim($this->input->post("address_type"));
-			$customerName 	= trim($this->input->post("customer_name"));
-			$contactNo 		= trim($this->input->post("contact_no"));
-			$latitude 		= trim($this->input->post("customer_latitude"));
-			$longitude 		= trim($this->input->post("customer_longitude"));
-			$locality_id 		= trim($this->input->post("locality_id"));
-			$addressLine2 	= ($this->input->post('address_line2')) ? trim($this->input->post('address_line2')) : '';
 			$email 			= ($this->input->post('email')) ? trim($this->input->post('email')) : '';
-			/*$state 			= ($this->input->post('state')) ? trim($this->input->post('state')) : '';
-			$city 			= ($this->input->post('city')) ? trim($this->input->post('city')) : '';*/
-			//$zipcode 		= ($this->input->post('zipcode')) ? trim($this->input->post('zipcode')) : '';
 			
 			$token 			= $this->checkAccessToken($userId,$accessToken);
 			if($accessToken===$token){
 				$account = $this->Webservice_customer_model->chkAccountDelete($userId);
 				if(is_array($account) && count($account)>0){
 
-					$response = array("response"=>"false","message"=>$account_deleted,"account_status"=>"inactive","webservice_name"=>"editDeliveryAddress");
+					$response = array("response"=>"false","message"=>$this->lang->line('account_deleted'),"account_status"=>"inactive","webservice_name"=>"editDeliveryAddress");
 				}
 				else{
 
@@ -1625,43 +1596,47 @@ class Webservice_Customers extends MY_Controller{
 
 						if (!filter_var($email,FILTER_VALIDATE_EMAIL)){
 
-						    $error =$error_email_format;
+						    $error =$this->lang->line('error_email_format');
 						}
 					}
-					if(is_numeric($contactNo) == false){
+					if(is_numeric($this->input->post('contact_no')) == false){
 
-						 $error = array("response"=>"false","message"=>$contact_numeric,"webservice_name"=>"editDeliveryAddress");
+						 $error = array("response"=>"false","message"=>$this->lang->line('contact_numeric'),"webservice_name"=>"editDeliveryAddress");
 						
 					}
 					if($error){
 						$response = array("response"=>"false","webservice_name"=>"editDeliveryAddress","message"=>$error);
 					}
 					else{
-						$deliveryData['user_id'] 		= $userId;
-						$deliveryData['customer_name'] 	= $customerName;
-						$deliveryData['address1'] 		= $addressLine1;
-						$deliveryData['address2'] 		= $addressLine2;
-						$deliveryData['address_type'] 	= $addressType;
-						$deliveryData['email'] 			= $email;
-						$deliveryData['contact_no'] 	= $contactNo;
-						$deliveryData['state'] 			= $state;
-						$deliveryData['city'] 			= $city;
-						$deliveryData['zipcode'] 		= $zipcode;
-						$deliveryData['customer_latitude'] 	= $latitude;
-						$deliveryData['customer_longitude'] = $longitude;
-						$deliveryData['locality_id'] = $locality_id;
-						$deliveryData['updated_by'] 	= $userId;
-						$deliveryData['updated_date'] 	= date("Y-m-d H:i:s");
+						$deliveryData['user_id'] 		    = $userId;
+						$deliveryData['customer_name'] 	    = trim($this->input->post("customer_name"));
+						$deliveryData['address1'] 		    = trim($this->input->post("address_line1"));
+						$deliveryData['address2'] 		    = ($this->input->post('address_line2')) ? trim($this->input->post('address_line2')) : '';
+						$deliveryData['address_type'] 	    = trim($this->input->post("address_type"));
+						$deliveryData['email'] 			    = $email;
+						$deliveryData['contact_no'] 	    = trim($this->input->post("contact_no"));
+						$deliveryData['street']	            = trim($this->input->post("street"));
+						$deliveryData['building']	        = trim($this->input->post("building"));
+						$deliveryData['appartment_no']	    = trim($this->input->post("appartment_no"));
+						$deliveryData['block']	            = trim($this->input->post("block"));
+						$deliveryData['avenue']	            = trim($this->input->post("avenue"));
+						$deliveryData['floor']	            = trim($this->input->post("floor"));
+						$deliveryData['customer_latitude'] 	= trim($this->input->post("customer_latitude"));
+						$deliveryData['customer_longitude'] = trim($this->input->post("customer_longitude"));
+						$deliveryData['locality_id']        = trim($this->input->post("locality_id"));
+						$deliveryData['other_address'] 		= trim($this->input->post("other_address"));
+						$deliveryData['updated_by'] 	    = $userId;
+						$deliveryData['updated_date'] 	    = date("Y-m-d H:i:s");
 						
 						$res = $this->Webservice_customer_model->updateDeliveryAddressData($deliveryData,$addressId);
 
 						if($res){
 							$deliveryData['address_id'] 	= $addressId;
-							$response=array("response"=>"true","data"=>$deliveryData,"message"=>$message_editDeliveryAddress,"webservice_name"=>"editDeliveryAddress");
+							$response=array("response"=>"true","data"=>$deliveryData,"message"=>$this->lang->line('message_editDeliveryAddress'),"webservice_name"=>"editDeliveryAddress");
 						}
 						else{
 
-							$response=array("response"=>"false","message"=>$address_update_fail,"webservice_name"=>"editDeliveryAddress");	
+							$response=array("response"=>"false","message"=>$this->lang->line('address_update_fail'),"webservice_name"=>"editDeliveryAddress");	
 						}
 					}
 					
@@ -1669,7 +1644,7 @@ class Webservice_Customers extends MY_Controller{
 			}
 			else{
 
-				$response = array("response"=>"false","access"=>"false","message"=>$token_mismatched,"webservice_name"=>"editDeliveryAddress");
+				$response = array("response"=>"false","access"=>"false","message"=>$this->lang->line('token_mismatched'),"webservice_name"=>"editDeliveryAddress");
 			}
 		}
 		$this->evaluateExecutionTime($startTime,'editDeliveryAddress',$this->input->post());
@@ -1725,7 +1700,8 @@ class Webservice_Customers extends MY_Controller{
 			$userId 		= trim($this->input->post('user_id'));
 			$addressId 		= trim($this->input->post('address_id'));
 			$accessToken 	= trim($this->input->post("access_token"));
-			
+			$otherAddress 	= trim($this->input->post('other_address'));
+
 			$token 			= $this->checkAccessToken($userId,$accessToken);
 			if($accessToken===$token){
 				$account = $this->Webservice_customer_model->chkAccountDelete($userId);
@@ -1736,6 +1712,7 @@ class Webservice_Customers extends MY_Controller{
 				else{
 
 					$deliveryData['is_active'] 		= '0';
+					$deliveryData['other_data'] 	= $otherAddress;
 					$deliveryData['updated_by'] 	= $userId;
 					$deliveryData['updated_date'] 	= date("Y-m-d H:i:s");
 					
@@ -2048,6 +2025,7 @@ class Webservice_Customers extends MY_Controller{
 			$orderId     		= trim($this->input->post("order_id"));
 			$dishes 			= trim($this->input->post("dishes"));
 			$restaurantId 		= trim($this->input->post("restaurant_id"));
+			$specialInstruction = trim($this->input->post("special_instruction"));
 			$error 				= "";
 			$error1 			= "";
 			$totalAmount 		= 0;
@@ -2143,6 +2121,7 @@ class Webservice_Customers extends MY_Controller{
 					$orderData['total_price'] 				= $totalPrice + $getLocalityData[0]->delivery_charge;
 					$orderData['delivery_charges'] 		    = $getLocalityData[0]->delivery_charge;
 					$orderData['order_type'] 				= $orderType;
+					$orderData['special_instruction']   	= $specialInstruction;
 					$orderData['selected_delivery_address'] = $addressId;
 					$orderData['order_placed_time']         = date("Y-m-d H:i:s");
 					
@@ -2304,12 +2283,12 @@ class Webservice_Customers extends MY_Controller{
 					$orderDetail = $this->Webservice_customer_model->getMyOrders($userId);
 					//echo "<pre>"; print_r($orderDetail);exit;
 					if(is_array($orderDetail) && count($orderDetail)>0){
-
+						$k = 0;
 						foreach ($orderDetail as $key => $value) {
 							
-							$orderDetails[$value->order_id]['order_id'] 				= $value->order_id;
+							$orderDetails[$value->order_id]['order_id'] 				= $value->sequence_no;
 							$orderDetails[$value->order_id]['order_status'] 			= $value->order_status;
-							$orderDetails[$value->order_id]['replace_by'] 			= $value->order_refer_by;
+							$orderDetails[$value->order_id]['replace_by'] 			    = $value->order_refer_by;
 							$orderDetails[$value->order_id]['restaurant_id'] 			= $value->restaurant_id;
 							$orderDetails[$value->order_id]['order_placed_time'] 		= $value->order_placed_time;
 							$orderDetails[$value->order_id]['expected_delivery_time'] 	= $value->expected_delivery_time;
@@ -2322,37 +2301,47 @@ class Webservice_Customers extends MY_Controller{
 							$orderDetails[$value->order_id]['restaurant_address'] 		= $value->res_address;
 							$orderDetails[$value->order_id]['restaurant_email'] 		= $value->res_email;
 							$orderDetails[$value->order_id]['restaurant_contact_no'] 	= $value->res_contact_no;
-							$orderDetails[$value->order_id]['delivery_address'] 		= $value->usr_address;
 							$orderDetails[$value->order_id]['customer_latitude'] 		= $value->customer_latitude;
 							$orderDetails[$value->order_id]['customer_longitude'] 		= $value->customer_longitude;
 							$orderDetails[$value->order_id]['customer_name'] 			= $value->customer_name;
 							$orderDetails[$value->order_id]['customer_contact_no'] 		= $value->usr_contact_no;
 							$orderDetails[$value->order_id]['customer_email'] 			= $value->usr_email;
 							$orderDetails[$value->order_id]['zipcode'] 					= $value->zipcode;
-							
-							$orderDetails[$value->order_id]['delivered_by'] 			= $value->delivered_by;
+							$fullAddress =($value->appartment_no !="" || $value->appartment_no !=null)?$value->appartment_no.",":"";
+							$fullAddress .=($value->floor!="" || $value->floor!=null)?"Floor -".$value->floor.",":"";
+							$fullAddress .=($value->block!="" || $value->block!=null)?"Block -".$value->block.",":"";
+							$fullAddress .=($value->building !="" ||$value->building !=null)?"Building -".$value->building.",":"";
+							$fullAddress .=($value->street !="")?$value->street.',':'';
+							$fullAddress .=($value->avenue !="" || $value->avenue !=null)?$value->avenue.',':'';
+							$fullAddress .=($value->usr_address!="")?$value->usr_address:"";
+
+							$orderDetails[$value->order_id]['delivery_address'] 		  = $fullAddress;
+							$orderDetails[$value->order_id]['other_address'] 		  	  = $value->other_address;
+							$orderDetails[$value->order_id]['delivered_by'] 			  = $value->delivered_by;
 							$orderDetails[$value->order_id]['driver_first_name'] 		  = $value->driver_first_name;
 							$orderDetails[$value->order_id]['driver_last_name'] 		  = $value->driver_last_name;
 							$orderDetails[$value->order_id]['driver_contact_no'] 		  = $value->driver_contact_no;
 
-							$orderDetails[$value->order_id]['dishes'][$value->product_id]['product_id']  = $value->product_id;
-							$orderDetails[$value->order_id]['dishes'][$value->product_id]['dish_name']  = $value->name;
-							$orderDetails[$value->order_id]['dishes'][$value->product_id]['product_ar_name']  = $value->product_ar_name;
-							$orderDetails[$value->order_id]['dishes'][$value->product_id]['quantity']  = $value->quantity;
-							$orderDetails[$value->order_id]['dishes'][$value->product_id]['base_price']  = $value->amount;
-							$orderDetails[$value->order_id]['dishes'][$value->product_id]['description']  = $value->od_desc;
+							$orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['product_id']  = $value->product_id;
+							$orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['dish_name']  = $value->name;
+							$orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['product_ar_name']  = $value->product_ar_name;
+							$orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['quantity']  = $value->quantity;
+							$orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['base_price']  = $value->amount;
+							$orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['description']  = $value->od_desc;
 							
 							if ($value->choice_id != "") {
-					    	  	$orderDetails[$value->order_id]['dishes'][$value->product_id]['choice'][$value->choice_id]['choice_id'] = $value->choice_id;
-							    $orderDetails[$value->order_id]['dishes'][$value->product_id]['choice'][$value->choice_id]['choice_price'] = $value->choice_price;
-							    $orderDetails[$value->order_id]['dishes'][$value->product_id]['choice'][$value->choice_id]['choice_name'] = $value->choice_name;
-							    $orderDetails[$value->order_id]['dishes'][$value->product_id]['choice'][$value->choice_id]['choice_name_ar'] = $value->choice_name_ar;
-							    $orderDetails[$value->order_id]['dishes'][$value->product_id]['choice'][$value->choice_id]['choice_description'] = $value->choice_description;
-							    $orderDetails[$value->order_id]['dishes'][$value->product_id]['choice'][$value->choice_id]['choice_category_name'] = $value->choice_category_name;
+					    	  	$orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['choice'][$value->choice_id]['choice_id'] = $value->choice_id;
+							    $orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['choice'][$value->choice_id]['choice_price'] = $value->choice_price;
+							    $orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['choice'][$value->choice_id]['choice_name'] = $value->choice_name;
+							    $orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['choice'][$value->choice_id]['choice_name_ar'] = $value->choice_name_ar;
+							    $orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['choice'][$value->choice_id]['choice_description'] = $value->choice_description;
+							    $orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['choice'][$value->choice_id]['choice_category_name'] = $value->choice_category_name;
 						    }
+						    $k++;
 						}
-						
+						//print_r($orderDetails);exit;
 						$i = 0;
+						$z = 0;
 						foreach ($orderDetails as $key => $value) {
 							
 							$orderData[$i]['order_id'] 					= $value['order_id'];
@@ -2371,6 +2360,7 @@ class Webservice_Customers extends MY_Controller{
 							$orderData[$i]['restaurant_email'] 			= $value['restaurant_email'];
 							$orderData[$i]['restaurant_contact_no'] 	= $value['restaurant_contact_no'];
 							$orderData[$i]['delivery_address'] 			= $value['delivery_address'];
+							$orderData[$i]['other_address'] 			= $value['other_address'];
 							$orderData[$i]['customer_name'] 			= $value['customer_name'];
 							$orderData[$i]['customer_contact_no'] 		= $value['customer_contact_no'];
 							$orderData[$i]['customer_email'] 			= $value['customer_email'];
@@ -2388,36 +2378,37 @@ class Webservice_Customers extends MY_Controller{
 							$j =0;
 							foreach ($value['dishes'] as $key => $val) {
 
-								$orderData[$i]['dishes'][$j]['product_id'] 		= $val['product_id'];
-								$orderData[$i]['dishes'][$j]['dish_name'] 		= $val['dish_name'];
-								$orderData[$i]['dishes'][$j]['product_ar_name'] = $val['product_ar_name'];
-								$orderData[$i]['dishes'][$j]['quantity'] 		= $val['quantity'];
-								$orderData[$i]['dishes'][$j]['base_price'] 		= $val['base_price'];
-								$orderData[$i]['dishes'][$j]['description'] 	= $val['description'];
+								//for($kkey = 0; $kkey < sizeof($val); $kkey++){
+									$orderData[$i]['dishes'][$j]['product_id'] 		= $val['product_id'];
+									$orderData[$i]['dishes'][$j]['dish_name'] 		= $val['dish_name'];
+									$orderData[$i]['dishes'][$j]['product_ar_name'] = $val['product_ar_name'];
+									$orderData[$i]['dishes'][$j]['quantity'] 		= $val['quantity'];
+									$orderData[$i]['dishes'][$j]['base_price'] 		= $val['base_price'];
+									$orderData[$i]['dishes'][$j]['description'] 	= $val['description'];
 
-								$k=0;
-								
-								foreach ($val['choice'] as $key => $va) {
-									$productDetails = $this->Webservice_customer_model->getDishDetail($val['product_id'],$val['restaurant_id']);
-									$dishChoices   	 	=$productDetails[0]->choice_id;
-									$dishPrice 			=$productDetails[0]->dish_price;
-									$disheChoicesPrices =$productDetails[0]->choice_price;
-									$dishChoices 		=explode(',',$dishChoices);
-									$disheChoicesPrices =explode(',',$disheChoicesPrices);
-									$key                = array_search($va['choice_id'],$dishChoices);
-									$choicePrice       =$disheChoicesPrices[$key];
+									$k=0;
+									foreach ($val['choice'] as $key => $va) {
+										$productDetails = $this->Webservice_customer_model->getDishDetail($val['product_id'],$value['restaurant_id']);
+										$dishChoices   	 	=$productDetails[0]->choice_id;
+										$dishPrice 			=$productDetails[0]->dish_price;
+										$disheChoicesPrices =$productDetails[0]->choice_price;
+										$dishChoices 		=explode(',',$dishChoices);
+										$disheChoicesPrices =explode(',',$disheChoicesPrices);
+										$key                = array_search($va['choice_id'],$dishChoices);
+										$choicePrice       =$disheChoicesPrices[$key];
 
-									$orderData[$i]['dishes'][$j]['choice'][$k]['choice_id'] 		  = $va['choice_id'];
-									$orderData[$i]['dishes'][$j]['choice'][$k]['choice_price'] 		  = $choicePrice;
-									$orderData[$i]['dishes'][$j]['choice'][$k]['choice_name'] 		  = $va['choice_name'];
-									$orderData[$i]['dishes'][$j]['choice'][$k]['choice_name_ar'] 	  = $va['choice_name_ar'];
-									$orderData[$i]['dishes'][$j]['choice'][$k]['choice_description']  = $va['choice_description'];
-									$orderData[$i]['dishes'][$j]['choice'][$k]['choice_category_name']= $va['choice_category_name'];
-									$k++;
-								}
-								$j++;
+										$orderData[$i]['dishes'][$j]['choice'][$k]['choice_id'] 		  = $va['choice_id'];
+										$orderData[$i]['dishes'][$j]['choice'][$k]['choice_price'] 		  = $choicePrice;
+										$orderData[$i]['dishes'][$j]['choice'][$k]['choice_name'] 		  = $va['choice_name'];
+										$orderData[$i]['dishes'][$j]['choice'][$k]['choice_name_ar'] 	  = $va['choice_name_ar'];
+										$orderData[$i]['dishes'][$j]['choice'][$k]['choice_description']  = $va['choice_description'];
+										$orderData[$i]['dishes'][$j]['choice'][$k]['choice_category_name']= $va['choice_category_name'];
+										$k++;
+									}
+									$j++;
+								//}
 							}
-						$i++;
+							$i++;
 						}
 						$response = array("response"=>"true","webservice_name"=>"getMyorders","message"=>$message_getMyorders,"orders"=>$orderData);
 					}
@@ -2485,8 +2476,11 @@ class Webservice_Customers extends MY_Controller{
 			$userId 		= trim($this->input->post('user_id'));
 			$orderId 		= trim($this->input->post('order_id'));
 			$accessToken 	= trim($this->input->post("access_token"));
-			
+
 			$token 			= $this->checkAccessToken($userId,$accessToken);
+
+			$orderIdData 	= $this->Home_model->getOrderIdFromSequenceNo($orderId);
+			$orderId 		= $orderIdData->order_id;
 
 			if($accessToken===$token){
 				$account = $this->Webservice_customer_model->chkAccountDelete($userId);
@@ -2497,18 +2491,32 @@ class Webservice_Customers extends MY_Controller{
 				else
 				{
 					$orderDetail = $this->Webservice_customer_model->getMyOrders($userId,$orderId);
-				
+
 					$DriverRating = $this->Webservice_customer_model->getRating($orderId,'tbl_driver_ratings');
 					$RestauratRating = $this->Webservice_customer_model->getRating($orderId,'tbl_restaurant_ratings');
 
 					if(is_array($orderDetail) && count($orderDetail)>0){
-
+						$k = 0;
 						$i = 0;
 						foreach ($orderDetail as $key => $value) {
-							
-
+							$otherAddress = "";
+							if($value->address_type == 1)
+							{
+								$otherAddress = "Home";
+							}
+							else if($value->address_type == 2)
+							{
+								$otherAddress = "Office";
+							}
+							else if($value->address_type == 3)
+							{
+								$otherAddress = $value->other_address;
+							}
+							/*echo "test:".$otherAddress;
+							exit;*/
 							$orderDetails[$value->order_id]['order_id'] 				= $value->order_id;
 							$orderDetails[$value->order_id]['order_status'] 			= $value->order_status;
+							$orderDetails[$value->order_id]['special_instruction'] 		= $value->special_instruction;
 							$orderDetails[$value->order_id]['order_placed_time'] 		= $value->order_placed_time;
 							$orderDetails[$value->order_id]['expected_delivery_time'] 	= $value->expected_delivery_time;
 							$orderDetails[$value->order_id]['description'] 	            = $value->description;
@@ -2525,6 +2533,7 @@ class Webservice_Customers extends MY_Controller{
 							$orderDetails[$value->order_id]['custom_delivery_time'] 	= "";
 							$orderDetails[$value->order_id]['delivery_charge']      	= $value->delivery_charges;
 							$orderDetails[$value->order_id]['delivery_address'] 		= $value->usr_address;
+							$orderDetails[$value->order_id]['other_address'] 		    = $otherAddress;
 							$orderDetails[$value->order_id]['customer_name'] 			= $value->customer_name;
 							$orderDetails[$value->order_id]['customer_contact_no'] 		= $value->usr_contact_no;
 							$orderDetails[$value->order_id]['customer_email'] 			= $value->usr_email;
@@ -2539,33 +2548,37 @@ class Webservice_Customers extends MY_Controller{
 							$orderDetails[$value->order_id]['driver_last_name'] 		= $value->driver_last_name;
 							$orderDetails[$value->order_id]['driver_contact_no'] 		= $value->driver_contact_no;
 							
-						    $orderDetails[$value->order_id]['dishes'][$value->product_id]['product_id']  = $value->product_id;
-						    $orderDetails[$value->order_id]['dishes'][$value->product_id]['quantity']  = $value->quantity;
-						    $orderDetails[$value->order_id]['dishes'][$value->product_id]['amount']  = $value->amount;
-						    $orderDetails[$value->order_id]['dishes'][$value->product_id]['description']  = $value->od_desc;
-						    $orderDetails[$value->order_id]['dishes'][$value->product_id]['discount_type']  = $value->discount_type;
-						    $orderDetails[$value->order_id]['dishes'][$value->product_id]['discount_amount']  = $value->discount_amount;
-						    $orderDetails[$value->order_id]['dishes'][$value->product_id]['name']  = $value->name;
-						    $orderDetails[$value->order_id]['dishes'][$value->product_id]['product_ar_name']  = $value->product_ar_name;
-						    $orderDetails[$value->order_id]['dishes'][$value->product_id]['price']  = $value->choice_price;
-						    $orderDetails[$value->order_id]['dishes'][$value->product_id]['dish_image']  = $value->dish_image;
+						    $orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['product_id']  = $value->product_id;
+						    $orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['quantity']  = $value->quantity;
+						    $orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['amount']  = $value->amount;
+						    $orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['description']  = $value->od_desc;
+						    $orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['discount_type']  = $value->discount_type;
+						    $orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['discount_amount']  = $value->discount_amount;
+						    $orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['name']  = $value->name;
+						    $orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['product_ar_name']  = $value->product_ar_name;
+						    $orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['price']  = $value->choice_price;
+						    $orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['dish_image']  = $value->dish_image;
+						    $orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['order_detail_id']  = $value->order_detail_id;
 
 						    if ($value->choice_id != "") {
 
-					    	  	$orderDetails[$value->order_id]['dishes'][$value->product_id]['choice'][$value->choice_id]['choice_id'] = $value->choice_id;
-							    $orderDetails[$value->order_id]['dishes'][$value->product_id]['choice'][$value->choice_id]['choice_price'] = $value->choice_price;
-							    $orderDetails[$value->order_id]['dishes'][$value->product_id]['choice'][$value->choice_id]['choice_name'] = $value->choice_name;
-							    $orderDetails[$value->order_id]['dishes'][$value->product_id]['choice'][$value->choice_id]['choice_name_ar'] = $value->choice_name_ar;
-							    $orderDetails[$value->order_id]['dishes'][$value->product_id]['choice'][$value->choice_id]['choice_description'] = $value->choice_description;
-							    $orderDetails[$value->order_id]['dishes'][$value->product_id]['choice'][$value->choice_id]['choice_category_name'] = $value->choice_category_name;
+					    	  	$orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['choice'][$value->choice_id]['choice_id'] = $value->choice_id;
+							    $orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['choice'][$value->choice_id]['choice_price'] = $value->choice_price;
+							    $orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['choice'][$value->choice_id]['choice_name'] = $value->choice_name;
+							    $orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['choice'][$value->choice_id]['choice_name_ar'] = $value->choice_name_ar;
+							    $orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['choice'][$value->choice_id]['choice_description'] = $value->choice_description;
+							    $orderDetails[$value->order_id]['dishes'][$value->order_detail_id]['choice'][$value->choice_id]['choice_category_name'] = $value->choice_category_name;
 							     
 						    }
+						    $k++;
 						}
-				
+
+						$z = 0;
 						foreach ($orderDetails as $key => $value) {
-							
+
 							$orderData['order_id'] 				= $value['order_id'];
 							$orderData['order_status'] 			= $value['order_status'];
+							$orderData['special_instruction'] 	= $value['special_instruction'];
 							$orderData['order_placed_time'] 	= $value['order_placed_time'];
 							$orderData['expected_delivery_time']= $value['expected_delivery_time'];
 							$orderData['order_confirmed_time'] 	= $value['order_confirmed_time'];
@@ -2583,6 +2596,7 @@ class Webservice_Customers extends MY_Controller{
 							$orderData['custom_delivery_time'] 	= $value['custom_delivery_time'];
 							$orderData['delivery_charge'] 	    = $value['delivery_charge'];
 							$orderData['delivery_address'] 		= $value['delivery_address'];
+							$orderData['other_address'] 		= $value['other_address'];
 							$orderData['customer_name'] 		= $value['customer_name'];
 							$orderData['customer_contact_no'] 	= $value['customer_contact_no'];
 							$orderData['customer_email'] 		= $value['customer_email'];
@@ -2596,6 +2610,7 @@ class Webservice_Customers extends MY_Controller{
 							$orderData['driver_first_name'] 	= $value['driver_first_name'];
 							$orderData['driver_last_name']		= $value['driver_last_name'];
 							$orderData['driver_contact_no']		= $value['driver_contact_no'];
+
 
 							if(count($DriverRating)>0){
 								$orderData['rating']['driver']['rating_id'] = $DriverRating[0]->rating_id;
@@ -2618,43 +2633,53 @@ class Webservice_Customers extends MY_Controller{
 								$orderData['rating']['restaurant'] = null;	
 							}
 
-
 							$j =0;
 							foreach ($value['dishes'] as $key => $val) {
-								
-								$orderData['dishes'][$j]['product_id'] 		= $val['product_id'];
-								$orderData['dishes'][$j]['quantity'] 		= $val['quantity'];
-								$orderData['dishes'][$j]['amount'] 			= $val['amount'];
-								$orderData['dishes'][$j]['description'] 	= $val['description'];
-								$orderData['dishes'][$j]['discount_type'] 	= $val['discount_type'];
-								$orderData['dishes'][$j]['discount_amount'] = $val['discount_amount'];
-								$orderData['dishes'][$j]['name'] 			= $val['name'];
-								$orderData['dishes'][$j]['ar_name'] 		= $val['product_ar_name'];
-								$orderData['dishes'][$j]['description'] 	= $val['description'];
-								$orderData['dishes'][$j]['price'] 			= number_format($val['amount']/$val['quantity'],2,".",".");
-								$orderData['dishes'][$j]['dish_image'] 		= base_url().'assets/uploads/products/'.$val['dish_image'];
 
-								$k=0;
-								
-								foreach ($val['choice'] as $key => $va) {
-									$productDetails = $this->Webservice_customer_model->getDishDetail($val['product_id'],$val['restaurant_id']);
-									$dishChoices   	 	=$productDetails[0]->choice_id;
-									$dishPrice 			=$productDetails[0]->dish_price;
-									$disheChoicesPrices =$productDetails[0]->choice_price;
-									$dishChoices 		=explode(',',$dishChoices);
-									$disheChoicesPrices =explode(',',$disheChoicesPrices);
-									$key             = array_search($va['choice_id'],$dishChoices);
-									$choicePrice     =$disheChoicesPrices[$key];
-									$orderData['dishes'][$j]['choice'][$k]['choice_id'] 		  = $va['choice_id'];
-									$orderData['dishes'][$j]['choice'][$k]['choice_price'] 		  = $choicePrice;
-									$orderData['dishes'][$j]['choice'][$k]['choice_name'] 		  = $va['choice_name'];
-									$orderData['dishes'][$j]['choice'][$k]['choice_name_ar'] 	  = $va['choice_name_ar'];
-									$orderData['dishes'][$j]['choice'][$k]['choice_description']  = $va['choice_description'];
-									$orderData['dishes'][$j]['choice'][$k]['choice_category_name']= $va['choice_category_name'];
+								//for($kkey = 0; $kkey < sizeof($val); $kkey++){
+								/*if(($orderData['dishes'][$j]['order_detail_id']!=$val['order_detail_id']) && $j!=0) {
+									//$j++;
+									continue;
+								}*/
+									$orderData['dishes'][$j]['product_id'] 		= $val['product_id'];
+									$orderData['dishes'][$j]['order_detail_id'] = $val['order_detail_id'];
+									$orderData['dishes'][$j]['quantity'] 		= $val['quantity'];
+									$orderData['dishes'][$j]['amount'] 			= $val['amount'];
+									$orderData['dishes'][$j]['description'] 	= $val['description'];
+									$orderData['dishes'][$j]['discount_type'] 	= $val['discount_type'];
+									$orderData['dishes'][$j]['discount_amount'] = $val['discount_amount'];
+									$orderData['dishes'][$j]['name'] 			= $val['name'];
+									$orderData['dishes'][$j]['ar_name'] 		= $val['product_ar_name'];
+									$orderData['dishes'][$j]['description'] 	= $val['description'];
+									$orderData['dishes'][$j]['price'] 			= number_format($val['amount']/$val['quantity'],2,".",".");
+									$orderData['dishes'][$j]['dish_image'] 		= base_url().'assets/uploads/products/'.$val['dish_image'];
 
-									$k++;
-								}	
-								$j++;
+									$k=0;
+									/*if(($orderData['dishes'][$j]['order_detail_id']!=$val['order_detail_id']) && $j!=0) {
+										//$j++;
+										continue;
+									}*/
+									foreach ($val['choice'] as $key => $va) {
+										$productDetails = $this->Webservice_customer_model->getDishDetail($val['product_id'],$val['restaurant_id']);
+										$dishChoices   	 	=$productDetails[0]->choice_id;
+										$dishPrice 			=$productDetails[0]->dish_price;
+										$disheChoicesPrices =$productDetails[0]->choice_price;
+										$dishChoices 		=explode(',',$dishChoices);
+										$disheChoicesPrices =explode(',',$disheChoicesPrices);
+										$key             = array_search($va['choice_id'],$dishChoices);
+										$choicePrice     =$disheChoicesPrices[$key];
+										$orderData['dishes'][$j]['choice'][$k]['choice_id'] 		  = $va['choice_id'];
+										$orderData['dishes'][$j]['choice'][$k]['choice_price'] 		  = $choicePrice;
+										$orderData['dishes'][$j]['choice'][$k]['choice_name'] 		  = $va['choice_name'];
+										$orderData['dishes'][$j]['choice'][$k]['choice_name_ar'] 	  = $va['choice_name_ar'];
+										$orderData['dishes'][$j]['choice'][$k]['choice_description']  = $va['choice_description'];
+										$orderData['dishes'][$j]['choice'][$k]['choice_category_name']= $va['choice_category_name'];
+
+										$k++;
+									}	
+									//$z++;
+									$j++;
+								//}
 							}
 						}
 
@@ -2662,7 +2687,6 @@ class Webservice_Customers extends MY_Controller{
 					
 					}
 					else{
-
 						$response = array("response"=>"false","webservice_name"=>"getOrderDetails","message"=>$filed_to_fetch_order_detail);
 					}
 				
@@ -2743,6 +2767,9 @@ class Webservice_Customers extends MY_Controller{
 			$isDriverRating 	= trim($this->input->post('is_driver_rating'));
 			$error 				= "";
 			
+			$orderData 			= $this->Home_model->getOrderIdFromSequenceNo($orderId);
+			$orderId 			= $orderData->order_id;
+
 			$token = $this->checkAccessToken($userId,$accessToken);
 		
 			if($accessToken===$token){
@@ -3199,6 +3226,9 @@ class Webservice_Customers extends MY_Controller{
 					$updateOrderData['updated_by'] 				= $userId;
 					$updateOrderData['updated_date'] 			= date("Y-m-d H:i:s");
 
+					$seqNo = $this->Home_model->getLatestSequenceNumber();
+					$updateOrderData['sequence_no'] = $seqNo->sequence_no + 1;
+						
 					$res = $this->Webservice_customer_model->updateData($updateOrderData,$orderId);
 					
 					if ($res)
@@ -3266,7 +3296,9 @@ class Webservice_Customers extends MY_Controller{
 			$userId				= trim($this->input->post('user_id'));
 			$accessToken 		= trim($this->input->post("access_token"));
 			$orderId 			= trim($this->input->post("order_id"));
-			
+			$orderData 			= $this->Home_model->getOrderIdFromSequenceNo($orderId);
+			$orderId 			= $orderData->order_id;
+
 			$token = $this->checkAccessToken($userId,$accessToken);
 		
 			if($accessToken===$token)
@@ -3317,9 +3349,12 @@ class Webservice_Customers extends MY_Controller{
 		$total 			= trim($this->input->post('total')) ? $this->input->post('total') : '0';
 		$allData = $this->Webservice_customer_model->getAllChoiceData($offset,$total);
 		
-		$products = array();
-		if(is_array($allData) && count($allData)>0)
+	
+		if(count($allData)>0)
 		{
+			foreach ($allData as $key => $value) {
+				$value->choice_name =stripslashes($value->choice_name);
+			}
 			$response = array("response"=>"true","webservice_name"=>"getAllChoiceData","message"=>'Data is found',"choice"=>$allData);
 		}
 		else
@@ -3344,8 +3379,11 @@ class Webservice_Customers extends MY_Controller{
 		$total 			= trim($this->input->post('total')) ? $this->input->post('total') : '0';
 		$allData = $this->Webservice_customer_model->getAllChoiceCategoryData($offset,$total);
 		
-		if(is_array($allData) && count($allData)>0)
+		if(count($allData)>0)
 			{				
+				foreach ($allData as $key => $value) {
+					$value->choice_category_name =stripslashes($value->choice_category_name);
+				}
 				$response = array("response"=>"true","webservice_name"=>"getAllChoiceCategoryData","message"=>'Data is found',"choiceCategory"=>$allData);
 			}
 			else
@@ -3370,7 +3408,7 @@ class Webservice_Customers extends MY_Controller{
 		$total 			= trim($this->input->post('total')) ? $this->input->post('total') : '0';
 		$allData = $this->Webservice_customer_model->getAllDishChoiceData($offset,$total);
 		
-		if(is_array($allData) && count($allData)>0)
+		if(count($allData)>0)
 		{
 			$response = array("response"=>"true","webservice_name"=>"getAllDishChoiceData","message"=>'Data is found',"choice"=>$allData);
 		}
@@ -3401,13 +3439,13 @@ class Webservice_Customers extends MY_Controller{
 		$lang =$_COOKIE['lang'];
 		if(count($allData)>0){
 			foreach ($allData as $key => $value) {
-				$allData[$key]->category_name=($lang =='AR')?$value->category_ar_name:$value->category_name;
+				$allData[$key]->category_name=($lang=='AR')?$value->category_ar_name:stripslashes($value->category_name);
 			}
 		}
 		
  		$imagePath    =base_url()."assets/uploads/category/";
  		//print_r($allData);exit;
-		if(is_array($allData) && count($allData)>0)
+		if(count($allData)>0)
 		{
 			$bestDishes =0;
 			if($locality !='')
@@ -3770,6 +3808,9 @@ class Webservice_Customers extends MY_Controller{
 			$orderId 		= trim($this->input->post('order_id'));
 			$accessToken 	= trim($this->input->post("access_token"));
 			
+			$order_id 		= $this->Home_model->getOrderIdFromSequenceNo($orderId);
+			$orderId 		= $order_id->order_id;
+
 			$token 			= $this->checkAccessToken($userId,$accessToken);
 
 			if($accessToken===$token){
@@ -3911,7 +3952,6 @@ class Webservice_Customers extends MY_Controller{
 		        		);
 
 			        	$res = $this->Login_model->updateUserDetailsBYSecurityToken($securityToken,$userDataUpdate);
-			        	//exit("in");
 			        	if(isset($res) && $res==1)
 						{
 							$response = array("response"=>"true","message"=>$password_change);
@@ -3977,7 +4017,7 @@ class Webservice_Customers extends MY_Controller{
 	function getRestaurantDishes()
 	{
 		$startTime 	= $this->benchmark->mark('code_start');
-		$result 	= $this->Restaurant_model->getRestaurantDishes();
+		$result 	= $this->Webservice_customer_model->getRestaurantDishes();
 		
 		if(sizeof($result)>0){
 			$response = array("success"=>"1","data"=>$result);
@@ -4174,9 +4214,17 @@ class Webservice_Customers extends MY_Controller{
 	 */
 	function getUpdate(){
 
-		$appVersion    = $this->input->get('app_version');
-		$deviceType    = $this->input->get('device_type');
-		$app            = $this->input->get('app');
+		if(sizeof($this->input->post()) > 0){
+			$appVersion    = $this->input->post('app_version');
+			$deviceType    = $this->input->post('device_type');
+			$app            = $this->input->post('app');
+		}
+
+		if(sizeof($this->input->get()) > 0){
+			$appVersion    = $this->input->get('app_version');
+			$deviceType    = $this->input->get('device_type');
+			$app            = $this->input->get('app');
+		}
 
 		if(!isset($appVersion) || $appVersion == ""){
 			$response = array("success"=>"0","message"=>"appver_required");
@@ -4187,7 +4235,7 @@ class Webservice_Customers extends MY_Controller{
 			$response = array("success"=>"0","message"=>"app_required");
 		}else{
 
-			$versionRequestData = $this->Webservice_driver_model->checkForUpdateVersion($device_type, $app);
+			$versionRequestData = $this->Webservice_driver_model->checkForUpdateVersion($deviceType, $app);
 
 			$VerReqData['latest_ver'] = $versionRequestData->latest_ver;
 			$VerReqData['status'] = $versionRequestData->status;
@@ -4312,5 +4360,49 @@ class Webservice_Customers extends MY_Controller{
 
             echo json_encode($response);
         }
+
+    public function clearAppLogCron(){
+        $this->Login_model->clearAppLogCron();
+    }
+
+
+    /*
+     * [updateOrder to Update Order type]
+	 * @author Devesh Khandelwal
+	 * @Created Date   2020-02-21
+	 * @return  [type] [description]	
+    */
+    function updateOrder()
+    {
+    	$orderId   = trim($this->input->post("order_id"));
+    	$orderType = trim($this->input->post("order_type"));
+
+    	if(empty($orderId))
+    	{
+    		$response = array("success"=>"0","message"=>"Order Id Can't be blanked");
+    	} 
+    	else if(empty($orderType))
+    	{
+    		$response = array("success"=>"0","message"=>"Order Type Can't be blanked");
+    	}
+    	else 
+    	{
+    		$data   = array('order_type' => $orderType);
+    		$result = $this->Webservice_customer_model->updateOrder($orderId, $data);
+
+    		if(!empty($result) && count($result) > 0)
+    		{
+    			$response = array("success"=>"1","message"=>"Order Updated Successfully");	
+    		}	
+    		else 
+    		{
+    			$response = array("success"=>"0","message"=>"Order Updation Failed");
+    		}
+    	}
+
+    	echo json_encode($response);
+    	exit;
+    }    
 }
+
 

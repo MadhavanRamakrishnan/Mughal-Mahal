@@ -12,6 +12,24 @@ function liveTracking()
         var obj =$.parseJSON(data);
 	 	if(obj.success ==1){
 	 		$.each(obj.message,function(key,val){
+
+	 			/*if(oID != undefined){
+	 				var startTime = new Date(val.order_placed_time);
+	 				var currentTime = new Date();
+
+	 				var diff = currentTime - startTime;
+
+	 				var diffSeconds = diff/1000;
+				    var HH = Math.floor(diffSeconds/3600);
+				    var MM = Math.floor(diffSeconds%3600)/60;
+
+				    var formatted = ((HH < 10)?("0" + HH):HH) + ":" + ((MM < 10)?("0" + MM):MM);
+
+				    if(HH > 0 || MM > 15){
+				    	$('.cancelOrder_tag').remove();
+				    }
+	 			}*/
+
 	 			var html ="";
 	 			var cl   =".progressbar"+val.order_id;
 

@@ -197,18 +197,19 @@ class Rating extends MY_Controller
       }
       $data['submenu']        = $submenuArray;
       $totalRow           = $this->Rating_model->RestaurantsRatingUserWiseCount($id);
+      $config           = array();
       $config["base_url"]     = site_url('Rating/RestaurantsRatingUserWise/'.$id);
       $config["total_rows"]     = $totalRow;
       $config["per_page"]     = 10;
       $config['use_page_numbers'] = TRUE;
       $config['num_links']    = 5;
+      $config["uri_segment"] = 4;
       $config['cur_tag_open']   = '&nbsp;<a class="active">';
       $config['cur_tag_close']  = '</a>';
       $config['next_link']    = 'Next';
       $config['prev_link']    = 'Previous';
       //echo "<pre>";print_r($config);exit();
       $this->pagination->initialize($config);
-
       if($this->uri->segment(4)){
         $page = ($this->uri->segment(4)) ;
       }
@@ -220,7 +221,7 @@ class Rating extends MY_Controller
       $data['Restaurantsrating'] = $this->Rating_model->RestaurantsRatingUserWise($id,$config["per_page"],$offset);
       $data['RestaurantName'] = $this->Rating_model->getRestaurantName($id);
       $data['offset'] = $offset + 1;
-       $str_links = $this->pagination->create_links();
+      $str_links = $this->pagination->create_links();
       $data["links"] = explode('&nbsp;',$str_links );
       //echo "<pre>"; print_r($data['RestaurantName']); exit;
       $this->load->view('Elements/header',$data);

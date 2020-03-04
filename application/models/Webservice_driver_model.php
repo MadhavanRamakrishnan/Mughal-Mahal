@@ -161,7 +161,7 @@ class Webservice_driver_model extends CI_Model
 		{
 			$this->db->where("role_id",$role);
 		}
-		$this->db->where("password",md5($password));
+		$this->db->where("driver_password",$password);
 		$this->db->where("is_active","1");
 		$this->db->order_by("user_id","desc");
 		$query=$this->db->get("tbl_users");
@@ -236,7 +236,7 @@ class Webservice_driver_model extends CI_Model
 		$today    =date('Y-m-d H:i:s',strtotime('23:59:59'));
 		$last_day =date('Y-m-d H:i:s',strtotime(date('Y-m-d',strtotime('-7 days'))));
 		
-		$this->db->select('ord.*,od.product_id,od.quantity,od.amount,od.discount_type,od.discount_amount,od.is_complimentry,dish.category_id,dish.product_en_name as name,dish.product_ar_name,dish.en_description as description,dish.ar_description,dish.price,dish.dish_image,del.customer_name,del.user_id,del.contact_no,del.email,res.restaurant_name,res.address,res.contact_no as res_contact_no,res.email as res_email,res.custom_delivery_time,drivers.first_name as d_first_name,drivers.last_name as d_last_name,drivers.contact_no as d_contact_no,del.address_id,del.address1,del.address2,del.customer_name,del.email as del_email,del.contact_no as delivery_contact,del.zipcode,del.customer_latitude,del.customer_longitude');
+		$this->db->select('ord.*,od.product_id,od.quantity,od.amount,od.discount_type,od.discount_amount,od.is_complimentry,dish.category_id,dish.product_en_name as name,dish.product_ar_name,dish.en_description as description,dish.ar_description,dish.price,dish.dish_image,del.customer_name,del.user_id,del.contact_no,del.email,res.restaurant_name,res.address,res.contact_no as res_contact_no,res.email as res_email,res.custom_delivery_time,drivers.first_name as d_first_name,drivers.last_name as d_last_name,drivers.contact_no as d_contact_no,del.address_id,del.address1,del.address2,del.customer_name,del.email as del_email,del.contact_no as delivery_contact,del.zipcode,del.customer_latitude,del.customer_longitude,del.street,del.building,del.appartment_no,del.block,del.avenue,del.floor');
 		$this->db->from('tbl_orders as ord'); 
 		$this->db->join('tbl_order_details as od','od.order_id=ord.order_id','left');
 		$this->db->join('tbl_dishes as dish','dish.product_id=od.product_id','left');
@@ -244,15 +244,15 @@ class Webservice_driver_model extends CI_Model
 		$this->db->join('tbl_restaurants as res','res.restaurant_id=ord.restaurant_id','left');
 		$this->db->join('tbl_users as drivers','drivers.user_id=ord.delivered_by','left');
 		$this->db->join('tbl_customer_delivery_address as del','del.user_id=ord.user_id AND del.address_id=ord.selected_delivery_address','left');
-		$this->db->join('tbl_order_dish_choice as ord_ch','ord_ch.fk_order_detail_id=od.order_detail_id  AND ord_ch.fk_dish_id=od.product_id','left');
-		$this->db->join('tbl_dish_choice as dish_ch','dish_ch.fk_dish_id=ord_ch.fk_dish_id','left');
+		/*$this->db->join('tbl_order_dish_choice as ord_ch','ord_ch.fk_order_detail_id=od.order_detail_id  AND ord_ch.fk_dish_id=od.product_id','left');
+		$this->db->join('tbl_dish_choice as dish_ch','dish_ch.fk_dish_id=ord_ch.fk_dish_id','left');*/
 		$this->db->where("ord.order_placed_time >= '$last_day' AND ord.order_placed_time <= '$today'");
 		$this->db->where("ord.order_status >=","4");
 		$this->db->where("ord.order_status <=","9");
 		$this->db->where("ord.delivered_by",$id);
 		$this->db->order_by("ord.order_id","DESC");
 
-		//$this->db->group_by("ord_ch.fk_dish_id");
+		// $this->db->group_by("ord_ch.fk_order_detail_id");
 		$query = $this->db->get();
 		return $query->result();
 
@@ -361,7 +361,7 @@ class Webservice_driver_model extends CI_Model
 	*/ 
 	function getOrderDetailsForDeliveryEmail($oid)
 	{
-		$this->db->select('ord.*,od.product_id,od.quantity,od.amount,od.discount_type,od.discount_amount,od.is_complimentry,dish.category_id,dish.product_en_name as name,dish.price,res.restaurant_name,res.address as res_address,res.email as res_email,res.contact_no` as res_contact_no,del.address1 as usr_address,del.customer_name,del.email as usr_email,del.contact_no as usr_contact_no,del.zipcode,usr.first_name as user_first_name,usr.last_name as user_last_name,usr.email as user_email,del.customer_latitude,del.customer_longitude');
+		$this->db->select('ord.*,od.product_id,od.quantity,od.amount,od.discount_type,od.discount_amount,od.description,od.is_complimentry,dish.category_id,dish.product_en_name as name,dish.price,res.restaurant_name,res.address as res_address,res.email as res_email,res.contact_no` as res_contact_no,del.appartment_no,del.building,del.block,del.floor,del.street,del.avenue,del.address1 as usr_address,del.customer_name,del.email as usr_email,del.contact_no as usr_contact_no,del.zipcode,usr.first_name as user_first_name,usr.last_name as user_last_name,usr.email as user_email,del.customer_latitude,del.customer_longitude');
 		$this->db->from('tbl_orders as ord'); 
 		$this->db->join('tbl_order_details as od','od.order_id=ord.order_id','left');
 		$this->db->join('tbl_dishes as dish','dish.product_id=od.product_id','left');
@@ -376,7 +376,38 @@ class Webservice_driver_model extends CI_Model
 		}
 		$this->db->order_by("ord.order_id","ASC");
 		$query = $this->db->get();
-		//echo $this->db->last_query(); exit;
+		// echo $this->db->last_query(); exit;
+		return $query->result();
+	}
+
+	/**  
+	* Description : get order details of customer for sending email
+	* Created by : Vaibhav Mehta
+	* Created Date: 31/10/17 4:12 PM 
+	*/ 
+	function getOrderDetailsForDeliveryChoiseEmail($oid, $productId = '')
+	{
+		$this->db->select('chs.choice_name, od.product_id');
+		$this->db->from('tbl_orders as ord'); 
+		$this->db->join('tbl_order_details as od','od.order_id=ord.order_id','left');
+		$this->db->join('tbl_dishes as dish','dish.product_id=od.product_id','left');
+		$this->db->join('tbl_order_dish_choice as ord_ch','ord_ch.fk_order_detail_id=od.order_detail_id  AND ord_ch.fk_dish_id=od.product_id','left');
+		$this->db->join('tbl_restaurants as res','res.restaurant_id=ord.restaurant_id','left');
+		$this->db->join('tbl_customer_delivery_address as del','del.user_id=ord.user_id and ord.selected_delivery_address = del.address_id','left');
+		$this->db->join('tbl_users as usr','ord.user_id=usr.user_id','left');
+		$this->db->join('tbl_choice as chs','ord_ch.fk_choice_id=chs.choice_id','left');
+
+		$this->db->where("ord.order_status >","1");
+		if ($oid) {
+			$this->db->where("ord.order_id",$oid);
+		}
+
+		if($productId){
+			$this->db->where("od.product_id",$productId);
+		}
+
+		$this->db->order_by("ord.order_id","ASC");
+		$query = $this->db->get();
 		return $query->result();
 	}
 
@@ -464,7 +495,7 @@ class Webservice_driver_model extends CI_Model
 		{
 			//total orders
 			$this->db->select("count(order_id) as total_order");
-			$this->db->where('order_status',$status);
+			// $this->db->where('order_status',$status);
 		}
 
 		/*$this->db->where("order_placed_time LIKE '%$today%'");*/

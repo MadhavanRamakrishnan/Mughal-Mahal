@@ -30,6 +30,8 @@
 	<div class="page-header">
         <h1 style="width: auto;float: left;" class="pageTitle">Customer Details</h1>
         <a  href="<?php echo site_url('Customers/index'); ?>" class="btn btn-primary back"><i class="fa fa-arrow-left"></i> Back to customer</a>
+
+        <a  style="margin-right: 25px;" href="<?php echo site_url('Customers/updateCustomer/').$this->uri->segment(3); ?>" class="btn btn-primary back"><i class="fa fa-edit"></i> Edit</a>
 	</div>
 
     <div class="row">
@@ -95,7 +97,7 @@
                                             if($key <=1){
                                         ?>
 
-                                        <td >
+                                        <td style="width:45%;">
                                             <div class="panel panel-primary">
                                                 <div class="panel-heading custom-pannel"><?php echo $value->customer_name; ?></div>
                                                 <div class="panel-body" >
@@ -114,14 +116,24 @@
                                                     </div>
 
                                                     <div class="form-group">
-                                                        <span><i class="fa fa-home"></i>&nbsp &nbsp<?php echo $value->address1; ?></span>
+                                                       <span style="word-wrap: break-word;">
+                                                           <i class="fa fa-home"></i>&nbsp
+                                                            <?= ($value->appartment_no !="")?$value->appartment_no.',&nbsp':''; ?>
+                                                            <?= ($value->floor !="")?"Floor -".$value->floor.',&nbsp':''; ?>
+                                                            <?= ($value->block !="")?"Block -".$value->block.',&nbsp':''; ?>
+                                                            <?= ($value->building !="")?"Building -".$value->building.',&nbsp':''; ?>
+                                                            <?= ($value->street !="")?$value->street.',&nbsp':''; ?>
+                                                            <?= ($value->avenue !="")?$value->avenue.',&nbsp':''; ?>
+                                                            <?= ($value->address1 !="")?$value->address1:'';  ?>
+                                                            <br>
+                                                        </span>
                                                     </div>
                                                     
                                                 </div>
                                             </div>
                                         </td>
                                         
-                                        <td></td>
+                                        <td style="width:5%;">
                             <?php   } 
                                 }
                             } ?>
@@ -158,7 +170,8 @@
                                         <td style="font-size: 20px;" class="showDishes" pid="<?php echo $value['order_id']; ?>">
                                             <i class="fa fa-play-circle-o"></i>
                                         </td>
-                                        <td><?php echo "Oredr:".$value['order_id']; ?></td>
+                                        <!-- <td><?php echo "Order:".$value['order_id']; ?></td> -->
+                                        <td><?php echo "Order:".$value['sequence_no']; ?></td>
                                         <td class="center"><?php echo $value['delivery_charges'].' KD';?></td>
                                         <td class="center"><?php echo ($value['total_price']).' KD';?></td>
                                     </tr>
@@ -314,7 +327,17 @@
                                                     </div>
 
                                                     <div class="form-group">
-                                                        <span><i class="fa fa-home"></i>&nbsp<?php echo $value->address1; ?></span>
+                                                        <span style="word-wrap: break-word;">
+                                                            <i class="fa fa-home"></i>&nbsp
+                                                            <?= ($value->appartment_no !="")?$value->appartment_no.',&nbsp':''; ?>
+                                                            <?= ($value->floor !="")?"Floor -".$value->floor.',&nbsp':''; ?>
+                                                            <?= ($value->block !="")?"Block -".$value->block.',&nbsp':''; ?>
+                                                            <?= ($value->building !="")?"Building -".$value->building.',&nbsp':''; ?>
+                                                            <?= ($value->street !="")?$value->street.',&nbsp':''; ?>
+                                                            <?= ($value->avenue !="")?$value->avenue.',&nbsp':''; ?>
+                                                            <?= ($value->address1 !="")?$value->address1:'';  ?>
+                                                            <br>
+                                                        </span>
                                                     </div>
                                                     
                                                 </div>

@@ -166,18 +166,20 @@
 		$data['resList'] 		= $this->Driver_model->getAllRestaurant($data['resId']);
 
 		if ($this->input->post('add')=='Save') {
-			
+		
 			$this->form_validation->set_rules('fname','First Name', 'required|callback_isNameExist');
 			$this->form_validation->set_rules('lname', 'Last Name', 'required|max_length[155]');
 			$this->form_validation->set_rules('branch', 'Restaurant Branch', 'required');
+			$this->form_validation->set_rules('driver_password', 'Password', 'required|min_length[6]');
 			$this->form_validation->set_rules('contact_no', 'Contact No', 'required|max_length[8]|regex_match[/^[a-z0-9]+$/]|min_length[8]|numeric');//|is_unique[tbl_users.contact_no]
-			$this->form_validation->set_rules('email', 'Email', 'required|callback_isEmailExist|valid_email');
+			// $this->form_validation->set_rules('email', 'Email', 'required|callback_isEmailExist|valid_email');
+		
 			if($_FILES['image']['name'] == ""){
 				
 				$this->form_validation->set_rules('image', '', 'callback_file_check');
 			}
 			if ($this->form_validation->run() == FALSE){
-				
+					 
 			}
 			else{
 				$config['upload_path']   		= './assets/uploads/users/drivers/'; 
@@ -211,35 +213,34 @@
 				}
 				
 				
-				$random = randomPassword();
-				$encrypt = $this->config->item('encryption_key');
-				$encryptpassword = md5($encrypt.$random);
-				$decryptPassword = $encrypt.$random;
+				// $random = randomPassword();
+				// $encrypt = $this->config->item('encryption_key');
+				// $encryptpassword = md5($encrypt.$random);
+				// $decryptPassword = $encrypt.$random;
 				
-				$driverData['first_name'] 	= trim($this->input->post('fname'));
-				$driverData['last_name'] 	= trim($this->input->post('lname'));
-				$driverData['fk_restaurant_id']= trim($this->input->post('branch'));
-		        
-				$driverData['contact_no']	= trim($this->input->post('contact_no'));
-				$driverData['email'] 		= trim($this->input->post('email'));
-				$driverData['vendor'] 		= trim($this->input->post('vendor'));
-				$driverData['password']		= $encryptpassword;
-				$driverData['role_id'] 		= $this->config->item('driver_role');
-				$driverData['created_by'] 	= $data['userdata'][0]->user_id;	
-				$driverData['created_date']	= date("Y-m-d H:i:s");
+				$driverData['first_name'] 	    = trim($this->input->post('fname'));
+				$driverData['last_name'] 	    = trim($this->input->post('lname'));
+				$driverData['fk_restaurant_id'] = trim($this->input->post('branch'));
+				$driverData['contact_no']	    = trim($this->input->post('contact_no'));
+				$driverData['email'] 		    = trim($this->input->post('email'));
+				$driverData['vendor'] 		    = trim($this->input->post('vendor'));
+				$driverData['driver_password']	= (trim($this->input->post('driver_password')) !="")?trim($this->input->post('driver_password')):"Mughalmahal1@";
+				$driverData['role_id'] 		    = $this->config->item('driver_role');
+				$driverData['created_by'] 	    = $data['userdata'][0]->user_id;	
+				$driverData['created_date']	    = date("Y-m-d H:i:s");
 
 				$result = $this->Driver_model->addDriverDetail($driverData);
 				
-				if (sizeof($result)>0) {
+				if ($result>0) {
 
-					$emailData['login_link']    = site_url('Login');
-					$emailData['email_template']= 'credentials';
-					$emailData['to_email']		= $driverData['email'];
-					$emailData['password']		= $encrypt.$random;
-					$emailData['base_url']		= base_url();
-					$emailData['user_name']		= $driverData['first_name'].' '.$driverData['last_name'];				
-					$emailData['subject']		= 'Registration Successfully';
-					$mails = $this->sendMail($emailData);
+					// $emailData['login_link']    = site_url('Login');
+					// $emailData['email_template']= 'credentials';
+					// $emailData['to_email']		= $driverData['email'];
+					// $emailData['password']		= $encrypt.$random;
+					// $emailData['base_url']		= base_url();
+					// $emailData['user_name']		= $driverData['first_name'].' '.$driverData['last_name'];				
+					// $emailData['subject']		= 'Registration Successfully';
+					// $mails = $this->sendMail($emailData);
 					
 					$this->session->set_flashdata('success_msg', "Driver Details Added successfully!");
 					redirect('Drivers/index');
@@ -253,6 +254,7 @@
 	}
 	
 	$this->load->view('Elements/header',$data);
+
 	$this->load->view('Drivers/add_driver');
 	$this->load->view('Elements/footer');
 }
@@ -374,6 +376,7 @@
 				$this->form_validation->set_rules('fname','First Name', 'required');
 				$this->form_validation->set_rules('lname', 'Last Name', 'required|max_length[155]');
 				$this->form_validation->set_rules('branch', 'Restaurant Branch', 'required');
+				$this->form_validation->set_rules('driver_password', 'Password', 'required|min_length[6]');
 				$this->form_validation->set_rules('contact_no', 'Contact No', 'required|max_length[8]|regex_match[/^[a-z0-9]+$/]|min_length[8]|numeric');
 				
 				if ($this->form_validation->run() == FALSE){
@@ -415,16 +418,17 @@
 						if( $this->input->post('password')){
 						//	$driverData['password']= md5(trim($this->input->post('password')));
 						}
-						$driverData['first_name'] 	= trim($this->input->post('fname'));
-						$driverData['last_name'] 	= trim($this->input->post('lname'));
+						$driverData['first_name'] 	     = trim($this->input->post('fname'));
+						$driverData['last_name'] 	     = trim($this->input->post('lname'));
 						if(trim($this->input->post('branch')) != $driverDetails[0]->fk_restaurant_id){
 							$driverData['fk_vehicle_id'] =0;
 						}
-						$driverData['fk_restaurant_id']= trim($this->input->post('branch'));
-						$driverData['contact_no']	= trim($this->input->post('contact_no'));
-						$driverData['vendor'] 		= trim($this->input->post('vendor'));
-						$driverData['updated_by'] 	= $data['userdata'][0]->user_id;	
-						$driverData['updated_date']	= date("Y-m-d H:i:s");
+						$driverData['fk_restaurant_id']  = trim($this->input->post('branch'));
+						$driverData['contact_no']	     = trim($this->input->post('contact_no'));
+						$driverData['vendor'] 		     = trim($this->input->post('vendor'));
+						$driverData['driver_password']   = trim($this->input->post('driver_password'));
+						$driverData['updated_by'] 	     = $data['userdata'][0]->user_id;	
+						$driverData['updated_date']	     = date("Y-m-d H:i:s");
 
 						$result = $this->Driver_model->editDriverDetail($driverData,$id);
 						
