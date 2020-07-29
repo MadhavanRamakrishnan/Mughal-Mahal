@@ -48,6 +48,7 @@
             <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="basic-datatable">
                 <thead>
                     <tr>
+                        <th>#</th>
                         <th>Choice Category</th>
                         <th class="center">Action</th>
                     </tr>
@@ -57,6 +58,7 @@
                 		foreach($categoryList as $key => $value){ ?>
                       
                     <tr class="odd gradeX" id="category_details_<?php echo $value->choice_category_id; ?>">
+                        <td><?= $key+1 ?></td>
                         <td><?php echo ($value->choice_category_name)?stripslashes($value->choice_category_name):'N/A'; ?></td>
                         <td class="center">
 

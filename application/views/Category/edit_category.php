@@ -1,4 +1,4 @@
-
+ 
 <div class="warper container-fluid">
     <div class="row">
         <div class="col-md-12">
@@ -35,14 +35,36 @@
                       
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-lg-12">
+                                <div class="col-lg-6">
                                     <label class="control-label">Dish Category<i class="reustarred">*</i></label>
                                     <input class="form-control" name="category_name" id="category_name" placeholder="Enter Dish Category Name"  type="text" value="<?php echo (set_value('category_name'))?set_value('category_name'):stripslashes($category_data[0]->category_name); ?>">
                                     <div class="color-red"><?php echo form_error('category_name'); ?></div>
                                 </div>
+                                <div class="col-lg-6" style="margin-top: 1%;">
+                                    <label class="control-label">Priority</label>
+                                    <select class="form-control" name="priority" id="category_priority">
+                                        <option>Select Priority</option>
+                                        <?php
+                                            if($category_data[0]->max_priority > 0){
+                                                for($i=0; $i <= $category_data[0]->max_priority; $i++)
+                                                { ?>
+                                                    <option value="<?= $i ?>" <?= (isset($category_data[0]->priority) && $category_data[0]->priority == $i ? "selected" : "") ?>><?= $i ?></option>
+                                        <?php   }
+                                            }
+                                        ?>
+                                    </select>        
+                                </div>
                             </div>
                         </div>
-                        
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <label class="control-label">Dish Category(Arabic)<i class="reustarred">*</i></label>
+                                    <input class="form-control" name="category_ar_name" id="category_ar_name" placeholder="Enter Dish Category Name in arabic"  type="text" value="<?php echo (set_value('category_ar_name'))?set_value('category_ar_name'):$category_data[0]->category_ar_name; ?>">
+                                    <div class="color-red"><?php echo form_error('category_ar_name'); ?></div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-lg-6">

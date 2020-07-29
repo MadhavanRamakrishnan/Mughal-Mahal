@@ -954,14 +954,15 @@ class Webservice_Customers extends MY_Controller{
 					$tableName 						= 'tbl_user_meta';
 					$metaId                         = $this->Webservice_customer_model->insertData($tableName,$userMetaData);					
 
-					$userDetails['user_id'] 		= $userId;
-					$userDetails['first_name'] 		= $data[0]->first_name;
-					$userDetails['last_name'] 		= $data[0]->last_name;
-					$userDetails['email'] 			= $data[0]->email;
-					$userDetails['phone_no'] 		= $data[0]->contact_no;
-					$userDetails['profile_photo'] 	= $data[0]->profile_photo;
-					$userDetails['role_id'] 		= $data[0]->role;
-					$userDetails['access_token'] 	= $accessToken;
+					$userDetails['user_id'] 			= $userId;
+					$userDetails['first_name'] 			= $data[0]->first_name;
+					$userDetails['last_name'] 			= $data[0]->last_name;
+					$userDetails['email'] 				= $data[0]->email;
+					$userDetails['phone_no'] 			= $data[0]->contact_no;
+					$userDetails['profile_photo'] 		= $data[0]->profile_photo;
+					$userDetails['role_id'] 			= $data[0]->role;
+					$userDetails['is_profile_updated']  = $data[0]->is_profile_updated;
+					$userDetails['access_token'] 		= $accessToken;
 
 					$response = array("response"=>"true","data"=>$userDetails,"message"=>$this->lang->line('message_normalUserLogin'),"webservice_name"=>"normalUserLogin");
 				}
@@ -1039,7 +1040,8 @@ class Webservice_Customers extends MY_Controller{
 		{
 			$response=array("response"=>"false","message"=>$country_code_required);
 		}
-		else if(trim($this->input->post('default_language'))==""){
+		else if(trim($this->input->post('default_language'))=="")
+		{
 			$response = array("response"=>"false","message"=>$default_language_required);
 		}
 		else
@@ -1054,12 +1056,22 @@ class Webservice_Customers extends MY_Controller{
 
 			$emailRes 	= $this->Webservice_customer_model->checkEmailExist($email);
 			$contactRes	= $this->Webservice_customer_model->checkPhoneNumber($contact,$role);
-			if(is_array($contactRes) && sizeof($contactRes)>0)
+			/*if(is_array($contactRes) && sizeof($contactRes)>0)
 			{
-				$response = array("response"=>"false","message"=>$contact_exists,"webservice_name"=>"normalUserSignup");
+				
+				$updateData['first_name']		= $fname;
+				$updateData['last_name']		= $lname;
+				$updateData['email']			= $email;
+				$updateData['password']			= $password;
+				$updateData['country_code']		= $country_code;
+				$updateData['profile_photo']  	= 'no.png'; 
+				
+				$tableName 						= 'tbl_users';
+
+				/*$response = array("response"=>"false","message"=>$contact_exists,"webservice_name"=>"normalUserSignup");
 			}
 			else
-			{
+			{*/
 				if (!filter_var($email, FILTER_VALIDATE_EMAIL))
 				{
 				    $response = array("response"=>"false","message"=>$error_email_format,"webservice_name"=>"normalUserSignup");
@@ -1078,10 +1090,30 @@ class Webservice_Customers extends MY_Controller{
 					$userData['contact_no']		= $contact;
 					$userData['country_code']	= $country_code;
 					$userData['profile_photo']  = 'no.png'; 
-					$userData['created_date']	= date("Y-m-d H:i:s");
+					
 					$tableName 					= 'tbl_users';
 
-					$userId = $this->Webservice_customer_model->insertData($tableName,$userData);
+					if(is_array($contactRes) && sizeof($contactRes)>0)
+					{
+						$existContactUserId = "";
+						for($i=0; $i < sizeof($contactRes); $i++){
+							$existContactUserId .= $contactRes[$i]->user_id.",";
+						}
+						$existContactUserId 			= rtrim($existContactUserId,',');
+						$userData['updated_date']		= date("Y-m-d H:i:s");
+						$userData['updated_ip_address'] = $this->input->ip_address();
+
+						$affectedRes = $this->Webservice_customer_model->updateUserData($existContactUserId, $userData);	
+
+						if($affectedRes)
+							$userId = $contactRes[0]->user_id;
+					}
+					else 
+					{
+						$userData['created_date']	= date("Y-m-d H:i:s");
+						$userId = $this->Webservice_customer_model->insertData($tableName,$userData);
+					}
+					
 					if($userId)
 					{
 						$accessToken 					= md5(date("Y-m-d H:i:s"));
@@ -1100,10 +1132,10 @@ class Webservice_Customers extends MY_Controller{
 					}
 					else
 					{
-						$response = array("response"=>"false","message"=>"customer not creadted");	
+						$response = array("response"=>"false","message"=>"customer not created");	
 					}
 				}
-			}
+			//}
 		}
 		$this->evaluateExecutionTime($startTime,'normalUserSignup',$this->input->post());
 		echo json_encode($response);
@@ -1672,7 +1704,8 @@ class Webservice_Customers extends MY_Controller{
 		}
 
 		$this->lang->load($langFile,$lang);
-		$message_deleteDeliveryAddress = $this->lang->line('message_deleteDeliveryAddress');
+		//$message_deleteDeliveryAddress = $this->lang->line('message_deleteDeliveryAddress');
+		$message_deleteDeliveryAddress = $this->lang->line('address_deleted');
 		$default_language_required 	= $this->lang->line('default_language_required');
 		$token_mismatched 			= $this->lang->line('token_mismatched');
 		$userid_required 			= $this->lang->line('userid_required');
@@ -1700,7 +1733,6 @@ class Webservice_Customers extends MY_Controller{
 			$userId 		= trim($this->input->post('user_id'));
 			$addressId 		= trim($this->input->post('address_id'));
 			$accessToken 	= trim($this->input->post("access_token"));
-			$otherAddress 	= trim($this->input->post('other_address'));
 
 			$token 			= $this->checkAccessToken($userId,$accessToken);
 			if($accessToken===$token){
@@ -1712,7 +1744,6 @@ class Webservice_Customers extends MY_Controller{
 				else{
 
 					$deliveryData['is_active'] 		= '0';
-					$deliveryData['other_data'] 	= $otherAddress;
 					$deliveryData['updated_by'] 	= $userId;
 					$deliveryData['updated_date'] 	= date("Y-m-d H:i:s");
 					
@@ -3808,9 +3839,6 @@ class Webservice_Customers extends MY_Controller{
 			$orderId 		= trim($this->input->post('order_id'));
 			$accessToken 	= trim($this->input->post("access_token"));
 			
-			$order_id 		= $this->Home_model->getOrderIdFromSequenceNo($orderId);
-			$orderId 		= $order_id->order_id;
-
 			$token 			= $this->checkAccessToken($userId,$accessToken);
 
 			if($accessToken===$token){
@@ -3876,10 +3904,11 @@ class Webservice_Customers extends MY_Controller{
 					);
 					$dataSuccess = $this->Webservice_customer_model->updateUserProfile($userData[0]->user_id,$userUpdate);
 				//print_r($userData);exit("in");
-				$userDetails['user_id'] = $userData[0]->user_id;
-				$userDetails['country_code'] = $userData[0]->country_code;
-				$userDetails['contact_no'] = $userData[0]->contact_no;
-				$userDetails['security_token'] = $mail;
+				$userDetails['user_id'] 			= $userData[0]->user_id;
+				$userDetails['country_code'] 		= $userData[0]->country_code;
+				$userDetails['contact_no'] 			= $userData[0]->contact_no;
+				$userDetails['is_profile_updated'] 	= $userData[0]->is_profile_updated;
+				$userDetails['security_token'] 		= $mail;
 				$response = array("response"=>"true","data"=>$userDetails,"webservice_name"=>"checkMobileno");
 			}
 			else

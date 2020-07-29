@@ -507,12 +507,10 @@ class Home extends MY_Controller
 		
 		if(count($dishdata)>0)
 		{
-			//print_r($dishdata);
 			foreach ($dishdata as $key => $value1) {
 
 				$ch =array();
 				$dishDetail = $this->Home_model->getCartDishDetail($value1->dishId);
-				//print_r($dishDetail);
 				if(count($dishDetail)>0)
 				{
 					$finalDishData[$c]['id']         = $value1->id;
@@ -526,7 +524,6 @@ class Home extends MY_Controller
 					$finalDishData[$c]['instruction']   =$value1->instruction;
 					$resDishDetail = $this->Home_model->getResDishDetail($value1->dishId,$locality);
 					$finalDishData[$c]['choice_name'] ='';
-					//print_r($resDishDetail);
 					if(count($resDishDetail))
 					{
 						$deliveryCharge  =$resDishDetail[0]->delivery_charge;
@@ -544,7 +541,6 @@ class Home extends MY_Controller
 							{
 								$ch[]=$chv;
 							}
-							//$ch[$key] = $value1->choiceOfOne;
 						}
 						
 						if(count($value1->Multiplechoice)>0 )
@@ -583,7 +579,6 @@ class Home extends MY_Controller
 			}
 			
 		}
-		//echo "<pre>";print_r($finalDishData);exit;
 		if($this->input->post('locality') !="")
 		{
 			$response['success']         = 1;
@@ -604,7 +599,6 @@ class Home extends MY_Controller
 			$data['removeDishTotal'] = $removeDishTotal;
 			$data['localitylist'] 	=$this->Restaurant_model->getlocality();
 			$this->isShowCart =0;
-			//print_r($data);exit;
 			$this->load->view('Elements/Frontend-header',$data);
 			$this->load->view('Home/orderSummary');
 			$this->load->view('Elements/Frontend-footer');
@@ -692,7 +686,7 @@ class Home extends MY_Controller
 		$orderdata['expected_delivery_time']    = date('Y-m-d H:i:s', $timestamp);
 		$orderdata['order_type']        		= $this->input->post('payment');
 		$orderdata['reason']            		= ($this->input->post('payment')== 1 || $this->input->post('payment')== 2)?'Payment not done':'';
-		$orderdata['order_status']      		= 1;
+		$orderdata['order_status']      		= ($this->input->post('payment')== 1 || $this->input->post('payment')== 2)? 0 : 1;
 		$orderdata['is_active']         		= 1;
 		$orderdata['selected_delivery_address'] = $this->input->post('address_id');
 		$orderdata['created_by']        		= $this->input->post('user_id');
@@ -704,11 +698,13 @@ class Home extends MY_Controller
 
 			$seqNo = $this->Home_model->getLatestSequenceNumber();
 			$orderdata['sequence_no'] = $seqNo->sequence_no + 1;
+		} else if ($this->input->post('payment') == 1 || $this->input->post('payment') == 2){
+			$orderdata['sequence_no'] = 0;
 		}
-	
-    	$seqNo = $this->Home_model->getLatestSequenceNumber();
-		$orderdata['sequence_no'] = $seqNo->sequence_no + 1;
-		
+
+		/*echo json_encode($orderdata);
+		exit;*/
+
 		$orderres = $this->Webservice_customer_model->insertData($tableName1,$orderdata);
 		foreach ($finalDishData as $key => $value)		{
 			$orderdetailsdata['order_id']        = $orderres;
@@ -747,8 +743,8 @@ class Home extends MY_Controller
 			$fields = array(
 				"amount" 			=> $orderdata['total_price'],
 				"currency_code"		=> "KWD",
- 				"gateway_code" 		=> "test-knet",
- 				"gateway_code" 		=> "kpayt",
+ 				"gateway_code" 		=> ($this->input->post('payment') == 1) ? "knet-live" :"credit-card",
+ 				/*"gateway_code" 		=> "kpayt",*/
 				"order_no" 			=> "CUSTOMER".date("Ymdhis"),
 				"customer_email" 	=> $getUserData[0]->email,
 				"disclosure_url" 	=> site_url('Home/disclosurePayment/'.$orderres),
@@ -766,12 +762,15 @@ class Home extends MY_Controller
 			//execute post
 			$result = curl_exec($chd);
 			
+
 			$array  = json_decode($result);
 			curl_close($chd);
 			$response['success'] = 2;
 			$response['url']     = $array->url;	
+
+
 			if(!$array->url)
-			{
+			{ 
 				$this->Home_model->deleteOrder($orderres);
 				$this->Home_model->deleteOrderDetail($orderres);
 				$this->Home_model->deleteOrderDishChoice($orderres);
@@ -793,19 +792,19 @@ class Home extends MY_Controller
 		$jsonData = json_decode($data1);
 		$data['fk_order_id']        = $orderres;
 		$data['paymentid']          = $jsonData->gateway_response->paymentid;
-		$data['transaction_status'] = $jsonData->gateway_response->result;
+		$data['transaction_status'] = $jsonData->result;
 		$data['amount']             = $jsonData->amount;
 		$data['data']               =json_encode($data1);
+
 		$this->Home_model->saveTransactionData($data);
-		if($data['transaction_status'] == "CAPTURED")
+
+		if($data['transaction_status'] == "success")
 		{
 			//make order status is "order placed"
 			$updateOrd = $this->Order_model->updateOrderWithSequenceNumber(array('fk_order_id' => $data['fk_order_id'],'order_status'=>1,'reason'=>''));
 			//$updateOrd =$this->Order_model->updateOrder($data['fk_order_id'],array('order_status'=>1,'reason'=>''));
 			setcookie('dishDetail', null, -1, '/');
 		}
-		
-
 	}
 
 	/**
@@ -826,7 +825,7 @@ class Home extends MY_Controller
 
 		$orderDetails[0]->order_placed_time = date("N",strtotime($orderDetails[0]->order_placed_time));
 
-		if(count($orderDetails)>0)
+		if(count($orderDetails)>0 && $orderDetails[0]->order_status != 0)
 		{
 			$resRating    = $this->Home_model->getRestaurantRating($orderId);
 			$drivetRating = $this->Home_model->getDriverRating($orderId);
@@ -1798,6 +1797,35 @@ class Home extends MY_Controller
 
 		echo json_encode($response);exit;
 
+	}
+
+	/*
+	Created Date: 27-04-2020
+	Created By: Devesh Khandelwal
+	Description: Cancel Order
+	*/
+	function cancelOrder()
+	{
+		$orderId = $this->input->post('order_id');
+		$reason  = $this->input->post('reason');
+
+		$order['order_status']  = 13;
+		$order['reason'] 		= $reason;
+		$order['updated_date']  = date('Y-m-d H:i:s');
+
+		$updatedOrder = $this->Home_model->changeOrderStatus($orderId, $order);
+
+		if($updatedOrder)
+		{
+			$response = array("success" => 1, "message" => "Order Canceled Successfully");
+		}
+		else 
+		{
+			$response = array("success" => 0, "message" => "Error occured while cancelling order");
+		}
+		
+		echo json_encode($response);
+		exit;
 	}
 
 	function driver_demo(){

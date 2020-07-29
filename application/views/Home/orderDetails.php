@@ -1,5 +1,5 @@
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
  
 <!-- <link rel="stylesheet" type="text/css" href="<?= base_url();?>assets/css/bootstrap/bootstrap.min.css"> -->
 <div class="banner bannerInner section" style="background-image: url(../../assets/images/front-end/orderBanner.jpg); ">

@@ -129,7 +129,7 @@
         </ul>
       <ul class="langSwitch">
             <li>
-              <a href="<?php echo base_url();?>Home/myOrder" style="color: white;" >My Order</a>
+              <a href="<?php echo base_url();?>Home/myOrder" style="color: white;" >My Orders</a>
             </li>
         </ul>
       <?php } ?>

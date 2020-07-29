@@ -78,7 +78,7 @@ $OrderStatus    = $this->config->item('OrderStatus');
                     </div>
                 </div>
                 <div class="row">
-                   <div class="col-lg-12">
+                   <div class="col-lg-12" style="overflow-x:scroll;">
                     <table class="table table-striped table-bordered new_ordrers" >
                         <thead>
                             <th>#</th>
@@ -164,7 +164,7 @@ $OrderStatus    = $this->config->item('OrderStatus');
          </div>
      </div>
      <div class="row ">
-        <div class="col-lg-12">
+        <div class="col-lg-12" style="overflow-x:scroll;">
             <table class="table table-striped table-bordered punched_ordrers" >
                 <thead>
                     <th>#</th>
@@ -179,58 +179,15 @@ $OrderStatus    = $this->config->item('OrderStatus');
                     <th>Amount</th>
                     <th>Status</th>
                 </thead>
-                <tbody>
-                    <?php if(isset($Orders) && is_array($Orders) && count($Orders)>0){
-                        foreach ($Orders as $key => $value){
-                            ?>
-                            <tr>
-                               <td><?php echo $offset++; ?></td>
-                               <td><a href="<?php echo site_url('Orders/getOrderDetails/'.(int)$value->order_id); ?>"><?php echo $value->order_id; ?></a></td>
-                               <td><?php echo $value->name; ?></td>
-                               <td> (+965) <?php echo $value->contact_no; ?></td>
-                               <td><?php echo $value->restaurant_name; ?></td>
-                               <td><?php echo $value->area; ?></td>
-                               <td><?php echo $value->time; ?></td>
-                               <td><?php echo $value->paymnet; ?></td>
-                               <td><?php echo $value->amount; ?></td>
-                               <td>
-                                   <span class="active label <?php echo $labelColor[$value->status]; ?>">
-                                    <?php echo $OrderStatus[$value->status]; ?>
-                                </span>
-                                <?php if(($value->status+1)==4){ ?>
-                                   &nbsp&nbsp<i class="fa fa-arrow-right"></i>
-                                   <span class="label <?php echo $labelColor[($value->status+1)]; ?> changeOrderStatusAndDriver " oid="<?php echo $value->oId; ?>" os="<?php echo ($value->status+1); ?>" data-toggle="modal" data-target="#modal-form" data-backdrop="static" data-keyboard="false" style="cursor: pointer;" title="Change Order Status" oid="<?php echo $value->order_id; ?>">
-                                    <?php echo $OrderStatus[($value->status+1)]; ?>
-                                </span>
-                            <?php } else if($value->status <7) {
-                                $os = ($value->status == 5)?$value->status+2:$value->status+1;
-                                ?>
-                                &nbsp&nbsp<i class="fa fa-arrow-right"></i>
-                                <span class="label <?php echo $labelColor[($value->status+1)]; ?> changeOrder" oid="<?php echo $value->order_id; ?>" os="<?php echo $os; ?>" data-toggle="modal" data-target="#cngStatusmodal" data-backdrop="static" data-keyboard="false" style="cursor: pointer;" title="Change Order Status">
-                                    <?php echo $OrderStatus[$os]; ?>
-                                </span>
-
-                            <?php } ?>
-                        </td>
-                    </tr>                                 
-                <?php } } else {
-                   ?>
-                   <tr> 
-                      <td colspan="10" class='orderNotFound'>
-                        <h3 class="label label-success">Orders not found.</h3>
-                    </td>
-                </tr>
-
-            <?php } ?>
-        </tbody>
-    </table>
+                <tbody></tbody>
+            </table>
     <div class="dataTables_paginate paging_simple_numbers" id="datatable-buttons_paginate"> 
         <ul class="pagination punched_ord_pagi">
           <?php foreach ($links as $link) {
             echo "<li class='paginate_button previous' aria-controls='datatable-buttons' tabindex='0' id='datatable-buttons_previous'>". $link."</li>";
         } ?>
-    </ul>
-</div>
+        </ul>
+    </div>
 </div>
 </div>
 </div>
@@ -285,7 +242,7 @@ $OrderStatus    = $this->config->item('OrderStatus');
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col-lg-12" style="overflow-x:scroll;">
                 <table class="table table-striped table-bordered disputed_ordrers" >
                     <thead>
                         <th>#</th>

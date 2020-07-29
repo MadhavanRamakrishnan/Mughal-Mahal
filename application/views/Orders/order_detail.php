@@ -25,9 +25,9 @@
 
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/plugins/datatables/jquery.dataTables.css" />
 <style type="text/css">
-    table thead tr th, .center,table tbody tr td{
-        text-align: center;
-    }
+	table thead tr th, .center,table tbody tr td{
+		text-align: center;
+	}
 </style>
     <div class="warper container-fluid">
         <div class="row">
@@ -44,7 +44,7 @@
                         <button id="track_order" style="width: auto;float: right; margin-top: 15px;" class="btn btn-primary"><i class="fa fa-map-marker"></i> Track order</button>
                     <?php } ?>
                 </div>
-            </div>
+        	</div>
         </div>
 
         <div class="row">

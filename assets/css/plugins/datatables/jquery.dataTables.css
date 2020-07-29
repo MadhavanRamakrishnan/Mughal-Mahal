@@ -4,7 +4,7 @@ table.extra-info td{
 
 
 table.dataTable thead .sorting {
-  background: url("../../../../../images/datatables/datatables/sort_both.png") no-repeat center right;
+  background: url("../../../images/datatables/sort_both.png") no-repeat center right;
 }
 table.dataTable thead .sorting_asc {
   background: url("../../../images/datatables/sort_asc.png") no-repeat center right;

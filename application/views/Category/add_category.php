@@ -42,8 +42,6 @@
                             </div>
                         </div>
                         
-                        
-
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-lg-6">
@@ -55,6 +53,7 @@
                             <?php if(isset($image_error)){echo $image_error;} ?>
                             
                         </div>
+                        <span class="text-danger"><i class="reustarred">*</i>&nbsp; This category will be added as last in the priority be default. Please update priority from Dish Category listing page.</span>
                         <hr class="dotted">
                         <div class="form-group">
                            <input type="submit" class="btn btn-primary" name="add" value="Save">

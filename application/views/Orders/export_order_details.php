@@ -427,7 +427,7 @@
 </tbody>
 <tfoot style="border: 1px solid #aaa; border-bottom: 0;">
     <tr>
-        <td colspan="3" style="padding: 5px;">General Request:</td>
+        <td colspan="3" style="padding: 5px;">Special Request: <?= !empty($orderDetail['special_instruction']) ? $orderDetail['special_instruction'] : "-" ?></td>
         <td colspan="1" style="border-bottom: 1px solid #aaa; border-left: 1px solid #aaa; text-align: center;">Order Amount </td>
         <td style="border-bottom: 1px solid #aaa; text-align: center;"><?php echo number_format(($orderDetail['total_price']-$orderDetail['delivery_charges']),3,'.','').' KD'; ?></td>
     </tr>

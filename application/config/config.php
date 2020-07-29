@@ -23,7 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	| a PHP script and you can easily do that on your own.
 */
 // $config['base_url'] = 'http://'.$_SERVER['HTTP_HOST'].'/MughalMahal';
-$config['base_url'] = 'https://'.$_SERVER['HTTP_HOST'].'/';
+$config['base_url'] = 'http://'.$_SERVER['HTTP_HOST'].'/devesh/MughalMahal';
 /*
 |--------------------------------------------------------------------------
 | Index File
@@ -571,7 +571,7 @@ $config['supported_languages'] 		= array("EN","AR");
 $config['default_language'] 		= "EN";
 
 $config['currency'] 				= 'KWD';
-$config['gateway_code'] 			= 'test-knet';
+$config['gateway_code'] 			= 'credit-card'; /*test-knet*/
 $config['disclosure_url'] 			= "https://pay.mughalmahal.com/pos/crt/";
 $config['redirect_url'] 			= "http://oneclickitmarketing.co.in/subdomain/demo/knpay/success.php";
 

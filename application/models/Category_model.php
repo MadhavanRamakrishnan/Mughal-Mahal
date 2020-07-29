@@ -14,10 +14,12 @@ class Category_model extends CI_Model
 	 */
 	function getAllCategory($id=null){
 	
+		$this->db->select('tbl_dish_category.*,(select max(priority) from tbl_dish_category)as max_priority');
 		$this->db->where('is_active','1');
 		if ($id != null) {
 		$this->db->where('tbl_dish_category.category_id',$id);
 		}
+		$this->db->order_by('tbl_dish_category.created_date', 'asc');
 		$query = $this->db->get('tbl_dish_category');
 		return $query->result();
 	}

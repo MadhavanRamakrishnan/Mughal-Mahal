@@ -69,7 +69,8 @@
 	$lang['message_Home']               =  "الصفحة الرئيسية";
 	$lang['message_Office']             =  "مكتب. مقر. مركز";
 	$lang['message_Other']              =  "آخر";
-	$lang['message_Email']              =  "البريد الإلكتروني / رقم الهاتف";
+	$lang['message_Email']              =  "البريد الإلكتروني / رقم الهاتف";;
+	$lang['message_Email_forget']		=  "البريد الإلكتروني";
 	$lang['message_Password']           =  "كلمه السر";
 	$lang['message_Name']               =  "اسم";
 	$lang['message_First']              =  "أول";

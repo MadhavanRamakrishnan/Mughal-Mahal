@@ -39,7 +39,7 @@
 
 	//header
 	$lang['message_Profile']        	=  "Profile";
-	$lang['message_MyOrder']        	=  "My Order";
+	$lang['message_MyOrder']        	=  "My Orders";
 	$lang['message_Logout']         	=  "Logout";
 	$lang['message_Register']         	=  "Register";
 	$lang['message_Login']           	=  "Login";
@@ -70,6 +70,7 @@
 	$lang['message_Office']             =  "Office";
 	$lang['message_Other']              =  "Other";
 	$lang['message_Email']              =  "Email / Phone number";
+	$lang['message_Email_forget'] 		=  "Email";
 	$lang['message_Password']           =  "Password";
 	$lang['message_Name']               =  "Name";
 	$lang['message_First']              =  "First";
@@ -87,8 +88,8 @@
 	$lang['message_completeAddress']    = "Enter your complete address";
 	$lang['message_PaymentSummary']     = "Payment Summary";
 	$lang['message_CaseOnDelivery']     = "Cash on Delivery";
-	$lang['message_PayviaCreditCard']   = "Pay via KNET";
-	$lang['message_PayviaDebitCard']   	= "Pay via Debit Card";
+	$lang['message_PayviaCreditCard']   = "Pay via Debit Card / KNET";
+	$lang['message_PayviaDebitCard']   	= "Pay via Credit Card";
 	$lang['message_PlaceOrder']         = "Place Order";
 	$lang['message_PleEnterValidEmail'] = "Please enter a valid email address!";
 	$lang['message_Passwordnotmatch']   = "Password does not match";

@@ -31,9 +31,10 @@
               <div class="color-red"><?php echo form_error('email'); ?></div>
             </div>
 
-            <div class="form-group input-group">
+            <div class="form-group input-group password-field">
               <span class="input-group-addon"><i class="fa fa-key"></i></span>
-              <input type="password" name="password" class="form-control" value="<?php if(isset($post)){ echo $post['password'];} ?>"  placeholder="Password">
+              <input type="password" name="password" id="password" class="form-control" value="<?php if(isset($post)){ echo $post['password'];} ?>"  placeholder="Password">
+              <span class="input-group-addon" id="showPassword"><i class="fa fa-eye"></i></span>
             </div>
             <div class="form-group input-group">
               <div class="color-red"><?php echo form_error('password'); ?></div>

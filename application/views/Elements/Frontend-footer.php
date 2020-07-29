@@ -145,7 +145,7 @@
                 <p id="forgot_sucess_message"></p>
             </div>
         <div class="forgot_pass_form_fild">
-          <input type="text" name="email" id="email" placeholder="<?= $this->lang->line('message_Email'); ?>">
+          <input type="text" name="email" id="email" placeholder="<?= $this->lang->line('message_Email_forget'); ?>">
         </div>
         
         <div class="forgot_pass_form_btn">

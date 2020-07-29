@@ -170,7 +170,7 @@
 	 			foreach ($orderData as $key => $value) {
 
 	 				if($type ==1){
-		 				$orderData[$key]->TotalSales   =number_format($value->TotalSales,4, '.', '');
+		 				$orderData[$key]->TotalSales   =number_format($value->TotalSales,3, '.', '');
 		 			}
 	 				else if($type == 3){
 		 				$orderData[$key]->OrderID   =$this->getOrerId($value->OrderID);

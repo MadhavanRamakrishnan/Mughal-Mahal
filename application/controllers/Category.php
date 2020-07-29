@@ -148,6 +148,7 @@
 			if ($this->input->post('update')=='Update') {
 
 				$this->form_validation->set_rules('category_name', 'Cuisine Name', 'required|callback_isCategoryExist['.json_encode($this->input->post()).']');
+					$this->form_validation->set_rules('category_ar_name', 'Cuisine Name in Arabic', 'required');
 				
 				if ($this->form_validation->run() == FALSE){
 					
@@ -184,6 +185,8 @@
 					}
 					else{
 						$categoryData['category_name']	= addslashes(trim($this->input->post('category_name')));
+						$categoryData['category_ar_name']	= trim($this->input->post('category_ar_name'));
+						$categoryData['priority'] 		= trim($this->input->post('priority'));
 						$categoryData['created_date']	= date("Y-m-d H:i:s");
 						
 						$result = $this->Category_model->editCategory($categoryData,$id);
@@ -246,6 +249,32 @@
 		else{
 			$response = array("success"=>"0","message"=>"Something went wrong while delete category details");
 		}
+		echo json_encode($response);
+		exit;
+	}
+
+	/**
+	 * function to update priority 
+	 * @author Devesh Khandelwal
+	 * Created date: 06-03-2020
+	 */
+	function updatePriority()
+	{
+		extract($this->input->post());
+		
+		$data["priority"] = $priority;
+
+		$result = $this->Category_model->editCategory($data, $category_id);
+
+		if($result > 0)
+		{
+			$response = array("success"=>"1", "data"=> $result, "message"=> "Priority updated successfully");
+		}
+		else 
+		{
+			$response = array("success"=>"0", "data"=> $result, "message"=> "Error while updating priority");
+		}
+
 		echo json_encode($response);
 		exit;
 	}

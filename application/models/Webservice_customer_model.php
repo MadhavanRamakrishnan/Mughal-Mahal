@@ -289,6 +289,7 @@ class Webservice_customer_model extends CI_Model
 		}
 		$this->db->where("password",md5($password));
 		$this->db->where("is_active","1");
+		$this->db->where("is_profile_updated","1");
 		$this->db->order_by("user_id","desc");
 		$query=$this->db->get("tbl_users");
 		return $query->result();
@@ -303,6 +304,7 @@ class Webservice_customer_model extends CI_Model
 	function checkFacebookIdExists($fbId)
 	{
 		$this->db->where('facebook_id',$fbId);
+		$this->db->where('is_profile_updated',1);
 		$query = $this->db->get('tbl_users');
 		return $query->result();
 	}
@@ -318,6 +320,7 @@ class Webservice_customer_model extends CI_Model
 	function checkGoogleIdExists($gId)
 	{
 		$this->db->where('google_id',$gId);
+		$this->db->where('is_profile_updated',1);
 		$query = $this->db->get('tbl_users');
 		return $query->result();
 	}
@@ -343,6 +346,7 @@ class Webservice_customer_model extends CI_Model
 		{
 			$this->db->where("user_id",$userId);
 		}
+		$this->db->where('is_profile_updated',1);
 		$query=$this->db->get("tbl_users");
 		
 		return $query->result();
@@ -533,7 +537,9 @@ class Webservice_customer_model extends CI_Model
 	*/
 	function updateUserData($userId,$userDetails)
 	{
-		$this->db->where("user_id",$userId);
+		$eachUserId = explode(',', $userId);
+
+		$this->db->where_in("user_id",$eachUserId);
 		$this->db->update("tbl_users",$userDetails);
 		return $this->db->affected_rows();
 	}

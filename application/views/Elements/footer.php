@@ -6,6 +6,22 @@
         </footer>
         
     </section>
+    <!-- FROM HEADER START -->
+    <!-- Bootstrap -->
+    <script src="<?php echo base_url(); ?>assets/js/bootstrap/bootstrap.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/bootstrap/bootstrap-toggle.min.js"></script>
+    <script type="text/javascript">
+        var logoutLink ="<?php echo base_url("Login/logoutUser");  ?>";
+    </script>
+
+    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaWqUMoAlFiTao-1cDOQTtckOyA43eWQ4&libraries=places"></script>
+
+    <!-- DateTimePicker JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.js"></script>
+
+    <!-- FROM HEADER END -->
+
     <script src="<?php echo base_url(); ?>assets/js/footer.js"></script>
   
     <script src="<?php echo base_url(); ?>assets/js/plugins/datatables/jquery.dataTables.js"></script>
@@ -14,9 +30,6 @@
     
     <!-- Custom JQuery -->
     <script src="<?php echo base_url(); ?>assets/js/app/custom.js" type="text/javascript"></script>
-
-     <!-- moment -->
-    <!-- <script src="<?php echo base_url(); ?>assets/js/moment/moment.js"></script> -->
     
     <!-- DateTime Picker -->
     <script src="<?php echo base_url(); ?>assets/js/plugins/bootstrap-datetimepicker/bootstrap-datepicker.js"></script>
@@ -24,12 +37,12 @@
      <!-- Chosen -->
     <script src="<?php echo base_url(); ?>assets/js/plugins/bootstrap-chosen/chosen.jquery.js"></script>
     
-    <script type="text/javascript">
-      $('#basic-datatable123').dataTable({
-        "ordering": false
-    });
-</script>
-</body>
+        <script type="text/javascript">
+            $('#basic-datatable123').dataTable({
+                "ordering": false
+            });
+        </script>
+    </body>
 </html>
 <!-- <Modal for delete> -->
  

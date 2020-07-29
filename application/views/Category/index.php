@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/plugins/datatables/jquery.dataTables.css" />
+<!-- <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/plugins/datatables/jquery.dataTables.css" /> -->
 <style type="text/css">
 table thead tr th, .center{
   text-align: center;
@@ -35,11 +35,12 @@ table thead tr th, .center{
 
 <div class="panel panel-default">
   <div class="panel-body">            
-    <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="basic-datatable">
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="category-datatable">
       <thead>
         <tr>
           <th>Dish Category</th>
           <th>Image</th>
+          <th>Priority</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -58,6 +59,20 @@ table thead tr th, .center{
         <tr class="odd gradeX" id="category_details_<?php echo $value->category_id; ?>">
           <td><?php echo ($value->category_name)?stripslashes($value->category_name):'N/A'; ?></td>
           <td align="center"><div class="img-height"><img style="width:80px;" src="<?php echo base_url()."assets/uploads/category/".$categoryImage; ?>"></div></td>
+          <td align="center" width="15%" data-order="<?= $value->priority ?>">
+            <span style="display:none;"><?= $value->priority ?></span>
+            <select class="form-control" name="priority" id="category_priority_<?= $value->category_id; ?>" onchange="updatePriority(<?= $value->category_id ?>)">
+               <option>Select Priority</option>
+               <?php
+                  if($value->max_priority > 0){
+                      for($i=0; $i <= $value->max_priority; $i++)
+                      { ?>
+                        <option value="<?= $i ?>" <?= (isset($value->priority) && $value->priority == $i ? "selected" : "") ?>><?= $i ?></option>
+               <?php  }
+                  }
+                ?>
+            </select>
+          </td>
           <td class="center"><a href="<?php echo site_url('Category/editCategory/'.$value->category_id); ?>"><i class="fa fa-edit"> </i></a> |<a title="Delete" data-toggle="modal" data-target="#confirmationModal" data-backdrop="static" data-keyboard="false" onclick="deleteCategory(<?php echo $value->category_id; ?>)"  id="delete"><i class="fa fa-trash"> </i></a></td>
         </tr>
         <?php } }?>
@@ -68,6 +83,16 @@ table thead tr th, .center{
 </div>
 
 <script type="text/javascript">
+
+  $(document).ready(function(){
+
+    $("#category-datatable").DataTable({
+      order:[[2,"asc"]]/*,
+      aaSorting: [[2, 'asc']]*/
+    });
+
+  });
+
 
   function deleteCategory(id){
    
@@ -84,7 +109,7 @@ table thead tr th, .center{
 
         if(obj.success==1)  {
           $('#confirmationModal').modal('hide');
-          var table = $('#basic-datatable').DataTable();
+          var table = $('#category-datatable').DataTable();
           table.row( $('#category_details_'+id).closest('tr') ).remove().draw();
           $("#category_details_"+id).remove();
                             // var t =  $('#basic-datatable').dataTable();
@@ -109,4 +134,38 @@ table thead tr th, .center{
 
 setTimeout(function(){ $("#success_notification").hide(); },5000);
 setTimeout(function(){ $("#error_notification").hide(); },5000);
+
+function updatePriority(id)
+{
+  var priority = $("#category_priority_"+id).val();
+
+  if(priority != '')
+  {
+    $.ajax({
+      url     : "<?php echo site_url('category/updatePriority')?>",
+      type    : "POST",
+      data    :  {category_id:id, priority: priority},
+      success : function(response){
+        var obj = JSON.parse(response);
+
+        if(obj.success==1){
+          var table = $('#category-datatable').DataTable();
+          $("#success_message").text(obj.message);
+          $("#success_notification").show();
+          setTimeout(function(){ $("#success_notification").hide(); },5000); 
+
+          alert(obj.message);
+        }
+        else{
+          $("#success_message").text(obj.message);
+          $("#success_notification").show().focus();
+          setTimeout(function(){ $("#success_notification").hide(); },5000); 
+
+          alert(obj.message);
+        }
+      }
+    });
+
+  }
+}
 </script>

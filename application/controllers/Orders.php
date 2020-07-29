@@ -55,12 +55,6 @@
 		}
 		$data['submenu']   	 = $submenuArray;
 
-		$resId = $this->getRestaurantForRoleBaseAccess();
-
-		$totalRow 					= $this->Order_model->getAllOrderCount($resId);
-		$config["base_url"] 		= site_url('Orders/newOrders');
-		$config["total_rows"] 		= $totalRow;
-		$config["per_page"] 		= 50;
 		$config['use_page_numbers'] = TRUE;
 		$config['num_links'] 		= 50;
 		$config['cur_tag_open']		= '&nbsp;<a class="active ">';
@@ -299,7 +293,7 @@
 		$orderData['delivery_charges'] 	   = $orderDetail[0]->delivery_charges;
 		$orderData['reason'] 			   = $orderDetail[0]->reason;
 		$orderData['special_instruction']  = $orderDetail[0]->special_instruction;
-		
+
 		//restaurant detail 
 		$orderData['restaurant_name']      = $getResData[0]->restaurant_name;
 
@@ -1209,6 +1203,7 @@
 		$orderData['order_type'] 		   = $orderDetail[0]->order_type;
 		$orderData['delivery_charges'] 	   = $orderDetail[0]->delivery_charges;
 		$orderData['reason'] 			   = $orderDetail[0]->reason;
+		$orderData['special_instruction']  = $orderDetail[0]->special_instruction;
 
 		//restaurant detail 
 		$orderData['restaurant_name']      = $getResData[0]->restaurant_name;
