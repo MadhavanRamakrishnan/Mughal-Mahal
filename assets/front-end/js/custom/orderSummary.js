@@ -115,7 +115,7 @@ function removeDishData(id)
         var dishDetail = getCookie('dishDetail');
         var OldDishDetails = dishDetail.dishDetail;
 
-        if (OldDishDetails != undefined) {
+        if (OldDishDetails != undefined && OldDishDetails != "") {
             disharr = JSON.parse(OldDishDetails);
         }
 
@@ -144,7 +144,8 @@ function removeDishData(id)
 }
 
 function setOrderSummary(locality, locality_val = "") {
-    $.post(getOrderSummary, {
+    var getOrderSummaryURL = getOrderSummary +"/"+locality;
+    $.post(getOrderSummaryURL, {
         locality: locality,
         locality_value: locality_val
     }, function(data) {
@@ -153,11 +154,11 @@ function setOrderSummary(locality, locality_val = "") {
         {
             var html = "";
             $.each(obj.message, function(k, v) {
-                if (v.locality != locality) {
+                /*if (v.locality != locality) {
                     var tr_cl = "not_allow";
                 } else {
                     var tr_cl = "";
-                }
+                }*/
                 html += '<tr class="' + tr_cl + '">';
                 html += '<td>' + v.dish_name + '<span>' + v.choice_name + '</span></td>';
                 html += '<td>' + v.subtotal + 'KD</td>';
@@ -188,7 +189,7 @@ function addaddress()
     var name         = $('#customer_name').val();
     var email        = $('#addemail').val();
     var phone        = $('#contact_no').val();
-    var locality     = $('#locality').val();
+    /*var locality     = $('#locality').val();*/
     var editAdd      = $('#editAdd').val();
     var locality_val = $("#locality option:selected").text();
     var street       = $('#street').val();
@@ -227,11 +228,11 @@ function addaddress()
         hideAddressError();
         $('.phone').show();
         $('.phone').text(phoneMinlenth);
-    } else if (locality == '' || locality == 0 || locality == null) {
+    } /*else if (locality == '' || locality == 0 || locality == null) {
         hideAddressError();
         $('.locality_error').show();
         $('.locality_error').text("Please select locality");
-    } else if (address_type == 3 && other_address == '') {
+    }*/ else if (address_type == 3 && other_address == '') {
         hideAddressError();
         $('.otherAddressReq').show();
         $('.otherAddressReq').text(otherAddressReq);
@@ -270,7 +271,7 @@ function addaddress()
             contact_no: phone,
             customer_latitude: lat,
             customer_longitude: long,
-            locality_id: locality,
+            /*locality_id: locality,*/
             address_id: address_id,
             other_address: other_address,
             street      :street,
@@ -287,7 +288,7 @@ function addaddress()
 
                 if (editAdd != "0") 
                 {
-                    document.cookie = "locality_id=" + locality_id + "; expires=" + lastday + "; path=/";
+                    //document.cookie = "locality_id=" + locality_id + "; expires=" + lastday + "; path=/";
                     document.cookie = "delivery_address=" + address_id + "; expires=" + lastday + "; path=/";
                 }
                 location.reload();
@@ -323,6 +324,27 @@ function hideAddressError()
     $('.add_error').hide();
 }
 
+$(document).on('click',"#addressModel",function(){
+    $.ajax({
+        type: 'POST',
+        url: getlocalites+'/'+$(this).val(),
+        data: {
+            data: '1'
+        },
+        success: function(data) {
+            
+            var obj =$.parseJSON(data);
+            if(obj.success =="1")
+            {
+                $("#lat").val(obj.message.lat);
+                $("#lat").val(obj.message.lon);
+                initMap(obj.message.lat,obj.message.lon);
+            }
+
+        }
+    });
+})
+
 $(document).on('change',"#address_locality",function(){
     $.ajax({
         type: 'POST',
@@ -347,6 +369,7 @@ $(document).on('change',"#address_locality",function(){
 function getRestaurantData() {
     var dishDetails = getCookie();
     var locality = dishDetails.locality_id;
+
     $.post(getRestaurantDetail, {
         locality: locality
     }, function(response) {
@@ -437,6 +460,7 @@ function editAddressData(address_id, oSummary = "") {
     })
 }
 
+//console.log(getCookie());
 
 function initMap(lat=29.3518587,lon=47.9836915) {
       var uluru = new google.maps.LatLng(lat, lon);
@@ -448,7 +472,7 @@ function initMap(lat=29.3518587,lon=47.9836915) {
           mapTypeId: google.maps.MapTypeId.ROADMAP
       });
       var marker = new google.maps.Marker({
-          draggable: true,
+          draggable: false,
           scrollwheel: true,
           position: uluru,
           map: map,
@@ -464,7 +488,7 @@ function initMap(lat=29.3518587,lon=47.9836915) {
       });
 }
 
-$(document).on('change', '.custAddress', function() {
+/*$(document).on('change', '.custAddress', function() {
     var id           = $(this).val();
     var locality     = $(this).attr("loca");
     var locality_val = $(this).attr("loca_val");
@@ -473,7 +497,7 @@ $(document).on('change', '.custAddress', function() {
     setOrderSummary(locality, locality_val);
     getRestaurantData();
 
-});
+});*/
 
 $('.placeorder').on('click',function()
 {
@@ -536,7 +560,7 @@ $('.placeorder').on('click',function()
 
                               type  :'POST',
                               url   : addorder,
-                              data  :{user_id:user_id,dishDetail:dishDetail,address_id:address,payment:payment},
+                              data  :{user_id:user_id,dishDetail:dishDetail,address_id:address,payment:payment,locality: locality},
                               success:function(response)
                               {
                                 var obj = JSON.parse(response);

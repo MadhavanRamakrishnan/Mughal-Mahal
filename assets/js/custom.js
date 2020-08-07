@@ -126,6 +126,9 @@ $('#loginform').on('click',function()
       var obj = JSON.parse(data);
       if(obj.response=='true')
       {
+        var cookie   = getCookie();
+        var locality = cookie.locality_id;
+
         $("#loading-div-background").hide();
         document.cookie = "access_token="+obj.data.access_token+"; expires="+lastday+"; path=/";
         document.cookie = "user_id="+obj.data.user_id+"; expires="+lastday+"; path=/";
@@ -135,7 +138,7 @@ $('#loginform').on('click',function()
         setTimeout(function(){ 
           x.className = x.className.replace("show", "");
           if($(".checkOut-Click").val() == "1"){
-            window.location.href = baseUrl+"Home/orderSummary";
+            window.location.href = baseUrl+"Home/orderSummary/"+locality;
             return false;
           }
           location.reload(); 
@@ -330,6 +333,9 @@ $('#submitregister').on('click',function(){
 });
 
 $('.check-out').on('click',function(){
+  var cookie   = getCookie();
+  var locality = cookie.locality_id;
+
   var cookiedetail = getCookie('access_token');
   if(cookiedetail.access_token==undefined){
     $(".checkOut-Click").val("1");
@@ -339,7 +345,7 @@ $('.check-out').on('click',function(){
   {
     var total = parseFloat($("#total").text()).toFixed(3);
     if(total > 0){
-        window.location.href = site_url+"Home/orderSummary";    
+        window.location.href = site_url+"Home/orderSummary/"+locality;    
     }else{
         alert("Please select dish to proceed");
     }

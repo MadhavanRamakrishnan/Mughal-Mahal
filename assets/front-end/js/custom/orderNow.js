@@ -1,18 +1,25 @@
 $(document).ready(function(){
     var coockie  =getCookie();
     var locality =coockie.locality_id;
-    showDish(locality);
+    //showDish(locality);
+
     showCart();
 }); 
   
 //show dishes and its category
 function showDish(locality,search="")
 {
+    document.cookie = "locality_id="+locality+"; expires=0; path=/";
     $.ajax({
         type: 'POST',
         url: dishDataUrl,
         data: {locality:locality,search:search},
         success: function(response) {
+            /*$('#colorbox').css('opacity', 0);
+            $('#cboxOverlay').css('opacity', 0);
+            $('#cboxLoadedContent').remove();
+            */
+            $(".default_popup").hide();
             var obj      =$.parseJSON(response);
             var coockie  =getCookie();
             var lang     =coockie.lang;
@@ -129,7 +136,7 @@ function showDish(locality,search="")
                             // perform animated scrolling by getting top-position of target-element and set it as scroll target
                             jQuery('html,body').animate({ scrollTop: (jQuery(this.hash).offset().top-100)}, 1000);
                             return false;
-                            e.preventDefault();
+                            //e.preventDefault();
                     });
             });
 
@@ -169,103 +176,112 @@ $(document).on("keyup",'#searchBox',function(){
 //function for set side cart data 
 function showCart()
 {
-   
-    $.ajax({
-        type:'post',
-        url:getdishdetails,
-        success:function(data)
-        {
-            var obj     =$.parseJSON(data);
-            var html    ="";
-            var summary ="";
-
-            var total   =0.000;
-            var charge  =0.000;
-            var carthtml = '';
-            
-            if(obj.length >0)
+    var coockie             =getCookie();
+    var locality            =coockie.locality_id;
+    var getDishDetailsURL   = getdishdetails+"/"+locality;
+    if(locality != '')
+    {
+        $.ajax({
+            type:'post',
+            url:getDishDetailsURL,
+            success:function(data)
             {
-                $.each(obj,function(k,v){
-                    var choice = '';
-                    if(v.choice)
+                if(data != null && data != "" && data.toString().length > 0)
+                {
+                    console.log(data);
+                    var obj     =$.parseJSON(data);
+                    var html    ="";
+                    var summary ="";
+
+                    var total   =0.000;
+                    var charge  =0.000;
+                    var carthtml = '';
+                    
+                    if(obj.length >0)
                     {
-                        $.each(v.choice,function(ck,cv){
-                            choice +=cv.choice_name+',';
+                        $.each(obj,function(k,v){
+                            var choice = '';
+                            if(v.choice)
+                            {
+                                $.each(v.choice,function(ck,cv){
+                                    choice +=cv.choice_name+',';
+                                })
+                                choice = choice.replace(/(^,)|(,$)/g, "");
+                            }
+
+
+                            html   +='<div class="rightTwo">';
+                            html   +='<div class="left">';
+                            html   +='<div class="tooltip"><p title="'+v.instruction+'('+choice+')">'+v.dishname+'<i><img src="http://18.216.199.131/admin/assets/front-end/images/info.png" alt="" ></i></div>';
+                            html   +='</p><br/>';
+                            html   +='<div class="numbers-row">';
+                            html   +='<input type="text" name="numId" id="numId" class="num'+v.id+'" value="'+v.dishcount+'" preDishCount="'+v.dishcount+'" dishId="'+v.dishid+'" dishPrice="'+parseFloat(v.price).toFixed(3)+'">';
+                            html   +='</div>';
+                            html   +='</div>';
+                            html   +='<div class="right">';
+                            html   +='<div class="tooltip">';
+                            html   +='<a href="#minusDishData" class="minusDishpopUp inline" onclick="$.colorbox({href:\'#minusDishData\', inline:\'true\'});deleteCartItem('+v.id+')"><p> <span id="dishPricenum'+v.id+'" class="dishPrice'+v.id+'">'+parseFloat(parseFloat(v.price).toFixed(3) * (v.dishcount)).toFixed(3)+'</span> KD  <img class="minusDish" dish_id="'+v.dishid+'" src="http://18.216.199.131/admin/assets/front-end/images/minus.png" alt="" /> </p></a>';
+                            html   +='</div>';
+                            html   +='</div>';
+                            html   +='</div>';
+                            total  = parseFloat(total) + (parseFloat(v.price) * parseFloat(v.dishcount));
+                            charge = parseFloat(v.delivery_charges).toFixed(3);
+
+                            carthtml += '<div class="rightTwopopup rightTwopopup-cart"><div class="row11"><div class="left left-cart"><div class="numbers-row numbers-row-cart">';
+                            carthtml += '<input type="text" name="numId" id="numId" class="num'+v.id+'" value="'+v.dishcount+'" preDishCount="'+v.dishcount+'" dishId="'+v.dishid+'" dishPrice="'+parseFloat(v.price).toFixed(3)+'"></div>';
+                            carthtml += '<p>'+v.dishname+'</p></div><div class="right right-cart">';
+                            carthtml += '<p class="dishPriceCartnum'+v.id+'">'+parseFloat(parseFloat(v.price).toFixed(3) * (v.dishcount)).toFixed(3)+' KD</p></div>';
+                            carthtml += '<div class="order_cancle"><a href="#minusDishData" class="minusDishpopUp inline" onclick="$.colorbox({href:\'#minusDishData\', inline:\'true\'});deleteCartItem('+v.id+')"><img dish_id="226" dishid="2" class="minusDish" src="'+crossimg+'"></a></div></div><div class="clear"></div>';
+                        
                         })
-                        choice = choice.replace(/(^,)|(,$)/g, "");
+
+                        carthtml += '<div class="row2"><div class="left left-cart"><p>Total</p></div><div class="right right-cart totalprice">';
+                        carthtml += '<p class="totalprice" id="totalprice"></p></div>';
+                        carthtml += '</div><div class="clear"></div><a class="check-out checkoutbutton">Checkout</a></div>';
+
+                        total = parseFloat(total).toFixed(3) ;
+                        $("#subtotal").text(parseFloat(total).toFixed(3));
+                        $("#deliveryCharge").text(parseFloat(charge).toFixed(3));
+                        
+                        total = (parseFloat(total)  + parseFloat(charge)).toFixed(3);
+
+                        var displayvalue = parseFloat(total).toFixed(3);
+                        $("#total").text(displayvalue);
+                        $(".totalprice").text(parseFloat(total).toFixed(3));
+
+                        //$(".cartPopup").html(carthtml);
+
+                        dishData ="<h3>"+cart+" : "+obj.length+" ITEMS <span class='cartprice'>  "+total+" KD</span></h3>";
                     }
+                    else
+                    {
+                        dishData ="<h3>"+cart+" : 0 ITEMS <span class='cartprice'>  0.000 KD</span></h3>";
 
+                        $(".rightOne").html(dishData);
+                        carthtml = '';
+                        //$(".cartPopup").html("");
+                        $("#subtotal").text("0.000");
+                        $("#deliveryCharge").text("0.000");
+                        $("#total").text("0.000");
+                        
+                    }
+                    $(".rightOne").html(dishData);
+                    $(".itemCart").html(html);
+                    $(".cartPopup").html(carthtml);
 
-                    html   +='<div class="rightTwo">';
-                    html   +='<div class="left">';
-                    html   +='<div class="tooltip"><p title="'+v.instruction+'('+choice+')">'+v.dishname+'<i><img src="http://18.216.199.131/admin/assets/front-end/images/info.png" alt="" ></i></div>';
-                    html   +='</p><br/>';
-                    html   +='<div class="numbers-row">';
-                    html   +='<input type="text" name="numId" id="numId" class="num'+v.id+'" value="'+v.dishcount+'" preDishCount="'+v.dishcount+'" dishId="'+v.dishid+'" dishPrice="'+parseFloat(v.price).toFixed(3)+'">';
-                    html   +='</div>';
-                    html   +='</div>';
-                    html   +='<div class="right">';
-                    html   +='<div class="tooltip">';
-                    html   +='<a href="#minusDishData" class="minusDishpopUp inline" onclick="$.colorbox({href:\'#minusDishData\', inline:\'true\'});deleteCartItem('+v.id+')"><p> <span id="dishPricenum'+v.id+'" class="dishPrice'+v.id+'">'+parseFloat(parseFloat(v.price).toFixed(3) * (v.dishcount)).toFixed(3)+'</span> KD  <img class="minusDish" dish_id="'+v.dishid+'" src="http://18.216.199.131/admin/assets/front-end/images/minus.png" alt="" /> </p></a>';
-                    html   +='</div>';
-                    html   +='</div>';
-                    html   +='</div>';
-                    total  = parseFloat(total) + (parseFloat(v.price) * parseFloat(v.dishcount));
-                    charge = parseFloat(v.delivery_charges).toFixed(3);
-
-                    carthtml += '<div class="rightTwopopup rightTwopopup-cart"><div class="row11"><div class="left left-cart"><div class="numbers-row numbers-row-cart">';
-                    carthtml += '<input type="text" name="numId" id="numId" class="num'+v.id+'" value="'+v.dishcount+'" preDishCount="'+v.dishcount+'" dishId="'+v.dishid+'" dishPrice="'+parseFloat(v.price).toFixed(3)+'"></div>';
-                    carthtml += '<p>'+v.dishname+'</p></div><div class="right right-cart">';
-                    carthtml += '<p class="dishPriceCartnum'+v.id+'">'+parseFloat(parseFloat(v.price).toFixed(3) * (v.dishcount)).toFixed(3)+' KD</p></div>';
-                    carthtml += '<div class="order_cancle"><a href="#minusDishData" class="minusDishpopUp inline" onclick="$.colorbox({href:\'#minusDishData\', inline:\'true\'});deleteCartItem('+v.id+')"><img dish_id="226" dishid="2" class="minusDish" src="'+crossimg+'"></a></div></div><div class="clear"></div>';
-                
-                })
-
-                carthtml += '<div class="row2"><div class="left left-cart"><p>Total</p></div><div class="right right-cart totalprice">';
-                carthtml += '<p class="totalprice" id="totalprice"></p></div>';
-                carthtml += '</div><div class="clear"></div><a class="check-out checkoutbutton">Checkout</a></div>';
-
-                total = parseFloat(total).toFixed(3) ;
-                $("#subtotal").text(parseFloat(total).toFixed(3));
-                $("#deliveryCharge").text(parseFloat(charge).toFixed(3));
-                
-                total = (parseFloat(total)  + parseFloat(charge)).toFixed(3);
-
-                var displayvalue = parseFloat(total).toFixed(3);
-                $("#total").text(displayvalue);
-                $(".totalprice").text(parseFloat(total).toFixed(3));
-
-                //$(".cartPopup").html(carthtml);
-
-                dishData ="<h3>"+cart+" : "+obj.length+" ITEMS <span class='cartprice'>  "+total+" KD</span></h3>";
+                    $("#totalprice").html(parseFloat(total).toFixed(3)+" KD");
+                    //console.log(carthtml);
+                    
+                    $(".totalOrderDown").html('Order Total : '+parseFloat(total).toFixed(3)+ ' KD');
+                    
+                    $("#cartCount").text(obj.length);
+                    $(".cartCountDown").text(obj.length);
+                    jQuery(".minusDishpopUp").colorbox({inline:true });
+                    stapper(".numbers-row");
+                }
             }
-            else
-            {
-                dishData ="<h3>"+cart+" : 0 ITEMS <span class='cartprice'>  0.000 KD</span></h3>";
-
-                $(".rightOne").html(dishData);
-                carthtml = '';
-                //$(".cartPopup").html("");
-                $("#subtotal").text("0.000");
-                $("#deliveryCharge").text("0.000");
-                $("#total").text("0.000");
-                
-            }
-            $(".rightOne").html(dishData);
-            $(".itemCart").html(html);
-            $(".cartPopup").html(carthtml);
-
-            $("#totalprice").html(parseFloat(total).toFixed(3)+" KD");
-            //console.log(carthtml);
-            
-            $(".totalOrderDown").html('Order Total : '+parseFloat(total).toFixed(3)+ ' KD');
-            
-            $("#cartCount").text(obj.length);
-            $(".cartCountDown").text(obj.length);
-            jQuery(".minusDishpopUp").colorbox({inline:true });
-            stapper(".numbers-row");
-        }
-    })
+        });
+    }
 }
 
 //It is used for dish count  and manage cookie and side cart
@@ -295,6 +311,7 @@ jQuery(document).ready(function(){
             $(this).parent().find("input[name=numId]").val("1");
             return false;
         }
+
         setItem($(this).parent().find("input[name=numId]"));
 
         var finalPrice = $("#finalPrice").val();
@@ -450,16 +467,17 @@ function priceChange(price){
     $("#finalPrice").val(parseFloat(finalPrice).toFixed(3));
     $(".item_price").html(parseFloat(finalPrice).toFixed(3)+" KD");
 }
+
 //set item while changes in stapper or item count
 function setItem(ele)
 {
+    console.log(ele);
     var totalDish    =parseInt((ele.val() != '')?ele.val():1);
-    //console.log(totalDish);
+    
     var dishId       =ele.attr('dishId');
     var dishPrice    =parseFloat(ele.attr('dishPrice')).toFixed(3);
     var preDishCount =parseInt(ele.attr('preDishCount'));
     $('#dishCount').val(parseInt(totalDish));
-    // $('.numId'+ele.attr("class")).val(totalDish);
     $("."+ele.attr("class")).val(totalDish);
     var total        =parseFloat($("#total").text());
     var charge       =parseFloat($("#deliveryCharge").text());
@@ -477,17 +495,20 @@ function setItem(ele)
 
     var dishDetails     = getCookie('dishDetail');
     var OldDishDetails  = dishDetails.dishDetail;
+
     var disharr         = [];
-    if(OldDishDetails!=undefined){
+
+    if(OldDishDetails!=undefined && OldDishDetails != ""){
       disharr = JSON.parse(OldDishDetails);
       }
+
     for (var i = 0; i < disharr.length; i++) {
         if(disharr[i].dishId==dishId && "num"+disharr[i].id == ele.attr("class"))
         {
             disharr[i].dishcount = totalDish;
         }
     }
-    dishDetails = JSON.stringify(disharr);
+    dishDetails = (disharr != undefined && disharr != '' ? JSON.stringify(disharr) : "");
     document.cookie = "dishDetail="+dishDetails+"; expires="+lastday+"; path=/";
 }
 
@@ -500,7 +521,7 @@ function deleteCartItem(id)
             var dishDetails    = getCookie('dishDetail');
             var OldDishDetails = dishDetails.dishDetail;
             //console.log(dishId);
-            if (OldDishDetails != undefined) 
+            if (OldDishDetails != undefined && OldDishDetails != "") 
             {
                 disharr = $.parseJSON(OldDishDetails);
 
@@ -535,10 +556,6 @@ function deleteCartItem(id)
 
 }
 
-/*$("#cancel_delete_dish_btn").click(function(){
-    $.fn.colorbox.close();
-})*/
-
 $(document).on("click",".addChoice",function(){
     
     var dishId   =$(this).attr('dishId');
@@ -551,18 +568,15 @@ $(document).on("click",".addChoice",function(){
         data:{locality_id:locality,dish_id:dishId},
         success:function(response){
             var obj =$.parseJSON(response);
+            var rightPopupHTML = '';
+
             if(obj.response == "true")
             {
-
-                var rightPopupHTML = '';
-
                 rightPopupHTML += '<p class="item_name">Chicken Wings (15 Pcs)</p>';
                 rightPopupHTML += '<div class="numbers-row-inner">';
                 rightPopupHTML += '<input type="text" name="numId" id="numId" class="numDishId" value="1">';
                 rightPopupHTML += '</div>';
-                $(".openPopupAdd").html(rightPopupHTML);
-                stapper(".numbers-row-inner");
-
+                
                 // $("#ch_dish_name").text(obj.dish_details.product_en_name);
                 $(".item_name").text(obj.dish_details.product_en_name);
                 $(".item_price").text(parseFloat(obj.dish_details.price).toFixed(3)+" KD");
@@ -608,8 +622,6 @@ $(document).on("click",".addChoice",function(){
                 formHtml += '<input type="hidden" name="selectedPrice" id="selectedPrice">';
                 formHtml += '<input type="hidden" name="dishCount" id="dishCount" value="1">';
 
-                $("#dish_choices_form").html(formHtml);
-
                 for (var i = 1; i <= Object.keys(obj.dish_details.choiceCategory).length; i++) {
                     var alertStyles = {
                         color:"red",
@@ -624,6 +636,11 @@ $(document).on("click",".addChoice",function(){
                         "display":"none"
                     }
                     $(".successicon"+i).css(successStyles);
+
+                    $("#dish_choices_form").html(formHtml);
+                    $(".openPopupAdd").html(rightPopupHTML);
+                    stapper(".numbers-row-inner");
+
                 }
             }
         }
@@ -651,10 +668,6 @@ function formsubmit(res_id)
                 $(".alerticon"+i).hide();
                 $(".successicon"+i).show();
             }
-            /*if(!fromdata.includes("check_"+i) && $("#check_"+i).length > 0){
-                $(".alerticon"+i).show();
-                return false;
-            }*/
             if(fromdata.includes("check_"+i) && $("#check_"+i).length > 0){
                 $(".alerticon"+i).hide();
                 $(".successicon"+i).show();
@@ -676,11 +689,6 @@ function formsubmit(res_id)
             }
         }
     }
-
-// if(!fromdata.includes("check_") || !fromdata.includes("category1") || !fromdata.includes("category2")){
-//     $(".alerticon1").show();
-//     return false;
-// }
   
   var disharr = [];
   var choiceofmultiple = [];
@@ -698,53 +706,14 @@ function formsubmit(res_id)
       {
         choice = data[i].split("=");
         choiceofone.push(choice[1]);
-      }
-
-
-      /*if(data[i].includes('category2'))
-      {
-        choice = data[i].split("=");
-         choiceofone.push(choice[1]);
-      }*/  
+      }  
   }
-
-  // if(choiceofone.length>0 && choiceofone[0]!='category1'){
-  //   $('.alerticon1').show();
-  //   $('.successicon1').hide();
-  //   return false; 
-  // }
-  // else{
-  //   $('.successicon1').show();  
-  //   $('.alerticon1').hide();
-  // }
-
-  // if(choiceofone2.length>0 && choiceofone2[0]!='category2'){
-    
-  //   $('.alerticon2').show();
-  //   $('.successicon2').hide();
-  //   return false; 
-  // }
-  // else{
-  //   $('.successicon2').show();  
-  //   $('.alerticon2').hide();
-  // }
-
   var dish_count = data[data.length - 1].split("=");
-  // console.log(dish_count);return false;
-  // var j = 0;
-  
-  /*for (var i = 2 ; i <= data.length - 5; i++) {
-    var  choice = data[i].split('=');
-    var choicedata = choice[0].split('_');
-
-    choiceofmultiple[j] = choicedata[1];
-    j++;
-  }*/
   
   var dishDetails = getCookie('dishDetail');
     var OldDishDetails = dishDetails.dishDetail;
-    
-    if(OldDishDetails!=undefined){
+
+    if(OldDishDetails!=undefined && OldDishDetails != "" && OldDishDetails != null && OldDishDetails.length > 0){
       disharr = JSON.parse(OldDishDetails);
     }
 
@@ -768,7 +737,7 @@ function formsubmit(res_id)
     
     if(adddish==0){
 
-      if(OldDishDetails != undefined){
+      if(OldDishDetails != undefined && OldDishDetails != ""){
         if(disharr.length > 0){
             var id = disharr[(disharr.length)-1].id + 1;
         }else{
@@ -790,9 +759,6 @@ function formsubmit(res_id)
     }
 
     dishDetails = JSON.stringify(disharr);
-    //customtoastr("Dish Added Successfully",'show');
-    //addproduct.close();
-    //console.log(dishDetails);
     document.cookie = "dishDetail="+dishDetails+"; expires="+lastday+"; path=/"; 
    
     parent.jQuery.fn.colorbox.close();

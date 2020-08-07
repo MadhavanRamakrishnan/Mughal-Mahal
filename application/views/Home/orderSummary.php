@@ -2,6 +2,8 @@
  /* #removeaddress .modal-body,#removeaddress #myModalLabel{text-align: center; color: #666;}
   #removeaddress .btn-success{    background-color: #00AE4A;}*/
   .deleteAddress{color:red;}
+
+  #myModel{display: none;}
 </style>
 <script type="text/javascript">
     jQuery(document).ready(function(){
@@ -16,7 +18,7 @@
           jQuery(document).click( function(){
               jQuery('div.cartPopup').hide();
           });
-          initMap();
+          //initMap();
     });
 </script>
 
@@ -59,8 +61,8 @@
                             foreach ($finalDishData as $key => $value) { 
 
                               ?>
-                                <tr class="<?= ($value['locality']== $resId)?'':'not_allow'; ?>">                          
-                                  <td><?= $value['dish_name'] ?><span><?= trim($value['choice_name'].$value['instruction']) ?></span></td>
+                                <tr>                          
+                                  <td><?= $value['dish_name'] ?><span><?= trim($value['choice_name']) ?></span></td>
                                   <td><?= number_format((float)$value['subtotal'], 3, '.', '') ?> KD</td>
                                   <td><?= $value['dish_count'] ?></td>                            
                                   <td class="t_prise"><?= $value['total'] ?> KD</td>
@@ -111,7 +113,7 @@
                     
                   </ul>
                   <div class="add_address">
-                    <a href="#address" class="addressModel" aria-label="open" onclick="document.getElementById('addressadd').reset();document.getElementById('address_id').value = '';document.getElementById('addemail').value = '<?= $userdata[0]->email ?>';">+ Add Address</a>
+                    <a href="#address" class="addressModel" id="addressModel" aria-label="open" onclick="document.getElementById('addressadd').reset();document.getElementById('address_id').value = '';document.getElementById('addemail').value = '<?= $userdata[0]->email ?>';">+ Add Address</a>
                   
                    <!-- popup content ends -->
                   </div>
@@ -180,5 +182,5 @@
 </div>
 <input type="hidden" id="address_id" value="">
 
-<script type="text/javascript" src="<?= base_url() ?>assets/front-end/js/custom/orderSummary.js"></script>
+<script type="text/javascript" src="<?= base_url() ?>assets/front-end/js/custom/orderSummary.js?v=1.2"></script>
 

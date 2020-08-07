@@ -28,6 +28,7 @@ class Home_model extends CI_Model
 		{
 			$this->db->where('tbl_locality.locality_id',$id);
 		}
+		$this->db->order_by($column, 'asc');
 		$this->db->where('tbl_restaurants.is_availability',1);
 		$query = $this->db->get('tbl_locality');
 

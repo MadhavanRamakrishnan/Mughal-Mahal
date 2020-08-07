@@ -13,6 +13,8 @@ function showDish(locality,search="")
             var category = "";
             var dishes   = "";
             console.log(obj);
+            /*$('.my-class').show();*/
+
             $.each(obj.category,function(key,val)
             {
                 if(lang =="AR")
@@ -143,6 +145,7 @@ function showCart()
         url:getdishdetails,
         success:function(data)
         {
+
             var obj     =$.parseJSON(data);
             var html    ="";
             var summary ="";

@@ -275,6 +275,7 @@ $("#customerregister").submit(function(event) {
     }
 })
 $('.checkout').on('click', function() {
+    
     var cookiedetail = getCookie('access_token');
     if (cookiedetail.access_token == undefined) {
         login.open();
@@ -914,7 +915,8 @@ $(document).on('change', '.custAddress', function() {
 });
 
 function setOrderSummary(locality, locality_val = "") {
-    $.post(getOrderSummary, {
+    var getOrderSummaryURL = getOrderSummary +"/"+locality;
+    $.post(getOrderSummaryURL, {
         locality: locality,
         locality_value: locality_val
     }, function(data) {

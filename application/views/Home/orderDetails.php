@@ -376,28 +376,28 @@
 </div>
 
 <div class="modal fade" id="reasonModal" role="dialog">
-	<div class="modal-dialog">
+  <div class="modal-dialog">
 
-		<!-- Modal content-->
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Cancel Order</h4>
-			</div>
-			<div class="modal-body">
-				<div class="cancelOrder_resion">
-				<label style="padding-bottom: 15px; margin-bottom: 0;">Enter Reason</label>
-				<textarea name="reason" id="reasonText" style="width: 100%;padding: 5px 10px; height: 80px;"></textarea>
-				<span class="reasonTextError" style="color: red;display: none;">Please add reason for cancel.</span>
-			</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-danger" onclick="cancelUserOrder('<?= $orderDetails['order_id'] ?>')">Submit</button>
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cancel Order</h4>
+      </div>
+      <div class="modal-body">
+        <div class="cancelOrder_resion">
+        <label style="padding-bottom: 15px; margin-bottom: 0;">Enter Reason</label>
+        <textarea name="reason" id="reasonText" style="width: 100%;padding: 5px 10px; height: 80px;"></textarea>
+        <span class="reasonTextError" style="color: red;display: none;">Please add reason for cancel.</span>
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" onclick="cancelUserOrder('<?= $orderDetails['order_id'] ?>')">Submit</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
 
-	</div>
+  </div>
 </div>
 
 <input type="hidden" id="deliveryTime" value="<?php echo date('Y-m-d H:i:s'); ?>">

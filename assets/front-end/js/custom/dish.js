@@ -1,7 +1,7 @@
 jQuery(document).ready(function(){
 	var coockie  =getCookie();
     var locality =coockie.locality_id;
-
+    document.cookie = "locality_id="+locality+"; expires=0; path=/";
     if (jQuery(window).width() > 767) {
       var stickySidebar1 = new StickySidebar('.rightMain', {
           topSpacing: 0,
@@ -39,7 +39,7 @@ jQuery(document).ready(function(){
     jQuery('ul.tabs a[href^="#"]').click(function(e) {
       jQuery('html,body').animate({ scrollTop: (jQuery(this.hash).offset().top-100)}, 1000);   
       return false;
-      e.preventDefault();
+      //e.preventDefault();
     });
 
     jQuery('ul.tabs a').click(function(e) {

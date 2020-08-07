@@ -276,6 +276,7 @@ $("#customerregister").submit(function(event) {
     }
 })
 $('.check-out').on('click',function(){
+
   var cookiedetail = getCookie('access_token');
   if(cookiedetail.access_token==undefined){
     login.open();
@@ -479,7 +480,7 @@ function addaddress() {
     var name = $('#customer_name').val();
     var email = $('#addemail').val();
     var phone = $('#contact_no').val();
-    var locality = $('#locality').val();
+    //var locality = $('#locality').val();
     var editAdd = $('#editAdd').val();
     var locality_val = $("#locality option:selected").text();
     var complete_add = $('#address_line1').val();
@@ -526,7 +527,7 @@ function addaddress() {
             contact_no: phone,
             customer_latitude: lat,
             customer_longitude: long,
-            locality_id: locality,
+            /*locality_id: locality,*/
             address_id: address_id
         }
         $("#loading-div-background").show();
@@ -1009,6 +1010,7 @@ $(document).on('change', '.custAddress', function() {
 });
 
 function setOrderSummary(locality, locality_val = "") {
+   
     $.post(getOrderSummary, {
         locality: locality,
         locality_value: locality_val

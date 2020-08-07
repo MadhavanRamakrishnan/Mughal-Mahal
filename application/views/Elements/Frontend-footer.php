@@ -203,15 +203,6 @@
         <div class="checkout_form_btm">
           <p>Address Details</p>
           <div class="checkout_fild">
-            <select id="locality" name="locality">
-
-              <option value="">Select Locality</option>
-               <?php  foreach ($localitylist as $key => $value){ ?>
-               <option value="<?= $value->locality_id ?>"><?= $value->name;?>
-               </option><?php } ?>
-
-            </select>
-            <span style="display: none;" class="add_error locality_error"></span>
           </div>
           <div class="checkout_fild">
             <input type="hidden" id="lat" name="customer_latitude" value="29.3604396"> 
@@ -309,7 +300,6 @@
           </div>
     </div>
 </div>
-
 
 <input type="hidden" id="user_id" value="<?=  (isset($userdata[0]->user_id))?$userdata[0]->user_id:""; ?>">
 
@@ -440,11 +430,32 @@
 <script src="<?= base_url('assets/js/front-end/fb.js'); ?>"></script>
 
 <script src="<?= base_url('assets/front-end/js/modality.min.js'); ?>"></script>
-<script src="<?= base_url('assets/js/custom.js'); ?>"></script>
+<script src="<?= base_url('assets/js/custom.js?v=1.3'); ?>"></script>
 <script src="<?= base_url('assets/front-end/js//owl.carousel.js'); ?>"></script>
 <script src="<?= base_url('assets/front-end/js/easy-responsive-tabs.js'); ?>"></script>
 
+<script>
+var modal = document.getElementById("myModal");
 
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+console.log(btn);
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+/*if(btn != null && btn != undefined)
+{
+  btn.onclick = function() {
+    modal.style.display = "block";
+  }
+}*/
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+</script>
 <!--<script type="text/javascript">
     $(document).ready(function() {
         wow = new WOW(

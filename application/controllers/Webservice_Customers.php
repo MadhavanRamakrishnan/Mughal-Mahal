@@ -3653,7 +3653,7 @@ class Webservice_Customers extends MY_Controller{
 		$total 	     = trim($this->input->post('total')) ? $this->input->post('total') : '0';
 		$dish_id 	 = trim($this->input->post('dish_id')) ? $this->input->post('dish_id') : '0';
 		// $locality    =($_SESSION['locality']!='')?$_SESSION['locality']:1;
-		$locality 	 = trim($this->input->post('dish_id')) ? $this->input->post('locality_id') : 1;
+		$locality 	 = trim($this->input->post('locality_id')) ? $this->input->post('locality_id') : 1;
 		$lang        =$_COOKIE['lang'];
 		$dishDetails = $this->Webservice_customer_model->getAllDishes('',$locality,$dish_id);
 		$cat_id = 0;
@@ -3894,6 +3894,7 @@ class Webservice_Customers extends MY_Controller{
 		{
 			$phone_no = $this->input->post('phone_no');
 			$userData = $this->Webservice_customer_model->checkPhoneNumber($phone_no,5);
+			
 			if(is_array($userData) && count($userData)>0)
 			{
 				$mail 	= $this->base64url_encode($phone_no);

@@ -59,10 +59,11 @@ $(document).on("click","#start_my_order",function(){
             }
         }
     })
-    document.cookie = "locality_id="+locality+"; expires=0; path=/";
+    console.log(getCookie());
+    //document.cookie = "locality_id="+locality+"; expires=0; path=/";
     //showDish(locality);
     $.fn.colorbox.close();
-    window.location.href = site_url;
+    //window.location.href = site_url;
  //showDish(locality);
 })
 

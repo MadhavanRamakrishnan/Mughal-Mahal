@@ -22,7 +22,7 @@
 
     <!-- FROM HEADER END -->
 
-    <script src="<?php echo base_url(); ?>assets/js/footer.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/footer.js?v=1.1"></script>
   
     <script src="<?php echo base_url(); ?>assets/js/plugins/datatables/jquery.dataTables.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/plugins/datatables/DT_bootstrap.js"></script>

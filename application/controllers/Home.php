@@ -44,7 +44,7 @@ class Home extends MY_Controller
 		$this->lang->load($this->langsFile,$this->langs);
 		$this->localityId  = json_decode($_COOKIE['locality_id']);
 		$this->locality    =$this->Home_model->getLocality();
-		$this->cartItem   = ($_COOKIE['dishDetail']) ? count(json_decode($_COOKIE['dishDetail'])) : "";
+		$this->cartItem   = (isset($_COOKIE['dishDetail']) && !empty($_COOKIE['dishDetail'])) ? count(json_decode($_COOKIE['dishDetail'])) : "";
 
 	}
 
@@ -116,6 +116,7 @@ class Home extends MY_Controller
 		//$resId            =$this->Home_model->getRestaurantByLocality($locality)->restaurant_id;
 		//$dishCategory     =$this->Home_model->dishCategory($resId);
 		$data['locality'] = $this->Home_model->getLocality($this->localityId);
+
 		$this->load->view('Elements/Frontend-header',$data);
 		$this->load->view('Home/orderNow');
 		$this->load->view('Elements/Frontend-footer');	
@@ -175,7 +176,7 @@ class Home extends MY_Controller
 	function getlocalites($locality="")
 	{
 		$localites = $this->Home_model->getLocality($locality);
-		//print_r($localites);exit;
+		
 		if(count($localites) >0)
 		{
 			$response['success'] =1;
@@ -200,6 +201,7 @@ class Home extends MY_Controller
 	{
 		$dishId   =$this->input->post('dish_id');
 		$locality =$this->input->post('locality_id');
+
 		$dishData =array();
 		$getDishChoice =$this->Home_model->getRestaurantDishChoices($dishId,$locality);
 		
@@ -392,83 +394,84 @@ class Home extends MY_Controller
 	 * Created Date: 17 Jan 2018
 	 */
 	
-	function getdishdetails()
+	function getdishdetails($locality="")
 	{
 
-		$dishdata      = json_decode($_COOKIE['dishDetail']);	
- 		// $locality      =$_COOKIE['restaurant_id'];
- 		$locality      =$_COOKIE['locality_id'];
-		$finalDishData =array();
+		$dishdata      = isset($_COOKIE['dishDetail']) ? json_decode($_COOKIE['dishDetail']) : "";
+		// $locality      =$_COOKIE['restaurant_id'];
+ 		$locality      = !empty($locality) ? $locality : $_COOKIE['locality_id'];
+ 		//$locality 	   = 21;
+ 		$finalDishData =array();
 		$c             = 0;
-		
-		if(count($dishdata)>0)
+		if(isset($dishdata) && $dishdata != "")
 		{
-			foreach ($dishdata as $key => $value1) 
+			if(count($dishdata)>0)
 			{
-				$ch =array();
-				$dishDetail              = $this->Home_model->getCartDishDetail($value1->dishId);
-				
-				if(count($dishDetail)>0)
+				foreach ($dishdata as $key => $value1) 
 				{
-					$finalDishData[$c]['id']        = $value1->id;
-					$finalDishData[$c]['dishid']    = $value1->dishId;
-					$finalDishData[$c]['price']     = $dishDetail[0]->price; 
-					$finalDishData[$c]['dishcount'] = $value1->dishcount;
-					$finalDishData[$c]['dishname']  = ($this->langs =="AR")?$dishDetail[0]->product_ar_name:$dishDetail[0]->product_en_name;
-					$finalDishData[$c]['instruction'] 	= $value1->instruction;
-
-					$resDishDetail = $this->Home_model->getResDishDetail($value1->dishId,$locality);
-
-					if(count($resDishDetail))
+					$ch =array();
+					$dishDetail              = $this->Home_model->getCartDishDetail($value1->dishId);
+					
+					if(count($dishDetail)>0)
 					{
-						$finalDishData[$c]['locality'] =$locality;
-						$finalDishData[$c]['delivery_charges'] =$resDishDetail[0]->delivery_charge;
-						$finalDishData[$c]['price']    = (isset($resDishDetail[0]->dish_price))?$resDishDetail[0]->dish_price:0;
-						$choices      =explode(',', $resDishDetail[0]->choice_id);
-						$choice_price =explode(',', $resDishDetail[0]->choice_price);
-						$ch           =array();
+						$finalDishData[$c]['id']        = $value1->id;
+						$finalDishData[$c]['dishid']    = $value1->dishId;
+						$finalDishData[$c]['price']     = $dishDetail[0]->price; 
+						$finalDishData[$c]['dishcount'] = $value1->dishcount;
+						$finalDishData[$c]['dishname']  = ($this->langs =="AR")?$dishDetail[0]->product_ar_name:$dishDetail[0]->product_en_name;
+						$finalDishData[$c]['instruction'] 	= $value1->instruction;
 
+						$resDishDetail = $this->Home_model->getResDishDetail($value1->dishId,$locality);
 
-						if(count($value1->choiceOfOne)>0){
-							
-							foreach ($value1->choiceOfOne as $key => $value) {
-								$ch[]=$value;
-							}
-						}
-						
-						if(count($value1->Multiplechoice)>0)
+						if(count($resDishDetail))
 						{
-							foreach ($value1->Multiplechoice as $key => $value) {
-								$ch[]=$value;
-							}
-						}
-						if(count($ch)>0){
+							$finalDishData[$c]['locality'] =$locality;
+							$finalDishData[$c]['delivery_charges'] =$resDishDetail[0]->delivery_charge;
+							$finalDishData[$c]['price']    = (isset($resDishDetail[0]->dish_price))?$resDishDetail[0]->dish_price:0;
+							$choices      =explode(',', $resDishDetail[0]->choice_id);
+							$choice_price =explode(',', $resDishDetail[0]->choice_price);
+							$ch           =array();
 
-							foreach ($ch as $chId=> $chVal) 
-							{
-								$dishchoice = $this->Home_model->getChoiceName($chVal);
+
+							if(count($value1->choiceOfOne)>0){
 								
-								if(count($dishchoice)>0){
-									$finalDishData[$c]['choice'][$chId]['choice_id']  =  $dishchoice[0]->choice_id;
-									$finalDishData[$c]['choice'][$chId]['choice_name'] = ($this->langs =="AR")? $dishchoice[0]->choice_name_ar: $dishchoice[0]->choice_name;
-									$finalDishData[$c]['choice'][$chId]['choice_description'] =  $dishchoice[0]->choice_description;
+								foreach ($value1->choiceOfOne as $key => $value) {
+									$ch[]=$value;
+								}
+							}
+							
+							if(count($value1->Multiplechoice)>0)
+							{
+								foreach ($value1->Multiplechoice as $key => $value) {
+									$ch[]=$value;
+								}
+							}
+							if(count($ch)>0){
 
-									$chk =array_search($chVal,$choices);
+								foreach ($ch as $chId=> $chVal) 
+								{
+									$dishchoice = $this->Home_model->getChoiceName($chVal);
+									
+									if(count($dishchoice)>0){
+										$finalDishData[$c]['choice'][$chId]['choice_id']  =  $dishchoice[0]->choice_id;
+										$finalDishData[$c]['choice'][$chId]['choice_name'] = ($this->langs =="AR")? $dishchoice[0]->choice_name_ar: $dishchoice[0]->choice_name;
+										$finalDishData[$c]['choice'][$chId]['choice_description'] =  $dishchoice[0]->choice_description;
 
-									$finalDishData[$c]['choice'][$chId]['price'] = ($choice_price[$chk]!='0')?$choice_price[$chk]:0;
-									$finalDishData[$c]['price'] = $finalDishData[$c]['price'] + $finalDishData[$c]['choice'][$chId]['price'];
+										$chk =array_search($chVal,$choices);
+
+										$finalDishData[$c]['choice'][$chId]['price'] = ($choice_price[$chk]!='0')?$choice_price[$chk]:0;
+										$finalDishData[$c]['price'] = $finalDishData[$c]['price'] + $finalDishData[$c]['choice'][$chId]['price'];
+									}
 								}
 							}
 						}
+						$c++;
 					}
-					$c++;
-				}
 
+				}
 			}
 		}
-		
-		echo json_encode($finalDishData);exit;
-
+		echo json_encode($finalDishData);exit;	
 	}
 
 	/**
@@ -476,10 +479,10 @@ class Home extends MY_Controller
 	 * @authorManisha Kanazariya
 	 * Created Date: 17 Jan 2018
 	 */
-	function orderSummary()
+	function orderSummary($locality="")
 	{
-		
  		$dishdata        = json_decode($_COOKIE['dishDetail']);
+ 		
 		if(!($this->input->post('locality')))
 		{
 			if(count($dishdata)==0)
@@ -487,7 +490,7 @@ class Home extends MY_Controller
 				redirect('Home');
 			}
  		}
- 		
+
 		if(isset($_COOKIE['access_token']) && $_COOKIE['access_token']!='')
 		{
 			$data['userdata']      = $this->Webservice_customer_model->getUserdetails($_COOKIE['user_id']);
@@ -498,7 +501,7 @@ class Home extends MY_Controller
 			$data['addressDetail'] =  $this->Webservice_customer_model->getDeliveryAddress($_COOKIE['user_id']);	
 		}
 
-		$locality        = json_decode($_COOKIE['locality_id']);
+		$locality        = !empty($locality) ? $locality : json_decode($_COOKIE['locality_id']);
 		$finalDishData   = array();
 		$totalPrice      = 0;
 		$deliveryCharge  = 0;
@@ -521,7 +524,7 @@ class Home extends MY_Controller
 					$finalDishData[$c]['total']      = number_format(0,3);
 					$finalDishData[$c]['dish_name']  = ($this->langs =="AR")?$dishDetail[0]->product_ar_name:$dishDetail[0]->product_en_name;
 					$finalDishData[$c]['locality']   ='';
-					$finalDishData[$c]['instruction']   =$value1->instruction;
+					$finalDishData[$c]['instruction']   = $value1->instruction;
 					$resDishDetail = $this->Home_model->getResDishDetail($value1->dishId,$locality);
 					$finalDishData[$c]['choice_name'] ='';
 					if(count($resDishDetail))
@@ -533,7 +536,6 @@ class Home extends MY_Controller
 						$i=0;
 						$choices      =explode(',', $resDishDetail[0]->choice_id);
 						$choice_price =explode(',', $resDishDetail[0]->choice_price);
-						
 
 						if(count($value1->choiceOfOne)>0)
 						{
@@ -555,14 +557,15 @@ class Home extends MY_Controller
 								foreach ($ch as $chId=> $chVal) {
 								$dishchoice = $this->Home_model->getChoiceName($chVal);
 
-								if(count($dishchoice)>0)
+								if(count($dishchoice)>0 )
 								{
 									$ck =array_search($chVal,$choices);
-									$finalDishData[$c]['choice_name'] =trim(($this->langs =="AR")? $dishchoice[0]->choice_name_ar: $dishchoice[0]->choice_name).','.$finalDishData[$c]['choice_name'] ;
+									$finalDishData[$c]['choice_name'] =(!empty($finalDishData[$c]['choice_name']) ? $finalDishData[$c]['choice_name'].', ' : "").(trim(($this->langs =="AR")? $dishchoice[0]->choice_name_ar: $dishchoice[0]->choice_name));
 									$subtotal =$subtotal+$choice_price[$ck];
 									$i++;
 								}
 							}
+							$finalDishData[$c]['choice_name'] .= !empty($finalDishData[$c]['choice_name']) && !empty($value1->instruction) ? ", ".$value1->instruction : "";
 						}
 						$finalDishData[$c]['subtotal']          =number_format($subtotal,3);
 						$finalDishData[$c]['total']             =number_format($value1->dishcount*$subtotal,3);
@@ -575,10 +578,10 @@ class Home extends MY_Controller
 
 					$c++;
 				}
-				
 			}
-			
 		}
+		/*print_r(($finalDishData));
+		exit;*/
 		if($this->input->post('locality') !="")
 		{
 			$response['success']         = 1;
@@ -613,7 +616,7 @@ class Home extends MY_Controller
 	function addOrder()
 	{
 		$dishdata = json_decode($this->input->post('dishDetail'));
-
+		$locality = !empty($this->input->post('locality')) ? $this->input->post('locality') : $_COOKIE['locality_id'];
 		$c          = 0;
 		$dishprice  = 0;
 		$totalprice = 0;
@@ -621,7 +624,7 @@ class Home extends MY_Controller
 
 		foreach ($dishdata as $key => $value1)
 		{
-			$dishDetail = $this->Webservice_customer_model->getCartDishDetail($value1->dishId,$_COOKIE['locality_id']);
+			$dishDetail = $this->Webservice_customer_model->getCartDishDetail($value1->dishId, $locality);
 
 
 			if(count($dishDetail)>0)
@@ -672,7 +675,7 @@ class Home extends MY_Controller
 			}
 		}
 		
-		$getLocalityData  =$this->Webservice_customer_model->getLocalityData($this->input->post('address_id'));
+		$getLocalityData  =$this->Webservice_customer_model->getLocalityData($locality); /*$this->input->post('address_id')*/
 		$orderdata['user_id']           = $this->input->post('user_id');
 		$orderdata['restaurant_id']     = $getLocalityData[0]->restaurant_id;
 		$orderdata['delivery_charges']  = $finalDishData[0]['delivery_charges'];
@@ -748,7 +751,7 @@ class Home extends MY_Controller
 				"order_no" 			=> "CUSTOMER".date("Ymdhis"),
 				"customer_email" 	=> $getUserData[0]->email,
 				"disclosure_url" 	=> site_url('Home/disclosurePayment/'.$orderres),
-				"redirect_url" 		=> site_url('Home/orderDetails/'.$orderres)
+				"redirect_url" 		=> site_url('Home/orderDetails/'.$orderres) /*site_url('Home/orderDetails/'.$orderres)*/
 			);
 			$fields_string ="";
 			
@@ -792,13 +795,13 @@ class Home extends MY_Controller
 		$jsonData = json_decode($data1);
 		$data['fk_order_id']        = $orderres;
 		$data['paymentid']          = $jsonData->gateway_response->paymentid;
-		$data['transaction_status'] = $jsonData->result;
+		$data['transaction_status'] = strtoupper($jsonData->result);
 		$data['amount']             = $jsonData->amount;
 		$data['data']               =json_encode($data1);
 
 		$this->Home_model->saveTransactionData($data);
 
-		if($data['transaction_status'] == "success")
+		if($data['transaction_status'] == "SUCCESS")
 		{
 			//make order status is "order placed"
 			$updateOrd = $this->Order_model->updateOrderWithSequenceNumber(array('fk_order_id' => $data['fk_order_id'],'order_status'=>1,'reason'=>''));
@@ -814,7 +817,6 @@ class Home extends MY_Controller
 	 */
 	function orderDetails($orderId="")
 	{
-		 
 		if(isset($_COOKIE['access_token']) && $_COOKIE['access_token']!='')
 		{
 			$data['userdata'] = $this->Webservice_customer_model->getUserdetails($_COOKIE['user_id']);
@@ -1055,7 +1057,7 @@ class Home extends MY_Controller
 			$delivery_address['contact_no']         =$_POST['contact_no'];
 			$delivery_address['customer_latitude']  =$_POST['customer_latitude'];
 			$delivery_address['customer_longitude'] =$_POST['customer_longitude'];
-			$delivery_address['locality_id']        =$_POST['locality_id'];
+			$delivery_address['locality_id']        =!empty($_POST['locality_id']) ? $_POST['locality_id'] : ' ';
 			$delivery_address['is_active']          =1;
 			$delivery_address['created_date']       =date('Y-m-d H:i:s');
 		    
@@ -1491,6 +1493,7 @@ class Home extends MY_Controller
 	function getRestaurantDetail()
 	{
 		$locality  =($this->input->post('locality'))?$this->input->post('locality'):"";
+
 		$day       =$this->config->item('day')[date('D')];  
 		$getDetail =$this->Home_model->getRestaurantDetail($locality);
 		$getTime   =$this->Home_model->getRestaurantDetail($locality,$day);

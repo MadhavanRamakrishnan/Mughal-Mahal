@@ -350,7 +350,7 @@
   </div>
 </div>
 
-<div class="modal fade" id="modal_add_dish" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+<div class="modal fade" id="modal_add_dish" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false" style="display: none;">
   <div class="modal-dialog" id="cboxLoadedContent" style="width: 900px;height: 575px;">
     <div class="modal-content">
       <div class="modal-header  dish_popup">

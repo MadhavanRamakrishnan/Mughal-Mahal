@@ -28,7 +28,7 @@ class Restaurants extends MY_Controller
 		$this->load->library('form_validation');
 		$this->load->library('upload');
 		$this->form_validation->run($this);
-		$this->load->library('encrypt');
+		//$this->load->library('encrypt');
 		
 		
 	}
